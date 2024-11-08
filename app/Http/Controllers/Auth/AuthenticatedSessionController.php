@@ -24,11 +24,38 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // Authenticate the user
         $request->authenticate();
 
+        // Regenerate the session to prevent session fixation attacks
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Haal de geauthenticeerde gebruiker op
+        $user = Auth::user();
+        
+        // Controleer de rol van de gebruiker en voer de juiste redirect uit
+        switch ($user->role->id) {
+            case '2':
+                return redirect()->route('dashboard.finance');
+            case '3':
+                return redirect()->route('dashboard.sales');
+            case '4':
+                return redirect()->route('dashboard.marketing');
+            case '5':
+                return redirect()->route('dashboard.maintenance');
+            case '6':
+                return redirect()->route('dashboard.head-finance');
+            case '7':
+                return redirect()->route('dashboard.head-sales');
+            case '8':
+                return redirect()->route('dashboard.head-marketing');
+            case '9':
+                return redirect()->route('dashboard.head-maintenance');
+            case '10':
+                return redirect()->route('dashboard.ceo');
+            default:
+                return redirect()->route('dashboard');
+        }
     }
 
     /**

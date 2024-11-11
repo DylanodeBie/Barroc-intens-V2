@@ -7,7 +7,7 @@
 
 
             <h1 class="text-lg font-semibold text-gray-800 mx-auto">
-                @yield('greeting', 'Goedemorgen, [user]!')
+                @yield('greeting', 'Goedemorgen')
             </h1>
 
             <div x-data="{ open: false }" class="relative">

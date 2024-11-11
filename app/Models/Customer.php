@@ -11,12 +11,12 @@ use App\Models\Leasecontract;
 
 class Customer extends Model
 {
-    protected $table = 'customer';
+    protected $table = 'customers';  // wijzig hier 'customer' naar 'customers'
 
     protected $fillable = [
         'company_name', 'contact_person', 'phonenumber', 'address', 'email', 'bkr_check'
     ];
-    
+
     public function invoices()
     {
         return $this->hasMany(Invoice::class, 'invoice_id');

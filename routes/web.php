@@ -3,6 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CustomerController;
+
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,6 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/head-marketing', [DashboardController::class, 'headMarketing'])->name('dashboard.head-marketing');
     Route::get('/dashboard/head-maintenance', [DashboardController::class, 'headMaintenance'])->name('dashboard.head-maintenance');
     Route::get('/dashboard/ceo', [DashboardController::class, 'ceo'])->name('dashboard.ceo');
+    Route::resource('customers', CustomerController::class);
 });
 
 Route::middleware('auth')->group(function () {
@@ -32,3 +36,4 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+

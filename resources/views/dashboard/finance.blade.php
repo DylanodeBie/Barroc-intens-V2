@@ -15,22 +15,6 @@
             </ul>
         </nav>
     </div>
-
-    <div class="flex-grow p-4">
-        <div class="grid grid-cols-3 gap-4">
-            <!-- Nieuws Section -->
-            <section class="col-span-2 bg-white p-4 rounded shadow">
-                <h2 class="text-2xl font-bold mb-4">Nieuws</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-            </section>
-
-            <!-- Agenda Section -->
-            <aside class="bg-white p-4 rounded shadow">
-                <h2 class="text-lg font-semibold">Agenda</h2>
-                <!-- Agenda content here -->
-            </aside>
-        </div>
-    </div>
 </div>
 
 @endsection

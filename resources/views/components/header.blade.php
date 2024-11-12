@@ -20,8 +20,9 @@
 
                 <div x-show="open" @click.away="open = false"
                     class="absolute right-0 mt-2 w-48 bg-yellow-500 rounded-md shadow-lg py-2">
-                    <a href="#" class="block px-4 py-2 text-white hover:bg-yellow-700">Inloggen</a>
-                    <a href="#" class="block px-4 py-2 text-white hover:bg-yellow-700">Registreren</a>
+                    <form methode="post" action="{{ route('logout') }}">
+                        @csrf
+                        <a href="{{ route('logout') }}" class="block px-4 py-2 text-white hover:bg-yellow-700">Uitloggen</a>
                     <a href="{{ url('/contact') }}" class="block px-4 py-2 text-white hover:bg-yellow-700">Contact</a>
                 </div>
             </div>

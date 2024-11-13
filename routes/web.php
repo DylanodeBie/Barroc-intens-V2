@@ -5,8 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
-
-
+use App\Http\Controllers\VisitController;  // Add VisitController
 
 Route::get('/', function () {
     return view('auth.login');
@@ -15,7 +14,7 @@ Route::get('/', function () {
 Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 Route::middleware(['auth'])->get('/dashboard', function () {
-    return view('dashboard'); // Zorg ervoor dat je een dashboard-view hebt
+    return view('dashboard'); // Ensure you have a dashboard-view
 });
 
 // Group routes that require authentication
@@ -33,6 +32,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Customer resource routes without `can:update` middleware
     Route::resource('customers', CustomerController::class);
+
+    // Visit resource routes for scheduling and managing visits
+    Route::resource('visits', VisitController::class); // Add this line for Visit resource routes
 });
 
 // Profile management routes, requiring authentication

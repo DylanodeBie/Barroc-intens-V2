@@ -1,20 +1,23 @@
-@extends('layouts.app')
+@extends('layouts.sales_dashboard_layout')
 
 @section('content')
-<div class="flex">
-    <div class="flex flex-grow">
-        <!-- Sidebar Navigation -->
-        <nav class="bg-gray-800 text-white w-50 p-4">
-            <ul class="space-y-4">
-            <li class="bg-blue-600 p-2 rounded"><a href="#">Home</a></li>
-            <li class="p-2 rounded hover:bg-gray-700"><a href="#">Offerte maken</a></li>
-            <li class="p-2 rounded hover:bg-gray-700"><a href="#">Offertes</a></li>
-            <li class="p-2 rounded hover:bg-gray-700"><a href="#">Klant registreren</a></li>
-            <li class="p-2 rounded hover:bg-gray-700"><a href="#">Klanten</a></li>
-            <li class="p-2 rounded hover:bg-gray-700"><a href="#">Agenda</a></li>
-            </ul>
-        </nav>
-    </div>
-</div>
+    <div class="bg-white p-6 shadow-md rounded-lg">
+        <h1 class="text-3xl font-bold text-gray-800">Sales Dashboard</h1>
 
+        <!-- Welcome Text -->
+        <div class="mt-4">
+            <h2 class="text-xl font-semibold text-gray-700">Welkom, [user]!</h2>
+            <p class="text-gray-600 mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            <div class="bg-gray-200 p-4 rounded-lg shadow">
+                <h3 class="font-semibold text-gray-700">Stats or Info</h3>
+                <p>Content or Graph</p>
+            </div>
+            <!-- More content blocks can go here -->
+        </div>
+    </div>
 @endsection

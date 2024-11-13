@@ -44,38 +44,38 @@ class DashboardController extends Controller
     }
 
     public function finance() {
-        return view('dashboard.finance');
+        return view('dashboard.finance.finance');
     }
 
     public function sales() {
-        return view('dashboard.sales');
+        return view('dashboard.sales.sales');
     }
 
     public function marketing() {
-        return view('dashboard.marketing');
+        return view('dashboard.marketing.marketing');
     }
 
     public function maintenance() {
-        return view('dashboard.maintenance');
+        return view('dashboard.maintenance.maintenance');
     }
 
     public function headFinance() {
-        return view('dashboard.head-finance');
+        return view('dashboard.head-finance.head-finance');
     }
 
     public function headSales() {
-        return view('dashboard.head-sales');
+        return view('dashboard.head-sales.head-sales');
     }
 
     public function headMarketing() {
-        return view('dashboard.head-marketing');
+        return view('dashboard.head-marketing.head-marketing');
     }
 
     public function headMaintenance() {
-        return view('dashboard.head-maintenance');
+        return view('dashboard.head-maintenance.head-maintenance');
     }
 
     public function ceo() {
-        return view('dashboard.ceo');
+        return view('dashboard.ceo.ceo');
     }
 }

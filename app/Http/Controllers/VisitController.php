@@ -47,12 +47,19 @@ class VisitController extends Controller
     }
 
     // Assign a visit to Maintenance team
-    public function assignToMaintenance($id)
-    {
-        $visit = Visit::findOrFail($id);
-        $maintenanceUsers = User::where('role_id', 5)->get(); // Haal gebruikers op met de rol Onderhoud (rol_id 5)
-        return view('visits.assign', compact('visit', 'maintenanceUsers'));
+public function assignToMaintenance($id)
+{
+    $visit = Visit::findOrFail($id);
+
+    // Controleer of de huidige gebruiker rol 9 (Head Maintenance) of rol 10 (CEO) heeft
+    if (!in_array(auth()->user()->role_id, [9, 10])) {
+        abort(403, 'Geen toegang tot deze actie.');
     }
+
+    $maintenanceUsers = User::where('role_id', 5)->get(); // Haal gebruikers op met de rol Onderhoud (rol_id 5)
+    return view('visits.assign', compact('visit', 'maintenanceUsers'));
+}
+
 
     // Store the assignment of a visit to a maintenance team member
     public function storeAssignedToMaintenance(Request $request, $id)

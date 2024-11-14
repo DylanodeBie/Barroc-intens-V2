@@ -1,3 +1,7 @@
+@section('greeting')
+    Product informatie
+@endsection
+
 @extends('layouts.app')
 
 @section('content')
@@ -5,9 +9,9 @@
         <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ $product->name }}</h1>
 
         <p class="text-lg text-gray-700 mb-4">{{ $product->brand }}</p>
-        
+
         <p class="text-lg text-gray-700 mb-4">{{ $product->description }}</p>
-        
+
         <div class="text-sm text-gray-600 mb-4">
             <p><span class="font-semibold">Voorraad:</span> {{ $product->stock }}</p>
             <p><span class="font-semibold">Prijs:</span> {{ number_format($product->price, 2) }} €</p>

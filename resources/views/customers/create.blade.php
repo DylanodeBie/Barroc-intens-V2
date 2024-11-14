@@ -1,3 +1,7 @@
+@section('greeting')
+    Nieuwe klant registreren
+@endsection
+
 @extends('layouts.app')
 
 @section('content')

@@ -10,8 +10,9 @@ use App\Http\Controllers\VisitController;
 
 // Default login route
 Route::get('/', function () {
-    return view('auth.login')->name('login');
-});
+    return view('auth.login');
+})->name('login');
+
 
 // Logout route
 Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

@@ -13,16 +13,17 @@ class VisitController extends Controller
     // Index method to display a list of visits
     public function index()
     {
-        $visits = Visit::with(['customer', 'user'])->get(); // Laad de relaties 'customer' en 'user' in
+        $visits = Visit::all(); // Retrieve all visits
         return view('visits.index', compact('visits'));
     }
 
     // Show the form to create a new visit
     public function create()
     {
-        $customers = Customer::all(); // Haal alle klanten op
-        $users = User::whereIn('role_id', [3, 7, 10])->get(); // Haal gebruikers op met de rollen Sales, Head Sales en CEO
-        $errorNotifications = ErrorNotification::all(); // Haal alle foutmeldingen op
+        $customers = Customer::all(); // Retrieve all customers
+        $users = User::whereIn('role_id', [3, 7, 10])->get(); // Retrieve users with Sales, Head Sales, and CEO roles
+        $errorNotifications = ErrorNotification::all(); // Retrieve all error notifications
+
         return view('visits.create', compact('customers', 'users', 'errorNotifications'));
     }
 
@@ -32,24 +33,24 @@ class VisitController extends Controller
         $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'user_id' => 'required|exists:users,id',
-            'error_notification_id' => 'required|exists:error_notifications,id',
-            'visit_date' => 'required|date', // Validatie voor de bezoekdatum
-            'start_time' => 'required|date_format:H:i', // Zorgt ervoor dat het in het juiste tijdformaat is
-            'end_time' => 'required|date_format:H:i|after:start_time', // Eindtijd moet na de starttijd liggen
+            'visit_date' => 'required|date',
+            'start_time' => 'required',
+            'end_time' => 'required|after:start_time',
             'address' => 'required|string',
-            'used_parts' => 'required|string',
+            'error_notification_id' => 'required|exists:error_notifications,id',
             'error_details' => 'nullable|string',
+            'used_parts' => 'required|string',
         ]);
 
-        Visit::create($request->all()); // Maak het bezoekrecord aan
+        Visit::create($request->all()); // Create the visit record
         return redirect()->route('visits.index')->with('success', 'Bezoek succesvol ingepland.');
     }
 
     // Show method to display details of a specific visit
     public function show($id)
     {
-        $visit = Visit::with(['customer', 'user'])->findOrFail($id); // Laad 'customer' en 'user' relaties
-        return view('visits.show', compact('visit')); // Toon de bezoekdetails
+        $visit = Visit::findOrFail($id); // Retrieve visit by ID
+        return view('visits.show', compact('visit')); // Show visit details
     }
 
     // Assign a visit to Maintenance team
@@ -57,12 +58,12 @@ class VisitController extends Controller
     {
         $visit = Visit::findOrFail($id);
 
-        // Controleer of de huidige gebruiker rol 9 (Head Maintenance) of rol 10 (CEO) heeft
+        // Check if the current user has role 9 (Head Maintenance) or role 10 (CEO)
         if (!in_array(auth()->user()->role_id, [9, 10])) {
             abort(403, 'Geen toegang tot deze actie.');
         }
 
-        $maintenanceUsers = User::where('role_id', 5)->get(); // Haal gebruikers op met de rol Onderhoud (rol_id 5)
+        $maintenanceUsers = User::where('role_id', 5)->get(); // Retrieve users with Maintenance role (role_id 5)
         return view('visits.assign', compact('visit', 'maintenanceUsers'));
     }
 
@@ -74,7 +75,7 @@ class VisitController extends Controller
         ]);
 
         $visit = Visit::findOrFail($id);
-        $visit->user_id = $request->user_id; // Gebruik user_id voor toewijzing
+        $visit->user_id = $request->user_id; // Assign maintenance user
         $visit->save();
 
         return redirect()->route('visits.index')->with('success', 'Bezoek succesvol toegewezen aan onderhoud.');
@@ -83,7 +84,7 @@ class VisitController extends Controller
     // Display visits assigned to maintenance
     public function maintenanceTickets()
     {
-        $tickets = Visit::whereNotNull('user_id')->get(); // Haal alle bezoeken op die aan onderhoud zijn toegewezen
+        $tickets = Visit::whereNotNull('user_id')->get(); // Retrieve all visits assigned to maintenance
         return view('visits.maintenance_tickets', compact('tickets'));
     }
 }

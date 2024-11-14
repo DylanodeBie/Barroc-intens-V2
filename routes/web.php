@@ -46,6 +46,12 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('visits', VisitController::class)->except(['destroy']);
     });
 
+    // Only-read access for Head Maintenance (role 9)
+    Route::middleware('role:9')->group(function () {
+        Route::get('visits', [VisitController::class, 'index'])->name('visits.index');
+        Route::get('visits/{visit}', [VisitController::class, 'show'])->name('visits.show');
+    });
+
     // Visit assignment and maintenance tickets
     Route::middleware('role:9,10')->group(function () {
         // Allow Head Maintenance (role 9) and CEO (role 10) to assign visits and manage tickets

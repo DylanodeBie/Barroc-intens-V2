@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         // Seed roles first
         $this->call(RoleSeeder::class);
+        $this->call(ProductSeeder::class);
 
         // Behoud de oude user
         User::factory()->create([

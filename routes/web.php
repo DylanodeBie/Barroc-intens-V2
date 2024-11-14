@@ -15,7 +15,6 @@ Route::middleware(['auth'])->get('/dashboard', function () {
     return view('dashboard'); // Zorg ervoor dat je een dashboard-view hebt
 });
 
-// Group routes that require authentication
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/finance', [DashboardController::class, 'finance'])->name('dashboard.finance');
@@ -29,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/head-sales', [DashboardController::class, 'headSales'])->name('dashboard.head-sales');
     Route::get('/dashboard/head-maintenance', [DashboardController::class, 'headMaintenance'])->name('dashboard.head-maintenance');
     Route::get('/dashboard/ceo', [DashboardController::class, 'ceo'])->name('dashboard.ceo');
+
     Route::resource('customers', CustomerController::class);
 
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -40,12 +40,10 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 });
 
-// Profile management routes, requiring authentication
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
-
+require __DIR__ . '/auth.php';

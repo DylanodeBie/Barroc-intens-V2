@@ -8,7 +8,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HeadMarketing\ProductController;
 
 Route::get('/', function () {
-    return view('auth.login');
+    return view('auth.login')->name('login');
 });
 
 Route::middleware(['auth'])->get('/dashboard', function () {

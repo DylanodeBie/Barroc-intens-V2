@@ -2,7 +2,7 @@
     <div class="bg-gray-100 border-b border-gray-200 shadow-sm w-full">
         <div class="container mx-auto flex items-center justify-between py-3 px-4 max-w-screen-xl mx-auto">
             <div class="flex items-center">
-                <img src="{{ asset('img/logo1_groot.png') }}" alt="Logo" class="h-12 w-auto">
+                <a href="{{ route('login') }}"><img src="{{ asset('img/logo1_groot.png') }}" alt="Logo" class="h-12 w-auto"></a>
             </div>
 
 

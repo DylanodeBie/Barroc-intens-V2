@@ -22,7 +22,7 @@ class RoleSeeder extends Seeder
             ['id' => 5, 'name' => 'Maintenance', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 6, 'name' => 'Head Finance', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 7, 'name' => 'Head Sales', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 8, 'name' => 'Head Markteing', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 8, 'name' => 'Head Marketing', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 9, 'name' => 'Head Maintenance', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 10, 'name' => 'CEO', 'created_at' => now(), 'updated_at' => now()],
         ]);

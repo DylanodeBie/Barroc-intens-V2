@@ -6,6 +6,7 @@
 
         <!-- "Nieuw bezoek toevoegen" button with #FFD700 color -->
         @if (in_array(auth()->user()->role_id, [3, 7, 10]))
+            <!-- Alleen tonen aan Sales, Head Sales, en CEO -->
             <div class="flex justify-end mb-4">
                 <a href="{{ route('visits.create') }}" class="font-semibold px-6 py-2 rounded-md hover:bg-yellow-500"
                     style="background-color: #FFD700; color: black;">
@@ -52,16 +53,19 @@
                             <td class="px-6 py-4 whitespace-nowrap">{{ $visit->end_time }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $visit->address }}</td>
                             <td class="px-6 py-4 text-center flex justify-center gap-4">
-                                <!-- Action icons in black -->
-                                <a href="{{ route('visits.assign', $visit->id) }}" class="hover:text-gray-700"
-                                    title="Toewijzen" style="color: black;">
-                                    <i class="fas fa-tasks"></i>
-                                </a>
-
+                                <!-- "Bekijken" actie altijd tonen -->
                                 <a href="{{ route('visits.show', $visit->id) }}" class="hover:text-gray-700"
                                     title="Bekijken" style="color: black;">
                                     <i class="fas fa-eye"></i>
                                 </a>
+
+                                <!-- "Toewijzen" actie tonen aan Head Maintenance (rol_id 9) en CEO (rol_id 10) -->
+                                @if (in_array(auth()->user()->role_id, [9, 10]))
+                                    <a href="{{ route('visits.assign', $visit->id) }}" class="hover:text-gray-700"
+                                        title="Toewijzen" style="color: black;">
+                                        <i class="fas fa-tasks"></i>
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                     @endforeach

@@ -1,3 +1,7 @@
+@section('greeting')
+    Producten
+@endsection
+
 @extends('layouts.app')
 
 @section('content')

@@ -35,11 +35,41 @@
                 <input type="date" name="visit_date" class="w-full px-4 py-2 border rounded-md border-gray-300" required>
             </div>
 
+            <!-- Start Time Field -->
+            <div class="mb-6">
+                <label for="start_time" class="block text-gray-700">Starttijd</label>
+                <input type="time" name="start_time" class="w-full px-4 py-2 border rounded-md border-gray-300" required>
+            </div>
+
+            <!-- End Time Field -->
+            <div class="mb-6">
+                <label for="end_time" class="block text-gray-700">Eindtijd</label>
+                <input type="time" name="end_time" class="w-full px-4 py-2 border rounded-md border-gray-300" required>
+            </div>
+
             <!-- Address Field -->
             <div class="mb-6">
                 <label for="address" class="block text-gray-700">Adres</label>
                 <input type="text" name="address" class="w-full px-4 py-2 border rounded-md border-gray-300"
                     placeholder="Voer het adres in" required>
+            </div>
+
+            <!-- Error Notification Selection -->
+            <div class="mb-6">
+                <label for="error_notification_id" class="block text-gray-700">Foutmelding</label>
+                <select name="error_notification_id" class="w-full px-4 py-2 border rounded-md border-gray-300" required>
+                    <option value="" disabled selected>Selecteer een foutmelding</option>
+                    @foreach ($errorNotifications as $errorNotification)
+                        <option value="{{ $errorNotification->id }}">{{ $errorNotification->description }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Used Parts Field -->
+            <div class="mb-6">
+                <label for="used_parts" class="block text-gray-700">Gebruikte Onderdelen</label>
+                <input type="text" name="used_parts" class="w-full px-4 py-2 border rounded-md border-gray-300"
+                    placeholder="Voer de gebruikte onderdelen in" required>
             </div>
 
             <!-- Error Details Field -->

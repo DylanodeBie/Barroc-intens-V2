@@ -22,8 +22,11 @@
                     class="absolute right-0 mt-2 w-48 bg-yellow-500 rounded-md shadow-lg py-2">
                     <form methode="post" action="{{ route('logout') }}">
                         @csrf
-                        <a href="{{ route('logout') }}" class="block px-4 py-2 text-white hover:bg-yellow-700">Uitloggen</a>
-                    <a href="{{ url('/contact') }}" class="block px-4 py-2 text-white hover:bg-yellow-700">Contact</a>
+                        <a href="{{ route('logout') }}"
+                            class="block px-4 py-2 text-white hover:bg-yellow-700">Uitloggen</a>
+                        <a href="{{ url('/contact') }}"
+                            class="block px-4 py-2 text-white hover:bg-yellow-700">Contact</a>
+                    </form>
                 </div>
             </div>
         </div>

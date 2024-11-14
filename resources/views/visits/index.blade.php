@@ -32,6 +32,8 @@
                         <th class="px-6 py-3 text-left font-semibold text-black">Klant</th>
                         <th class="px-6 py-3 text-left font-semibold text-black">Toegewezen Gebruiker</th>
                         <th class="px-6 py-3 text-left font-semibold text-black">Bezoekdatum</th>
+                        <th class="px-6 py-3 text-left font-semibold text-black">Starttijd</th>
+                        <th class="px-6 py-3 text-left font-semibold text-black">Eindtijd</th>
                         <th class="px-6 py-3 text-left font-semibold text-black">Adres</th>
                         <th class="px-6 py-3 text-center font-semibold text-black">Acties</th>
                     </tr>
@@ -46,6 +48,8 @@
                                 {{ $visit->user ? $visit->user->name : 'Geen gebruiker gekoppeld' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $visit->visit_date }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $visit->start_time }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $visit->end_time }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $visit->address }}</td>
                             <td class="px-6 py-4 text-center flex justify-center gap-4">
                                 <!-- Action icons in black -->

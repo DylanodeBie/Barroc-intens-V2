@@ -10,8 +10,8 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label for="maintenance_assigned_to" class="form-label">Toewijzen aan Onderhoudspersoneel:</label>
-                    <select id="maintenance_assigned_to" name="maintenance_assigned_to" class="form-select" required>
+                    <label for="user_id" class="form-label">Toewijzen aan Onderhoudspersoneel:</label>
+                    <select id="user_id" name="user_id" class="form-select" required>
                         <option value="" disabled selected>Kies een medewerker...</option>
                         @foreach ($maintenanceUsers as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>

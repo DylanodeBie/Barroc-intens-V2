@@ -13,8 +13,17 @@
                         <em>No customer linked</em>
                     @endif
                 </p>
+                <p><strong>Assigned User:</strong>
+                    @if ($visit->user)
+                        {{ $visit->user->name }}
+                    @else
+                        <em>No user assigned</em>
+                    @endif
+                </p>
                 <p><strong>Address:</strong> {{ $visit->address }}</p>
                 <p><strong>Visit Date:</strong> {{ $visit->visit_date }}</p>
+                <p><strong>Start Time:</strong> {{ $visit->start_time }}</p>
+                <p><strong>End Time:</strong> {{ $visit->end_time }}</p>
                 <p><strong>Error Details:</strong> {{ $visit->error_details }}</p>
                 <p><strong>Used Parts:</strong> {{ $visit->used_parts }}</p>
             </div>

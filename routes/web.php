@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HeadMarketing\ProductController;
 use App\Http\Controllers\VisitController;
+use App\Http\Controllers\EventController;
 
 // Default login route
 Route::get('/', function () {
@@ -69,6 +70,16 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 });
+
+Route::get('/agenda', [VisitController::class, 'calendar'])->middleware('auth')->name('agenda');
+Route::get('/events', [EventController::class, 'index'])->middleware('auth');
+Route::post('/events', [EventController::class, 'store'])->middleware('auth');
+Route::put('/events/{id}', [EventController::class, 'update'])->middleware('auth');
+Route::delete('/events/{id}', [EventController::class, 'destroy'])->middleware('auth');
+
+Route::get('/forbidden', function () {
+    return view('errors.forbidden');
+})->name('forbidden');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

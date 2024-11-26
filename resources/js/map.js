@@ -1,3 +1,9 @@
+import 'leaflet/dist/leaflet.css';
+
+import L from 'leaflet';
+
+window.L = L;
+
 document.addEventListener('DOMContentLoaded', function () {
     var map = L.map('map').setView([51.606721409705294, 4.778318554751258], 15);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

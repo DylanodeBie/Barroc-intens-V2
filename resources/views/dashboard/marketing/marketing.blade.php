@@ -1,4 +1,6 @@
-
+@section('greeting')
+    Goedemorgen, {{ auth()->user()->name }}!
+@endsection
 
 @extends('layouts.app')
 

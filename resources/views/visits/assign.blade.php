@@ -1,3 +1,7 @@
+@section('greeting')
+    Bezoek Toewijzen
+@endsection
+
 @extends('layouts.app')
 
 @section('content')

@@ -1,4 +1,7 @@
 <footer class="bg-light text-center text-lg-start mt-5 py-3">
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <script src="{{ mix('js/app.js') }}"></script>
+    <script src="{{ mix('js/map.js') }}"></script>
     <div class="container">
         <div class="bg-gray-100 border-t border-gray-200 py-8 mt-8">
             <div class="container mx-auto max-w-screen-xl px-4">
@@ -52,7 +55,9 @@
                     </div>
                 </div>
 
-                <!-- Copyright Sectie -->
+                <div id="map" style="height: 500px;"></div>
+                @vite('resources/js/map.js')
+
                 <div class="text-center text-sm text-gray-600 mt-8">
                     &copy; {{ date('Y') }} Barroc intens. Alle rechten voorbehouden.
                 </div>

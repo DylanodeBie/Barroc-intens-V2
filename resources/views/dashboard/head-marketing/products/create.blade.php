@@ -1,7 +1,3 @@
-@section('greeting')
-Nieuw product
-@endsection
-
 @extends('layouts.app')
 
 @section('content')

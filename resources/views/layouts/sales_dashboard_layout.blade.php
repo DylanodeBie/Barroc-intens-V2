@@ -1,3 +1,5 @@
+<!-- resources/views/layouts/sales_dashboard_layout.blade.php -->
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -24,48 +26,27 @@
     <div class="min-h-screen flex flex-col">
         @include('components.header')
 
-        <!-- Page Heading -->
-        @isset($header)
-            <header class="bg-white dark:bg-gray-800 shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endisset
-
         <div class="flex flex-grow">
-            <!-- Sidebar (with smaller width on mobile and larger on desktop) -->
+            <!-- Sidebar specific to Sales Dashboard -->
             <nav class="bg-gray-800 text-white w-20 md:w-64 p-4 space-y-6">
                 <ul class="space-y-4">
                     <li class="bg-blue-600 p-2 rounded text-center">
-                        <a href="#" class="flex items-center justify-center space-x-2">
-                            <i class="fas fa-home"></i> <span class="hidden md:block">Home</span>
-                        </a>
+                        <a href="#">Home</a>
                     </li>
                     <li class="p-2 rounded hover:bg-gray-700">
-                        <a href="#" class="flex items-center justify-center space-x-2">
-                            <i class="fas fa-file-signature"></i> <span class="hidden md:block">Offerte maken</span>
-                        </a>
+                        <a href="#">Offerte maken</a>
                     </li>
                     <li class="p-2 rounded hover:bg-gray-700">
-                        <a href="#" class="flex items-center justify-center space-x-2">
-                            <i class="fas fa-file-alt"></i> <span class="hidden md:block">Offertes</span>
-                        </a>
+                        <a href="#">Offertes</a>
                     </li>
                     <li class="p-2 rounded hover:bg-gray-700">
-                        <a href="#" class="flex items-center justify-center space-x-2">
-                            <i class="fas fa-user-plus"></i> <span class="hidden md:block">Klant registreren</span>
-                        </a>
+                        <a href="#">Klant registreren</a>
                     </li>
                     <li class="p-2 rounded hover:bg-gray-700">
-                        <a href="#" class="flex items-center justify-center space-x-2">
-                            <i class="fas fa-users"></i> <span class="hidden md:block">Klanten</span>
-                        </a>
+                        <a href="#">Klanten</a>
                     </li>
                     <li class="p-2 rounded hover:bg-gray-700">
-                        <a href="#" class="flex items-center justify-center space-x-2">
-                            <i class="fas fa-calendar"></i> <span class="hidden md:block">Agenda</span>
-                        </a>
+                        <a href="#">Agenda</a>
                     </li>
                 </ul>
             </nav>

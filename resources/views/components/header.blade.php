@@ -2,7 +2,7 @@
     <div class="bg-gray-100 border-b border-gray-200 shadow-sm w-full">
         <div class="container mx-auto flex items-center justify-between py-3 px-4 max-w-screen-xl mx-auto">
             <div class="flex items-center">
-                <img src="{{ asset('img/logo1_groot.png') }}" alt="Logo" class="h-12 w-auto">
+                <a href="{{ route('login') }}"><img src="{{ asset('img/logo1_groot.png') }}" alt="Logo" class="h-12 w-auto"></a>
             </div>
 
 
@@ -20,10 +20,13 @@
 
                 <div x-show="open" @click.away="open = false"
                     class="absolute right-0 mt-2 w-48 bg-yellow-500 rounded-md shadow-lg py-2">
-                    <form methode="post" action="{{ route('logout') }}">
+                    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
                         @csrf
-                        <a href="{{ route('logout') }}" class="block px-4 py-2 text-white hover:bg-yellow-700">Uitloggen</a>
-                    <a href="{{ url('/contact') }}" class="block px-4 py-2 text-white hover:bg-yellow-700">Contact</a>
+                        <a href="{{ route('logout') }}"
+                            class="block px-4 py-2 text-white hover:bg-yellow-700">Uitloggen</a>
+                        <a href="{{ url('/contact') }}"
+                            class="block px-4 py-2 text-white hover:bg-yellow-700">Contact</a>
+                    </form>
                 </div>
             </div>
         </div>

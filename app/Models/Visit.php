@@ -2,28 +2,34 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Customer;
+use App\Models\User;
 
 class Visit extends Model
 {
-    protected $table = 'visits';
+    use HasFactory;
 
     protected $fillable = [
-        'customer_id', 'user_id', 'error_notification_id', 'visit_date', 'error_details', 'address', 'used_parts'
+        'customer_id',
+        'user_id',
+        'error_notification_id',
+        'visit_date',
+        'error_details',
+        'address',
+        'used_parts',
     ];
-    
-    public function customers()
+
+    // Relatie met Customer model
+    public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-    public function users()
+    // Relatie met User model
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function error_notifications()
-    {
-        return $this->belongsTo(ErrorNotification::class, 'error_notification_id');
     }
 }

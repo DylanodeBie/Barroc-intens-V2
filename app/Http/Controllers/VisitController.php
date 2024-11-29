@@ -95,7 +95,7 @@ class VisitController extends Controller
         $visits = Visit::where('user_id', auth()->id())->get();
 
         // Formatteer de gegevens voor de frontend
-        $events = Event::where('user_id', auth()->id())->get(['id', 'title', 'start', 'end']);
+        $events = Event::where('user_id', auth()->id())->get(['id', 'title', 'start', 'end', 'description']);
 
         // Stuur de geformatteerde events naar de view
         return view('visits.calendar', ['events' => $events]);

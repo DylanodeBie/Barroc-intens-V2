@@ -9,9 +9,16 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::where('user_id', auth()->id())->get();
+        $events = Event::where('user_id', auth()->id())
+            ->get(['id', 'title', 'start', 'end', 'description'])
+            ->map(function ($event) {
+                $event->start = $event->start->setTimezone(auth()->user()->timezone);
+                $event->end = $event->end ? $event->end->setTimezone(auth()->user()->timezone) : null;
+                return $event;
+            });
         return response()->json($events);
     }
+
 
     public function store(Request $request)
     {

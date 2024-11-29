@@ -55,7 +55,7 @@
                     </div>
                 </div>
 
-                <div id="map" style="height: 500px;"></div>
+                <div class="mt-4" id="map" style="height: 500px;"></div>
                 @vite('resources/js/map.js')
 
                 <div class="text-center text-sm text-gray-600 mt-8">

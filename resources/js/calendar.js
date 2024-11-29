@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const eventForm = document.getElementById('eventForm');
     const modalTitle = document.getElementById('modalTitle');
     const addEventButton = document.getElementById('addEventButton');
+    const deleteEventButton = document.getElementById('deleteEventButton'); // Verwijderknop
 
     let selectedEvent = null;
 
@@ -17,7 +18,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const calendar = new Calendar(calendarEl, {
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
-        events: window.events, // Laad alleen evenementen van de gebruiker
+        timeZone: 'UTC',
+        events: window.events,
         editable: true,
         selectable: true,
 
@@ -56,6 +58,28 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Voeg event listener toe aan de "Delete" knop
+    deleteEventButton.addEventListener('click', function () {
+        if (selectedEvent) {
+            // Toon een bevestigingsdialoog
+            const confirmDelete = window.confirm("Weet je zeker dat je dit event wilt verwijderen?");
+            if (confirmDelete) {
+                // Verwijder het geselecteerde event uit de database
+                axios.delete(`/events/${selectedEvent.id}`)
+                    .then((response) => {
+                        // Verwijder het event uit de kalender
+                        selectedEvent.remove();
+                        closeModalHandler();
+                        alert('Event succesvol verwijderd.');
+                    })
+                    .catch((error) => {
+                        console.error('Error deleting event:', error);
+                        alert('Er is iets mis gegaan bij het verwijderen van het event.');
+                    });
+            }
+        }
+    });
+
     // Sluit modal
     closeModal.addEventListener('click', closeModalHandler);
 
@@ -65,6 +89,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const startTime = new Date(document.getElementById('eventStartTime').value);
         const endTime = new Date(document.getElementById('eventEndTime').value);
+
+        if (!startTime || !endTime) {
+            alert('Zorg ervoor dat zowel start- als eindtijd zijn ingevuld.');
+            return;
+        }
 
         if (endTime && endTime < startTime) {
             alert('Eindtijd kan niet voor de starttijd liggen.');
@@ -76,27 +105,25 @@ document.addEventListener('DOMContentLoaded', function () {
             title: document.getElementById('eventName').value,
             start: document.getElementById('eventStartTime').value,
             end: document.getElementById('eventEndTime').value || null,
-            description: document.getElementById('eventDescription').value,
+            description: document.getElementById('eventDescription').value.trim() || '', // Voorkom lege beschrijving
         };
+
 
         if (selectedEvent) {
             // Update een bestaand event
-            axios
-                .put(`/events/${selectedEvent.id}`, eventData)
+            axios.put(`/events/${selectedEvent.id}`, eventData)
                 .then((response) => {
                     updateEvent(response.data);
                 })
                 .catch((error) => console.error('Error updating event:', error));
         } else {
             // Maak een nieuw event aan
-            axios
-                .post('/events', eventData)
+            axios.post('/events', eventData)
                 .then((response) => {
                     addNewEvent(response.data);
                 })
                 .catch((error) => console.error('Error adding event:', error));
         }
-
         closeModalHandler();
     });
 
@@ -113,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Sluit de modal
     function closeModalHandler() {
         eventModal.classList.add('hidden');
+        selectedEvent = null; // Reset selectedEvent na sluiten van de modal
     }
 
     // Voeg een nieuw event toe aan de kalender

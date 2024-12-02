@@ -29,8 +29,12 @@
             </div>
         </form>
 
-
-        <!-- Styled table for visits list -->
+        @if($visits->isEmpty())
+        <div class="flex items-center bg-red-100 border border-red-400 text-red-800 p-4 mb-4 rounded-md mt-4">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <strong>Geen bezoeken gevonden!</strong> Er zijn geen bezoeken die overeenkomen met je zoekopdracht.
+        </div>
+        @endif
         <div class="overflow-x-auto border border-gray-200 rounded-lg">
             <table class="min-w-full bg-white border-collapse">
                 <thead style="background-color: #FFD700;">
@@ -58,13 +62,11 @@
                             <td class="px-6 py-4 whitespace-nowrap">{{ $visit->end_time }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $visit->address }}</td>
                             <td class="px-6 py-4 text-center flex justify-center gap-4">
-                                <!-- "Bekijken" actie altijd tonen -->
                                 <a href="{{ route('visits.show', $visit->id) }}" class="hover:text-gray-700"
                                     title="Bekijken" style="color: black;">
                                     <i class="fas fa-eye"></i>
                                 </a>
 
-                                <!-- "Toewijzen" actie tonen aan Head Maintenance (rol_id 9) en CEO (rol_id 10) -->
                                 @if (in_array(auth()->user()->role_id, [9, 10]))
                                     <a href="{{ route('visits.assign', $visit->id) }}" class="hover:text-gray-700"
                                         title="Toewijzen" style="color: black;">
@@ -77,5 +79,6 @@
                 </tbody>
             </table>
         </div>
+
     </div>
 @endsection

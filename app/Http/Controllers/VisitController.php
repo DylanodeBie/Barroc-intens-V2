@@ -11,12 +11,24 @@ use Illuminate\Support\Facades\Storage;
 
 class VisitController extends Controller
 {
-    // Index method to display a list of visits
-    public function index()
+
+    public function index(Request $request)
     {
-        $visits = Visit::all(); // Retrieve all visits
+        $search = $request->input('search');
+
+        $visits = Visit::with('customer', 'user')
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('customer', function ($q) use ($search) {
+                    $q->where('company_name', 'like', "%{$search}%");
+                })
+                ->orWhere('address', 'like', "%{$search}%")
+                ->orWhere('visit_date', 'like', "%{$search}%");
+            })
+            ->get();
+
         return view('visits.index', compact('visits'));
     }
+
 
     // Show the form to create a new visit
     public function create()

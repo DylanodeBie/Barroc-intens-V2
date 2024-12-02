@@ -53,6 +53,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('visits/{visit}', [VisitController::class, 'show'])->name('visits.show');
     });
 
+    Route::middleware('role:5')->group(function () {
+        Route::get('/maintenace-tickets', [VisitController::class, 'myTickets'])->name('visits.my_tickets');
+    });
+
+    Route::post('/visits/{id}/sign', [VisitController::class, 'sign'])->name('visits.sign');
+
     // Visit assignment and maintenance tickets
     Route::middleware('role:9,10')->group(function () {
         // Allow Head Maintenance (role 9) and CEO (role 10) to assign visits and manage tickets
@@ -61,14 +67,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('visits/maintenance-tickets', [VisitController::class, 'maintenanceTickets'])->name('visits.maintenance_tickets');
     });
 
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-    Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
-    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+
 });
+
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

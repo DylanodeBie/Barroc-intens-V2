@@ -19,15 +19,14 @@ class Visit extends Model
         'error_details',
         'address',
         'used_parts',
+        'status',
     ];
 
-    // Relatie met Customer model
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-    // Relatie met User model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

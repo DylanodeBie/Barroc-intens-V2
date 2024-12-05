@@ -100,11 +100,22 @@
                     <td class="px-6 py-4 whitespace-nowrap">{{ $visit->address }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($visit->status) }}</td>
                     <td class="px-6 py-4 text-center flex flex-start gap-4">
-                        <button type="button" class="btn btn-info" style="background-color: #FFD700; border: none; color: #000;" data-bs-toggle="modal" data-bs-target="#maintenanceReportModal" data-visit-id="{{ $visit->id }}">
-                            Storingsmelding
-                        </button>
+                        @if ($visit->maintenanceReport)
+                            <a href="{{ route('maintenance-reports.show', $visit->maintenanceReport->id) }}" class="btn btn-secondary">
+                                Bekijk Storingsmelding
+                            </a>
+                        @else
+                            <button type="button" class="btn btn-info" style="background-color: #FFD700; border: none; color: #000;"
+                                data-bs-toggle="modal" data-bs-target="#maintenanceReportModal"
+                                data-visit-id="{{ $visit->id }}">
+                                Maak Storingsmelding
+                            </button>
+                        @endif
+
                         @if ($visit->status === 'pending')
-                            <button type="button" class="btn btn-primary" style="background-color: #FFD700; border: none; color: #000;" data-bs-toggle="modal" data-bs-target="#signatureModal" data-visit-id="{{ $visit->id }}">
+                            <button type="button" class="btn btn-primary" style="background-color: #FFD700; border: none; color: #000;"
+                                data-bs-toggle="modal" data-bs-target="#signatureModal"
+                                data-visit-id="{{ $visit->id }}">
                                 Ondertekenen
                             </button>
                         @else

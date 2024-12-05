@@ -69,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::post('/maintenance-reports', [MaintenanceReportController::class, 'store'])->name('maintenance-reports.store');
+    Route::get('/maintenance-reports/{id}', [MaintenanceReportController::class, 'show'])->name('maintenance-reports.show');
 
 
 

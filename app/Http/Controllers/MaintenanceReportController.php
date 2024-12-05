@@ -21,4 +21,10 @@ class MaintenanceReportController extends Controller
         return redirect()->back()->with('success', 'Storingsmelding succesvol opgeslagen!');
     }
 
+    public function show($id)
+    {
+        $report = MaintenanceReport::findOrFail($id);
+        return view('visits.maintenance-report', compact('report'));
+    }
+
 }

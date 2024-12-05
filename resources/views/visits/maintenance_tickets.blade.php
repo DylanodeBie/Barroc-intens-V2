@@ -1,8 +1,58 @@
 @extends('layouts.app')
 
 @section('content')
+
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="container">
     <h1 class="text-3xl font-bold mb-4 text-center text-black">Mijn Bezoeken</h1>
+    <div class="modal fade" id="maintenanceReportModal" tabindex="-1" aria-labelledby="maintenanceReportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="maintenanceReportModalLabel">Storingsmelding</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('maintenance-reports.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" id="currentVisitId" name="visit_id">
+                        <div class="mb-3">
+                            <label for="issueDescription" class="form-label">Beschrijving van de storing</label>
+                            <textarea id="issueDescription" name="issue_description" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="usedParts" class="form-label">Gebruikte onderdelen</label>
+                            <textarea id="usedParts" name="used_parts" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="followUpNotes" class="form-label">Vervolgafspraken</label>
+                            <textarea id="followUpNotes" name="follow_up_notes" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+                            <button type="submit" class="btn btn-primary">Opslaan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -21,7 +71,6 @@
             </div>
         </div>
     </div>
-
     @if ($visits->isEmpty())
         <p class="text-gray-500">Je hebt momenteel geen toegewezen bezoeken.</p>
     @else
@@ -51,6 +100,9 @@
                     <td class="px-6 py-4 whitespace-nowrap">{{ $visit->address }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($visit->status) }}</td>
                     <td class="px-6 py-4 text-center flex flex-start gap-4">
+                        <button type="button" class="btn btn-info" style="background-color: #FFD700; border: none; color: #000;" data-bs-toggle="modal" data-bs-target="#maintenanceReportModal" data-visit-id="{{ $visit->id }}">
+                            Storingsmelding
+                        </button>
                         @if ($visit->status === 'pending')
                             <button type="button" class="btn btn-primary" style="background-color: #FFD700; border: none; color: #000;" data-bs-toggle="modal" data-bs-target="#signatureModal" data-visit-id="{{ $visit->id }}">
                                 Ondertekenen
@@ -113,6 +165,15 @@
                 console.error('Fout:', error);
                 alert('Er ging iets mis.');
             });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-bs-toggle="modal"]').forEach(button => {
+        button.addEventListener('click', event => {
+            const visitId = button.getAttribute('data-visit-id');
+            document.getElementById('currentVisitId').value = visitId;
+        });
     });
 });
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HeadMarketing\ProductController;
 use App\Http\Controllers\VisitController;
+use App\Http\Controllers\MaintenanceReportController;
 
 // Default login route
 Route::get('/', function () {
@@ -66,6 +67,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('visits/{id}/assign', [VisitController::class, 'storeAssignedToMaintenance'])->name('visits.store_assigned');
         Route::get('visits/maintenance-tickets', [VisitController::class, 'maintenanceTickets'])->name('visits.maintenance_tickets');
     });
+
+    Route::post('/maintenance-reports', [MaintenanceReportController::class, 'store'])->name('maintenance-reports.store');
 
 
 

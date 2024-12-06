@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch('/api/customers')
                 .then(response => response.json())
                 .then(data => {
-
+                    customerSelect.innerHTML = '';
                     selectedEvent = info.event;
                     data.forEach(customer => {
 

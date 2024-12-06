@@ -8,6 +8,8 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HeadMarketing\ProductController;
 use App\Http\Controllers\VisitController;
 use App\Http\Controllers\EventController;
+use App\Models\Customer;
+use App\Models\Event;
 
 // Default login route
 Route::get('/', function () {
@@ -76,6 +78,14 @@ Route::get('/events', [EventController::class, 'index'])->middleware('auth');
 Route::post('/events', [EventController::class, 'store'])->middleware('auth');
 Route::put('/events/{id}', [EventController::class, 'update'])->middleware('auth');
 Route::delete('/events/{id}', [EventController::class, 'destroy'])->middleware('auth');
+
+Route::get('/api/events', function(){
+    return Event::all();
+});
+
+Route::get('/api/customers', function(){
+    return Customer::all();
+});
 
 Route::get('/forbidden', function () {
     return view('errors.forbidden');

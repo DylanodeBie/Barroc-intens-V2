@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('quote_beans', function (Blueprint $table) {
-            $table->id();
-            // Foreign key reference to 'products' table instead of 'coffee_beans'
-            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            $table->integer('quantity')->default(1);
+        Schema::create('machines', function (Blueprint $table) {
+            $table->id(); // Primary key
+            $table->string('name'); // Machine name
+            $table->text('description')->nullable(); // Optional description
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('quote_beans');
+        Schema::dropIfExists('machines');
     }
 };

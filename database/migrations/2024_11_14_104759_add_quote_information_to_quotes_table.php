@@ -11,20 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('quote_machines', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('quote_id')->constrained('quotes')->onDelete('cascade');
-            $table->foreignId('machine_id')->constrained('machines');
-            $table->integer('quantity');
-            $table->timestamps();
-        });
-
-        Schema::create('quote_beans', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('quote_id')->constrained('quotes')->onDelete('cascade');
-            $table->foreignId('bean_id')->constrained('coffee_beans');
-            $table->integer('quantity');
-            $table->timestamps();
+        // Adding new columns or relations to the `quotes` table
+        Schema::table('quotes', function (Blueprint $table) {
+            $table->string('additional_info')->nullable(); // Example column
         });
     }
 
@@ -33,7 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('quote_machines');
-        Schema::dropIfExists('quote_beans');
+        Schema::table('quotes', function (Blueprint $table) {
+            $table->dropColumn('additional_info');
+        });
     }
 };

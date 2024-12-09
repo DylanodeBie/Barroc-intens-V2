@@ -10,12 +10,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const eventForm = document.getElementById('eventForm');
     const modalTitle = document.getElementById('modalTitle');
     const addEventButton = document.getElementById('addEventButton');
-    const deleteEventButton = document.getElementById('deleteEventButton'); // Verwijderknop
-    const customerSelect = document.getElementById('eventCustomer'); // Assuming customer select dropdown
+    const deleteEventButton = document.getElementById('deleteEventButton');
+    const customerSelect = document.getElementById('eventCustomer');
 
     let selectedEvent = null;
 
-    // FullCalendar-initialisatie
+    // Initialize FullCalendar
     const calendar = new Calendar(calendarEl, {
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
@@ -24,192 +24,120 @@ document.addEventListener('DOMContentLoaded', function () {
         editable: true,
         selectable: true,
 
-        // Klik op een bestaand event om het te bewerken
         eventClick: function (info) {
+            selectedEvent = info.event;
 
-            fetch('/api/customers')
-                .then(response => response.json())
-                .then(data => {
-                    customerSelect.innerHTML = '';
-                    selectedEvent = info.event;
-                    data.forEach(customer => {
-
-                        const option = document.createElement('option');
-                        option.value = customer.id;
-                        option.text = customer.company_name;
-                        // set selected 
-                        if (customer.id === info.event.extendedProps.customer_id) {
-                            option.selected = true;
-                        }
-                        customerSelect.appendChild(option);
-                    });
-
-                    // Dit zorgt ervoor dat selectedEvent niet leeg is in de volgende scope
-                    openModal('Edit Event', {
-                        title: info.event.title,
-                        start: info.event.start.toISOString().slice(0, 16),
-                        end: info.event.end ? info.event.end.toISOString().slice(0, 16) : '',
-                        description: info.event.extendedProps.description || '',
-                        customer_id: info.event.extendedProps.customer_id || '',
-                    });
-
-
-                })
-
-
-
-
+            fetchCustomers().then(() => {
+                openModal('Edit Event', {
+                    title: info.event.title,
+                    start: info.event.start.toISOString().slice(0, 16),
+                    end: info.event.end ? info.event.end.toISOString().slice(0, 16) : '',
+                    description: info.event.extendedProps.description || '',
+                    customer_id: info.event.extendedProps.customer_id || '',
+                });
+            });
         },
 
-        // Klik op een datum om een nieuw event te maken
         dateClick: function (info) {
-            openModal('Add Event', {
-                title: '',
-                start: info.dateStr + 'T00:00',
-                end: '',
-                description: '',
-                customer_id: '',  // Customer field for new events
+            selectedEvent = null;
+            fetchCustomers().then(() => {
+                openModal('Add Event', {
+                    title: '',
+                    start: info.dateStr + 'T00:00',
+                    end: '',
+                    description: '',
+                    customer_id: '',
+                });
             });
         },
     });
 
     calendar.render();
 
-    // Voeg event listener toe aan de "Add Event" knop
     addEventButton.addEventListener('click', function () {
         selectedEvent = null;
-        openModal('Add Event', {
-            title: '',
-            start: '',
-            end: '',
-            description: '',
-            customer_id: '',  // Zorg ervoor dat klantveld leeg is voor nieuwe evenementen
+        fetchCustomers().then(() => {
+            openModal('Add Event', {
+                title: '',
+                start: '',
+                end: '',
+                description: '',
+                customer_id: '',
+            });
         });
     });
 
-    // Voeg event listener toe aan de "Delete" knop
     deleteEventButton.addEventListener('click', function () {
         if (selectedEvent) {
-            // Toon een bevestigingsdialoog
-            const confirmDelete = window.confirm("Weet je zeker dat je dit event wilt verwijderen?");
+            const confirmDelete = window.confirm("Are you sure you want to delete this event?");
             if (confirmDelete) {
-                // Verwijder het geselecteerde event uit de database
                 axios.delete(`/events/${selectedEvent.id}`)
-                    .then((response) => {
-                        // Verwijder het event uit de kalender
+                    .then(() => {
                         selectedEvent.remove();
                         closeModalHandler();
-                        alert('Event succesvol verwijderd.');
+                        alert('Event successfully deleted.');
                     })
                     .catch((error) => {
                         console.error('Error deleting event:', error);
-                        alert('Er is iets mis gegaan bij het verwijderen van het event.');
+                        alert('Failed to delete the event.');
                     });
             }
         }
     });
 
-    // Sluit modal
     closeModal.addEventListener('click', closeModalHandler);
 
     eventForm.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        const startTime = new Date(document.getElementById('eventStartTime').value);
-        const endTime = new Date(document.getElementById('eventEndTime').value);
-
-        if (!startTime || !endTime) {
-            alert('Zorg ervoor dat zowel start- als eindtijd zijn ingevuld.');
-            return;
-        }
-
-        if (endTime && endTime < startTime) {
-            alert('Eindtijd kan niet voor de starttijd liggen.');
-            return;
-        }
-
-        // Haal gegevens op uit het formulier
         const eventData = {
             title: document.getElementById('eventName').value,
             start: document.getElementById('eventStartTime').value,
             end: document.getElementById('eventEndTime').value || null,
-            description: document.getElementById('eventDescription').value.trim() || '',
-            customer_id: document.getElementById('eventCustomer').value || null,
+            description: document.getElementById('eventDescription').value.trim(),
+            customer_id: document.getElementById('eventCustomer').value,
         };
 
-        console.log('Event data:', eventData);  // Log de data die je naar de server stuurt
-
         if (selectedEvent) {
-            // Update een bestaand event
             axios.put(`/events/${selectedEvent.id}`, eventData)
                 .then((response) => {
-                    console.log('Updating event:', selectedEvent);
                     updateEvent(response.data);
+                    closeModalHandler();
                 })
                 .catch((error) => {
                     console.error('Error updating event:', error);
-                    alert('Er is een probleem opgetreden bij het bijwerken van het event.');
+                    alert('Failed to update the event.');
                 });
         } else {
-            // Maak een nieuw event aan
             axios.post('/events', eventData)
                 .then((response) => {
-                    console.log('Adding new event:', response.data);
                     addNewEvent(response.data);
+                    closeModalHandler();
                 })
                 .catch((error) => {
-                    console.error('Error adding event:', error);
-                    alert('Er is een probleem opgetreden bij het toevoegen van het event.');
+                    console.error('Error creating event:', error);
+                    alert('Failed to create the event.');
                 });
         }
-
-        closeModalHandler();
     });
 
-
-    // Functie om de modal te openen en gegevens in te vullen
     function openModal(title, data) {
-
         modalTitle.textContent = title;
         document.getElementById('eventName').value = data.title;
         document.getElementById('eventStartTime').value = data.start;
         document.getElementById('eventEndTime').value = data.end;
         document.getElementById('eventDescription').value = data.description;
-
-        const customerSelect = document.getElementById('eventCustomer');
-        const options = customerSelect.options;
-        // console.log(options);
-
-
-        for (let i = 0; i < options.length; i++) {
-
-            if (options[i].value === data.customer_id) {
-                customerSelect.selectedIndex = i;
-                console.log('Customer selected:', options[i].value);
-                break; // Exit the loop once the option is found
-            }
+        if (data.customer_id) {
+            customerSelect.value = data.customer_id;
         }
-
-
-        // Toon de modal
         eventModal.classList.remove('hidden');
     }
 
-
-    // Sluit de modal
     function closeModalHandler() {
-        // Je kunt dit behouden zoals het was, maar let op dat selectedEvent niet wordt gereset bij een modal sluitactie
-        if (!selectedEvent) {
-            // Als er geen geselecteerde gebeurtenis is, reset de form
-            eventForm.reset();
-        }
-
-        // Sluit de modal
+        eventForm.reset();
         eventModal.classList.add('hidden');
-        // selectedEvent wordt niet gereset hier
     }
 
-    // Voeg een nieuw event toe aan de kalender
     function addNewEvent(eventData) {
         calendar.addEvent({
             id: eventData.id,
@@ -223,12 +151,28 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Update een bestaand event in de kalender
     function updateEvent(eventData) {
         selectedEvent.setProp('title', eventData.title);
         selectedEvent.setStart(eventData.start);
         selectedEvent.setEnd(eventData.end);
         selectedEvent.setExtendedProp('description', eventData.description);
         selectedEvent.setExtendedProp('customer_id', eventData.customer_id);
+    }
+
+    async function fetchCustomers() {
+        try {
+            const response = await axios.get('/api/customers');
+            const customers = response.data;
+            customerSelect.innerHTML = '<option value="" disabled selected>Kies een klant</option>';
+            customers.forEach((customer) => {
+                const option = document.createElement('option');
+                option.value = customer.id;
+                option.textContent = customer.company_name;
+                customerSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error fetching customers:', error);
+            alert('Failed to load customers.');
+        }
     }
 });

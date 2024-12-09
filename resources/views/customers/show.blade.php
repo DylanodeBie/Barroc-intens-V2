@@ -7,11 +7,8 @@
 @section('content')
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-8 border border-gray-200">
-            <!-- Header with Company Name -->
             <h1 class="text-3xl font-bold text-gray-800 mb-4">Klanteninformatie</h1>
             <p class="text-lg font-semibold text-gray-700 mb-8">{{ $customer->company_name }}</p>
-
-            <!-- Customer Details Section -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
                     <p class="text-gray-600"><strong>Contactpersoon:</strong></p>
@@ -34,11 +31,7 @@
                     <p class="text-gray-800">{{ $customer->bkr_check ? 'Ja' : 'Nee' }}</p>
                 </div>
             </div>
-
-            <!-- Divider Line -->
             <hr class="border-t-2 border-yellow-400 my-4">
-
-            <!-- Footer Section with Action Buttons -->
             <div class="flex justify-between mt-6">
                 <a href="{{ route('customers.index') }}"
                     class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500">

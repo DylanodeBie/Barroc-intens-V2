@@ -7,55 +7,42 @@
 @section('content')
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-8 border border-gray-200">
-            <!-- Header with Company Name -->
             <h1 class="text-3xl font-bold text-gray-800 mb-4">Bewerk Klant - {{ $customer->company_name }}</h1>
 
-            <!-- Edit Form -->
             <form action="{{ route('customers.update', $customer->id) }}" method="POST">
                 @csrf
                 @method('PATCH')
 
-                <!-- Company Name Field -->
                 <div class="mb-6">
                     <label for="company_name" class="block text-gray-700 font-semibold mb-2">Bedrijfsnaam</label>
                     <input type="text" id="company_name" name="company_name"
                         value="{{ old('company_name', $customer->company_name) }}" required
                         class="w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400">
                 </div>
-
-                <!-- Contact Person Field -->
                 <div class="mb-6">
                     <label for="contact_person" class="block text-gray-700 font-semibold mb-2">Contactpersoon</label>
                     <input type="text" id="contact_person" name="contact_person"
                         value="{{ old('contact_person', $customer->contact_person) }}" required
                         class="w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400">
                 </div>
-
-                <!-- Phone Number Field -->
                 <div class="mb-6">
                     <label for="phonenumber" class="block text-gray-700 font-semibold mb-2">Telefoonnummer</label>
                     <input type="text" id="phonenumber" name="phonenumber"
                         value="{{ old('phonenumber', $customer->phonenumber) }}" required
                         class="w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400">
                 </div>
-
-                <!-- Address Field -->
                 <div class="mb-6">
                     <label for="address" class="block text-gray-700 font-semibold mb-2">Adres</label>
                     <input type="text" id="address" name="address" value="{{ old('address', $customer->address) }}"
                         required
                         class="w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400">
                 </div>
-
-                <!-- Email Field -->
                 <div class="mb-6">
                     <label for="email" class="block text-gray-700 font-semibold mb-2">Email</label>
                     <input type="email" id="email" name="email" value="{{ old('email', $customer->email) }}"
                         required
                         class="w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400">
                 </div>
-
-                <!-- BKR Registration Field -->
                 <div class="mb-6">
                     <label for="bkr_check" class="block text-gray-700 font-semibold mb-2">BKR registratie</label>
                     <select id="bkr_check" name="bkr_check" required
@@ -64,8 +51,6 @@
                         <option value="0" {{ !$customer->bkr_check ? 'selected' : '' }}>Nee</option>
                     </select>
                 </div>
-
-                <!-- Action Buttons -->
                 <div class="flex justify-between mt-8">
                     <a href="{{ route('customers.index') }}"
                         class="bg-gray-400 text-white px-6 py-2 rounded-md hover:bg-gray-500">

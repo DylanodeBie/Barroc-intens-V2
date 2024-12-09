@@ -8,7 +8,6 @@
     <div class="container mx-auto">
         <h1 class="text-3xl font-bold mb-4 text-center text-black">Klantenlijst</h1>
 
-        <!-- "Nieuw klant toevoegen" button with #FFD700 color -->
         <div class="flex justify-end mb-4">
             <a href="{{ route('customers.create') }}" class="font-semibold px-6 py-2 rounded-md hover:bg-yellow-500"
                 style="background-color: #FFD700; color: black;">
@@ -16,7 +15,6 @@
             </a>
         </div>
 
-        <!-- Search bar with icon -->
         <div class="flex justify-end mb-4">
             <div class="relative">
                 <input type="text" placeholder="Zoeken..." class="border border-gray-300 rounded-full px-4 py-2 pr-10">
@@ -26,7 +24,6 @@
             </div>
         </div>
 
-        <!-- Styled table for customer list -->
         <div class="overflow-x-auto border border-gray-200 rounded-lg">
             <table class="min-w-full bg-white border-collapse">
                 <thead style="background-color: #FFD700;">
@@ -52,13 +49,11 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-center flex justify-center gap-4">
-                                <!-- Action icons in black -->
                                 <a href="{{ route('customers.show', $customer->id) }}" class="hover:text-gray-700"
                                     title="Bekijken" style="color: black;">
                                     <i class="fas fa-eye"></i>
                                 </a>
 
-                                <!-- Only show Edit option for CEO, Sales, and Head of Sales -->
                                 @if (in_array(auth()->user()->role->name, ['CEO', 'Sales', 'Head Sales']))
                                     <a href="{{ route('customers.edit', $customer->id) }}" class="hover:text-gray-700"
                                         title="Bewerken" style="color: black;">
@@ -66,7 +61,6 @@
                                     </a>
                                 @endif
 
-                                <!-- Placeholder for download icon without functionality -->
                                 <span class="hover:text-gray-700 cursor-pointer" title="Download" style="color: black;">
                                     <i class="fas fa-download"></i>
                                 </span>

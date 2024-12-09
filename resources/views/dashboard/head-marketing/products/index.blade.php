@@ -7,8 +7,6 @@
 @section('content')
     <div class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-4">
         <h1 class="text-3xl font-bold text-gray-900 mb-6">Producten</h1>
-
-        <!-- Search Form -->
         <form method="GET" action="{{ route('products.index') }}" class="mb-6 flex space-x-4">
             @csrf
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Zoek op merk of beschrijving"
@@ -32,10 +30,7 @@
             @foreach($products as $product)
                 <li class="flex justify-between items-center bg-gray-100 border border-gray-300 rounded-lg p-4 shadow-lg hover:bg-gray-200 transition-all duration-300">
                     <div class="flex items-center space-x-4">
-                        <!-- Product afbeelding -->
                         <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-32 h-32 object-cover rounded-lg">
-
-                        <!-- Product informatie -->
                         <div class="flex flex-col justify-between items-start space-y-2">
                             <a href="{{ route('products.show', $product) }}" class="text-xl font-semibold text-gray-900 hover:text-yellow-500">
                                 {{ $product->name }}

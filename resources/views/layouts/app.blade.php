@@ -8,15 +8,19 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
     <script src="https://kit.fontawesome.com/bd40200337.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+<<<<<<< Updated upstream
 
     <!-- Scripts -->
+=======
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+>>>>>>> Stashed changes
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -24,7 +28,6 @@
     <div class="min-h-screen flex flex-col">
         @include('components.header')
 
-        <!-- Page Heading -->
         @isset($header)
         <header class="bg-white dark:bg-gray-800 shadow">
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -34,7 +37,6 @@
         @endisset
 
         <div class="flex flex-grow">
-            <!-- Sidebar (with smaller width on mobile and larger on desktop) -->
             <nav class="bg-gray-800 text-white w-20 md:w-64 p-4 space-y-6">
                 <ul class="space-y-4">
                     <li class="p-2 rounded text-center {{ Request::is('dashboard*') ? 'bg-blue-600' : 'hover:bg-gray-700' }}">
@@ -70,7 +72,6 @@
                 </ul>
             </nav>
 
-            <!-- Main Content Area -->
             <div class="flex-grow p-6 overflow-auto">
                 @yield('content')
             </div>

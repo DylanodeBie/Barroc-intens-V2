@@ -30,10 +30,8 @@ class AuthenticatedSessionController extends Controller
         // Regenerate the session to prevent session fixation attacks
         $request->session()->regenerate();
 
-        // Haal de geauthenticeerde gebruiker op
         $user = Auth::user();
         
-        // Controleer de rol van de gebruiker en voer de juiste redirect uit
         switch ($user->role->id) {
             case '2':
                 return redirect()->route('dashboard.finance');

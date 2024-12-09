@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('error_notifications', function (Blueprint $table) {
-            $table->string('title')->after('user_id'); // Voeg de 'title' kolom toe na 'user_id'
-            $table->text('description')->nullable()->after('title'); // Voeg de 'description' kolom toe na 'title'
+            $table->string('title')->after('user_id');
+            $table->text('description')->nullable()->after('title');
         });
     }
 

@@ -12,11 +12,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed roles first
         $this->call(RoleSeeder::class);
         $this->call(ProductSeeder::class);
 
-        // Behoud de oude user
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -38,7 +36,6 @@ class DatabaseSeeder extends Seeder
             'role_id' => 10,
         ]);
 
-        // Voeg jouw user toe
         User::factory()->create([
             'name' => 'Daan',
             'email' => 'daan.sinke@hotmail.com',
@@ -46,110 +43,109 @@ class DatabaseSeeder extends Seeder
             'role_id' => 10,
         ]);
 
-        // Create users based on the organizational chart
         User::factory()->create([
             'name' => 'Joris Pulles',
             'email' => 'joris.pulles@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 10, // CEO
+            'role_id' => 10, 
         ]);
 
         User::factory()->create([
             'name' => 'Maarten Pulles',
             'email' => 'maarten.pulles@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 7, // Head Sales
+            'role_id' => 7,
         ]);
 
         User::factory()->create([
             'name' => 'John Vrees',
             'email' => 'john.vrees@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 8, // Head Inkoop
+            'role_id' => 8,
         ]);
 
         User::factory()->create([
             'name' => 'Simon Nagelborcke',
             'email' => 'simon.nagelborcke@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 9, // Head Maintenance
+            'role_id' => 9,
         ]);
 
         User::factory()->create([
             'name' => 'Ingeborg van Lier',
             'email' => 'ingeborg.vanlier@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 2, // Finance role
+            'role_id' => 2, 
         ]);
 
         User::factory()->create([
             'name' => 'Ashley van de Sluis',
             'email' => 'ashley.vandesluis@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 2, // Finance role
+            'role_id' => 2, 
         ]);
 
         User::factory()->create([
             'name' => 'Guillaume de Randamie',
             'email' => 'guillaume.derandamie@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 3, // Consultant
+            'role_id' => 3, 
         ]);
 
         User::factory()->create([
             'name' => 'Annemie Meijard',
             'email' => 'annemie.meijard@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 3, // Consultant
+            'role_id' => 3, 
         ]);
 
         User::factory()->create([
             'name' => 'Evelien Rosse',
             'email' => 'evelien.rosse@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 6, // Inkoop
+            'role_id' => 6, 
         ]);
 
         User::factory()->create([
             'name' => 'Max Rosendorp',
             'email' => 'max.rosendorp@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 6, // Medewerker Magazijn
+            'role_id' => 6, 
         ]);
 
         User::factory()->create([
             'name' => 'Muhammad Demir',
             'email' => 'muhammad.demir@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 5, // Technische Dienst
+            'role_id' => 5, 
         ]);
 
         User::factory()->create([
             'name' => 'Paul Machielsen',
             'email' => 'paul.machielsen@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 5, // Technische Dienst
+            'role_id' => 5, 
         ]);
 
         User::factory()->create([
             'name' => 'Cindy Paxier',
             'email' => 'cindy.paxier@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 5, // Technische Dienst
+            'role_id' => 5, 
         ]);
 
         User::factory()->create([
             'name' => 'Piotr Loszarowski',
             'email' => 'piotr.loszarowski@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 5, // Technische Dienst
+            'role_id' => 5, 
         ]);
 
         User::factory()->create([
             'name' => 'Jimmy Choi',
             'email' => 'jimmy.choi@barrocintens.com',
             'password' => bcrypt('password'),
-            'role_id' => 5, // Planner
+            'role_id' => 5, 
         ]);
     }
 }

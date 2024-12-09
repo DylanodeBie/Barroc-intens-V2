@@ -14,7 +14,6 @@
 
         @php
             $userRole = Auth::user()->role->id;
-            // Stel de juiste dashboard route in op basis van de rol van de gebruiker
             $dashboardRoute = match($userRole) {
                 2 => route('dashboard.finance'),
                 3 => route('dashboard.sales'),
@@ -25,7 +24,7 @@
                 8 => route('dashboard.head-marketing'),
                 9 => route('dashboard.head-maintenance'),
                 10 => route('dashboard.ceo'),
-                default => route('dashboard'), // Default als er geen specifieke rol is
+                default => route('dashboard'),
             };
         @endphp
 

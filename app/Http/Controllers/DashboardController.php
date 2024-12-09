@@ -10,15 +10,13 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Check of de gebruiker een rol heeft
         if (!$user || !$user->role) {
             logger('User has no role assigned.');
-            return view('dashboard'); // Laadt het standaard dashboard
+            return view('dashboard');
         }
 
-        logger('User Role: ' . $user->role->name); // Controleer de output in Laravel's log file
+        logger('User Role: ' . $user->role->name);
 
-        // Definieer rol-to-route mappings
         $roleRoutes = [
             'Finance' => 'dashboard.finance',
             'Sales' => 'dashboard.sales',
@@ -31,15 +29,12 @@ class DashboardController extends Controller
             'CEO' => 'dashboard.ceo',
         ];
 
-        // Bepaal de rol van de gebruiker
         $userRole = $user->role->name;
 
-        // Controleer of de rol een route heeft en redirect naar de juiste route
         if (array_key_exists($userRole, $roleRoutes)) {
             return redirect()->route($roleRoutes[$userRole]);
         }
 
-        // Als er geen specifieke route is voor de rol, toon het algemene dashboard
         return view('dashboard');
     }
 

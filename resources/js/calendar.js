@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let selectedEvent = null;
 
-    // Initialize FullCalendar
     const calendar = new Calendar(calendarEl, {
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: 'dayGridMonth',

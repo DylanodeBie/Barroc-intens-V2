@@ -38,7 +38,7 @@ class EventController extends Controller
 
         $event = Event::create(array_merge($validated, ['user_id' => auth()->id()]));
 
-        return response()->json($event->load('customer'), 201); // Voeg klantinformatie toe
+        return response()->json($event->load('customer'), 201);
     }
 
 

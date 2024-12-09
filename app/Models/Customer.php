@@ -11,7 +11,7 @@ use App\Models\Leasecontract;
 
 class Customer extends Model
 {
-    protected $table = 'customers';  // wijzig hier 'customer' naar 'customers'
+    protected $table = 'customers';
 
     protected $fillable = [
         'company_name', 'contact_person', 'phonenumber', 'address', 'email', 'bkr_check'

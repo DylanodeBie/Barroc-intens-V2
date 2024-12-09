@@ -19,17 +19,14 @@ class RoleMiddleware
     {
         $user = Auth::user();
 
-        // Controleer of de gebruiker CEO is en geef volledige toegang
         if ($user && $user->role->id === 10) {
             return $next($request);
         }
 
-        // Controleer of de gebruiker de juiste rol heeft voor de route
         if ($user && in_array($user->role->id, $roles)) {
             return $next($request);
         }
 
-        // Als de gebruiker geen rechten heeft, geef een foutmelding
         return redirect()->route('forbidden')->withErrors('Je hebt geen toegang tot deze pagina.');
     }
 }

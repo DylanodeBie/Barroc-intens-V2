@@ -5,7 +5,6 @@
 <div class="mb-4">
     <button id="addEventButton" class="bg-green-500 text-white px-4 py-2 rounded">Add Event</button>
 </div>
-
 <div id="calendar"></div>
 
 <!-- Modal -->
@@ -16,6 +15,13 @@
             <div class="mb-4">
                 <label for="eventName" class="block font-semibold">Event Title</label>
                 <input type="text" id="eventName" class="w-full border border-gray-300 rounded p-2" required />
+            </div>
+            <div class="mb-4">
+                <label for="eventCustomer" class="block font-semibold">Klant (optioneel)</label>
+                <select id="eventCustomer" class="w-full border border-gray-300 rounded p-2">
+                    <option value="">Geen klant</option>
+                  
+                </select>
             </div>
             <div class="mb-4">
                 <label for="eventStartTime" class="block font-semibold">Start Time</label>
@@ -41,6 +47,7 @@
 
 <script>
     window.events = @json($events);
+    window.customers = @json($customers);
 </script>
 
 @endsection

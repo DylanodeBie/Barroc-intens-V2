@@ -41,4 +41,9 @@ class Customer extends Model
     {
         return $this->hasMany(Leasecontract::class, 'leasecontract_id');
     }
+
+    public function events()
+    {
+        return $this->hasMany(Event::class, 'customer_id');
+    }
 }

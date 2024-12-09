@@ -91,13 +91,12 @@ class VisitController extends Controller
 
     public function calendar()
     {
-        // Haal de bezoeken van de ingelogde gebruiker op
-        $visits = Visit::where('user_id', auth()->id())->get();
-
         // Formatteer de gegevens voor de frontend
         $events = Event::where('user_id', auth()->id())->get(['id', 'title', 'start', 'end', 'description']);
 
+        $customers = Customer::all();
+
         // Stuur de geformatteerde events naar de view
-        return view('visits.calendar', ['events' => $events]);
+        return view('visits.calendar', ['events' => $events, 'customers' => $customers]);
     }
 }

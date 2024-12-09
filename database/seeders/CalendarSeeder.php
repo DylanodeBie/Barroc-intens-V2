@@ -16,6 +16,7 @@ class CalendarSeeder extends Seeder
         $events = [
             [
                 'user_id' => 2,
+                'customer_id' => rand(1, 10),
                 'title' => 'Team Meeting',
                 'start' => Carbon::now()->addDays(1)->format('Y-m-d H:i:s'),
                 'end' => Carbon::now()->addDays(1)->addHours(1)->format('Y-m-d H:i:s'),
@@ -23,6 +24,7 @@ class CalendarSeeder extends Seeder
             ],
             [
                 'user_id' => 2,
+                'customer_id' => rand(1, 10),
                 'title' => 'Project Deadline',
                 'start' => Carbon::now()->addDays(5)->format('Y-m-d H:i:s'),
                 'end' => Carbon::now()->addDays(5)->addHours(2)->format('Y-m-d H:i:s'),
@@ -30,6 +32,7 @@ class CalendarSeeder extends Seeder
             ],
             [
                 'user_id' => 2,
+                'customer_id' => rand(1, 10),
                 'title' => 'Client Presentation',
                 'start' => Carbon::now()->addWeeks(1)->format('Y-m-d H:i:s'),
                 'end' => Carbon::now()->addWeeks(1)->addHours(2)->format('Y-m-d H:i:s'),
@@ -37,6 +40,7 @@ class CalendarSeeder extends Seeder
             ],
             [
                 'user_id' => 2,
+                'customer_id' => rand(1, 10),
                 'title' => 'Workshop',
                 'start' => Carbon::now()->addDays(10)->format('Y-m-d H:i:s'),
                 'end' => Carbon::now()->addDays(10)->addHours(4)->format('Y-m-d H:i:s'),

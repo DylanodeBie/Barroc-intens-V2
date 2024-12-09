@@ -9,16 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up()
-{
-    Schema::create('quote_machines', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('machine_id')->constrained('machines');
-        $table->integer('quantity')->default(1);
-        $table->timestamps();
-    });
-}
-
+    public function up(): void
+    {
+        Schema::create('quote_machines', function (Blueprint $table) {
+            $table->id(); // Primary key
+            $table->foreignId('machine_id')->constrained('machines')->onDelete('cascade');
+            $table->integer('quantity')->default(1);
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

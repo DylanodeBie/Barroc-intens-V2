@@ -1,7 +1,3 @@
-@section('greeting')
-    Klanten informatie - {{ $customer->company_name }}
-@endsection
-
 @extends('layouts.app')
 
 @section('content')

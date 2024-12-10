@@ -1,7 +1,3 @@
-@section('greeting')
-    Goedemorgen, {{ auth()->user()->name }}!
-@endsection
-
 @extends('layouts.sales_dashboard_layout')
 
 @section('content')

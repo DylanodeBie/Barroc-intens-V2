@@ -1,7 +1,3 @@
-@section('greeting')
-    Goedemorgen, {{ auth()->user()->name }}!
-@endsection
-
 @extends('layouts.app')
 
 @section('content')
@@ -13,9 +9,11 @@
                     </li>
                     <li class="p-2 rounded hover:bg-gray-700"><a href="http://barroc-intens-v2.test/visits">Bezoeken</a></li>
                     <li class="p-2 rounded hover:bg-gray-700"><a href="http://barroc-intens-v2.test/products">Producten</a>
+                    <li class="p-2 rounded hover:bg-gray-700"><a href="http://barroc-intens-v2.test/quotes">Offertes</a>
                     </li>
                 </ul>
             </nav>
         </div>
+    </div>
     </div>
 @endsection

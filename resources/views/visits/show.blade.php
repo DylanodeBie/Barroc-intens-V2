@@ -1,7 +1,3 @@
-@section('greeting')
-    Bezoek bekijken
-@endsection
-
 @extends('layouts.app')
 
 @section('content')

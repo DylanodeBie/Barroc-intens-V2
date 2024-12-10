@@ -14,32 +14,57 @@ class Customer extends Model
     protected $table = 'customers';
 
     protected $fillable = [
-        'company_name', 'contact_person', 'phonenumber', 'address', 'email', 'bkr_check'
+        'company_name',
+        'contact_person',
+        'phonenumber',
+        'address',
+        'email',
+        'bkr_check',
     ];
 
+    /**
+     * Relatie naar invoices (facturen).
+     * Verwijst naar 'customer_id' in de invoices-tabel.
+     */
     public function invoices()
     {
-        return $this->hasMany(Invoice::class, 'invoice_id');
+        return $this->hasMany(Invoice::class, 'customer_id');
     }
 
-    public function error_notifications()
+    /**
+     * Relatie naar error notifications.
+     * Verwijst naar 'customer_id' in de error_notifications-tabel.
+     */
+    public function errorNotifications()
     {
-        return $this->hasMany(ErrorNotification::class, 'error_notification_id');
+        return $this->hasMany(ErrorNotification::class, 'customer_id');
     }
 
+    /**
+     * Relatie naar visits (bezoeken).
+     * Verwijst naar 'customer_id' in de visits-tabel.
+     */
     public function visits()
     {
-        return $this->hasMany(Visit::class, 'visit_id');
+        return $this->hasMany(Visit::class, 'customer_id');
     }
 
+    /**
+     * Relatie naar quotes (offertes).
+     * Verwijst naar 'customer_id' in de quotes-tabel.
+     */
     public function quotes()
     {
-        return $this->hasMany(Quote::class, 'quote_id');
+        return $this->hasMany(Quote::class, 'customer_id');
     }
 
+    /**
+     * Relatie naar lease contracts (huurcontracten).
+     * Verwijst naar 'customer_id' in de leasecontracts-tabel.
+     */
     public function leasecontracts()
     {
-        return $this->hasMany(Leasecontract::class, 'leasecontract_id');
+        return $this->hasMany(Leasecontract::class, 'customer_id');
     }
 
     public function events()

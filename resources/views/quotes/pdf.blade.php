@@ -66,10 +66,11 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="title">OFFERT</h1>
+            <h1 class="title">OFFERTE</h1>
         </div>
 
         <div class="details">
+            <p><strong>Bedrijfsnaam:</strong> {{ $quote->customer->company_name }}</p>
             <p><strong>Klantnr.:</strong> {{ $quote->customer->id }}</p>
             <p><strong>Periode:</strong> {{ now()->format('F Y') }}</p>
             <p><strong>Factuurnr.:</strong> {{ $quote->id }}</p>
@@ -109,7 +110,13 @@
 
         <div class="summary">
             <p class="total"><strong>Totaal:</strong>
-                €{{ number_format($quote->machines->sum(fn($machine) => $machine->pivot->quantity * $machine->lease_price) + $quote->beans->sum(fn($bean) => $bean->pivot->quantity * $bean->price), 2, ',', '.') }}
+                €{{ number_format(
+                    $quote->machines->sum(fn($machine) => $machine->pivot->quantity * $machine->lease_price) +
+                        $quote->beans->sum(fn($bean) => $bean->pivot->quantity * $bean->price),
+                    2,
+                    ',',
+                    '.',
+                ) }}
             </p>
         </div>
 

@@ -7,13 +7,17 @@
         <!-- Quote Information -->
         <div class="mb-6">
             <p class="text-lg">
-                <span class="font-semibold">Klant:</span> {{ $quote->customer->name ?? 'Onbekend' }}
+                <span class="font-semibold">Bedrijfsnaam:</span> {{ $quote->customer->company_name ?? 'Onbekend' }}
+            </p>
+            <p class="text-lg">
+                <span class="font-semibold">Klantnr.:</span> {{ $quote->customer->id ?? 'Onbekend' }}
             </p>
             <p class="text-lg">
                 <span class="font-semibold">Gebruiker:</span> {{ $quote->user->name ?? 'Onbekend' }}
             </p>
             <p class="text-lg">
-                <span class="font-semibold">Status:</span> <span class="capitalize">{{ $quote->status ?? 'Onbekend' }}</span>
+                <span class="font-semibold">Status:</span> <span
+                    class="capitalize">{{ $quote->status ?? 'Onbekend' }}</span>
             </p>
             <p class="text-lg">
                 <span class="font-semibold">Looptijd Overeenkomst:</span>

@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         CustomerSeeder::class,
         ErrornotificationSeeder::class,
         VisitSeeder::class,
+        QuoteSeeder::class,
     ]);
 }
 }

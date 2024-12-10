@@ -37,7 +37,8 @@
                 <tbody class="text-black">
                     @forelse ($quotes as $quote)
                         <tr class="border-b hover:bg-gray-100">
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $quote->customer?->name ?? 'N/A' }}</td>
+                            <!-- Updated to display company_name -->
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $quote->customer?->company_name ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $quote->user?->name ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($quote->status) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">

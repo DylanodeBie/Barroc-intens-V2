@@ -14,7 +14,7 @@
                 <select name="customer_id" id="customer_id" class="form-control w-full border rounded-md p-2">
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}" {{ $customer->id == $quote->customer_id ? 'selected' : '' }}>
-                            {{ $customer->name }}
+                            {{ $customer->company_name }}
                         </option>
                     @endforeach
                 </select>

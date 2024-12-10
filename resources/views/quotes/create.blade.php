@@ -13,10 +13,11 @@
                 <select name="customer_id" id="customer_id" class="form-control w-full border rounded-md p-2 text-black">
                     <option value="" disabled selected>Kies een klant</option>
                     @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}" style="color: black;">{{ $customer->name }}</option>
+                        <option value="{{ $customer->id }}" style="color: black;">{{ $customer->company_name }}</option>
                     @endforeach
                 </select>
             </div>
+
 
 
             <!-- User Dropdown -->

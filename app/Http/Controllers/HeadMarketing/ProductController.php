@@ -11,16 +11,13 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        // Haal de zoekopdracht uit de request
         $search = $request->get('search');
 
-        // Als een zoekopdracht is opgegeven, filter dan de producten op merk of beschrijving
         $products = Product::when($search, function ($query, $search) {
             return $query->where('brand', 'like', "%{$search}%")
                 ->orWhere('description', 'like', "%{$search}%");
         })->get();
 
-        // Laad de view en geef de gefilterde producten door
         return view('dashboard.head-marketing.products.index', compact('products'));
     }
 
@@ -32,7 +29,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the request data
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'brand' => 'required|string',
@@ -42,14 +38,11 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        // Check if an image file is present in the request
         if ($request->hasFile('image')) {
-            // Store the image in the 'public' disk in the 'product_images' directory
             $path = $request->file('image')->store('product_images', 'public');
             $validatedData['image'] = $path;
         }
 
-        // Save the validated data into the products table
         Product::create($validatedData);
 
         return redirect()->route('products.index')->with('success', 'Product aangemaakt');
@@ -80,10 +73,8 @@ class ProductController extends Controller
         $product->update($request->all());
 
         if ($request->hasFile('image')) {
-            // Sla de nieuwe afbeelding op in de 'public' disk in de map 'product_images'
             $path = $request->file('image')->store('product_images', 'public');
 
-            // Werk het pad van de afbeelding bij in de database
             $product->image = $path;
             $product->save();
         }

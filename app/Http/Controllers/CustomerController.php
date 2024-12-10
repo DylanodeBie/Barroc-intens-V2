@@ -7,20 +7,17 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    // Display a list of customers
     public function index()
     {
-        $customers = Customer::all();  // Fetch all customers from the database
+        $customers = Customer::all();  // Haal customers op
         return view('customers.index', compact('customers'));
     }
 
-    // Show the form to create a new customer
     public function create()
     {
         return view('customers.create');
     }
 
-    // Store a newly created customer
     public function store(Request $request)
     {
         $request->validate([
@@ -36,19 +33,16 @@ class CustomerController extends Controller
         return redirect()->route('customers.index')->with('success', 'Customer registered successfully.');
     }
 
-    // Show customer details
     public function show($id)
     {
         $customer = Customer::findOrFail($id);
         return view('customers.show', compact('customer'));
     }
 
-    // Show the form to edit an existing customer
     public function edit($id)
     {
         $customer = Customer::findOrFail($id);
 
-        // Check if the user has the required role
         if (!in_array(auth()->user()->role->name, ['Sales', 'Head Sales', 'CEO'])) {
             abort(403, 'Unauthorized action.');
         }
@@ -56,12 +50,10 @@ class CustomerController extends Controller
         return view('customers.edit', compact('customer'));
     }
 
-    // Update the specified customer
     public function update(Request $request, $id)
     {
         $customer = Customer::findOrFail($id);
 
-        // Check if the user has the required role
         if (!in_array(auth()->user()->role->name, ['Sales', 'Head Sales', 'CEO'])) {
             abort(403, 'Unauthorized action.');
         }
@@ -80,12 +72,10 @@ class CustomerController extends Controller
         return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
     }
 
-    // Delete the specified customer
     public function destroy($id)
     {
         $customer = Customer::findOrFail($id);
 
-        // Check if the user has the required role
         if (!in_array(auth()->user()->role->name, ['Sales', 'Head Sales', 'CEO'])) {
             abort(403, 'Unauthorized action.');
         }

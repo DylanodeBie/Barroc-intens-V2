@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('error_notifications', function (Blueprint $table) {
-            $table->string('title')->after('user_id');
-            $table->text('description')->nullable()->after('title');
+        Schema::table('events', function (Blueprint $table) {
+            $table->foreignId('customer_id')->nullable()->constrained()->onDelete('set null');
         });
     }
 
@@ -22,9 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('error_notifications', function (Blueprint $table) {
-            $table->dropColumn('title');
-            $table->dropColumn('description');
+        Schema::table('events', function (Blueprint $table) {
+            $table->dropForeign(['customer_id']);
+            $table->dropColumn('customer_id');
         });
     }
 };

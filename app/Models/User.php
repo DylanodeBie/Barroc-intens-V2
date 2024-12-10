@@ -14,7 +14,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'rol_id',  // zorg ervoor dat deze kolom juist heet in je database
+        'rol_id', 
     ];
 
     protected $hidden = [
@@ -32,27 +32,27 @@ class User extends Authenticatable
 
     public function quotes()
     {
-        return $this->hasMany(Quote::class, 'user_id'); // Foreign key in quotes-table zou 'user_id' moeten zijn
+        return $this->hasMany(Quote::class, 'user_id');
     }
 
     public function error_notifications()
     {
-        return $this->hasMany(ErrorNotification::class, 'user_id'); // Foreign key in error_notifications-table zou 'user_id' moeten zijn
+        return $this->hasMany(ErrorNotification::class, 'user_id');
     }
 
     public function visits()
     {
-        return $this->hasMany(Visit::class, 'user_id'); // Foreign key in visits-table zou 'user_id' moeten zijn
+        return $this->hasMany(Visit::class, 'user_id');
     }
 
     public function invoices()
     {
-        return $this->hasMany(Invoice::class, 'user_id'); // Foreign key in invoices-table zou 'user_id' moeten zijn
+        return $this->hasMany(Invoice::class, 'user_id');
     }
 
     public function leasecontracts()
     {
-        return $this->hasMany(LeaseContract::class, 'user_id'); // Foreign key in leasecontracts-table zou 'user_id' moeten zijn
+        return $this->hasMany(LeaseContract::class, 'user_id');
     }
 
     public function role()

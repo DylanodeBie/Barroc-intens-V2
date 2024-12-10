@@ -20,7 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Register the role middleware
         Route::aliasMiddleware('role', \App\Http\Middleware\RoleMiddleware::class);
     }
 }

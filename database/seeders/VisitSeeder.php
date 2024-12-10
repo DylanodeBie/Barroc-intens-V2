@@ -20,7 +20,6 @@ class VisitSeeder extends Seeder
             return;
         }
 
-        // Seed 5 visits using specific error notifications, user ID 2, start_time, and end_time
         $visits = [
             [
                 'customer_id' => 1,

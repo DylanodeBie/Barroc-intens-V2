@@ -52,7 +52,9 @@
                     </div>
                 </div>
 
-                <!-- Copyright Sectie -->
+                <div class="mt-4" id="map" style="height: 500px;"></div>
+                @vite('resources/js/map.js')
+
                 <div class="text-center text-sm text-gray-600 mt-8">
                     &copy; {{ date('Y') }} Barroc intens. Alle rechten voorbehouden.
                 </div>

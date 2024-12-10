@@ -12,7 +12,7 @@ return new class extends Migration
    public function up(): void
 {
     Schema::table('visits', function (Blueprint $table) {
-        $table->date('visit_date')->nullable()->after('user_id'); // Voeg de kolom toe als nullable
+        $table->date('visit_date')->nullable()->after('user_id');
     });
 }
 

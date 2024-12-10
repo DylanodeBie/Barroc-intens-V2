@@ -11,7 +11,7 @@ use App\Models\Leasecontract;
 
 class Customer extends Model
 {
-    protected $table = 'customers';  // Zorg ervoor dat dit de juiste tabelnaam is
+    protected $table = 'customers';
 
     protected $fillable = [
         'company_name',
@@ -65,5 +65,10 @@ class Customer extends Model
     public function leasecontracts()
     {
         return $this->hasMany(Leasecontract::class, 'customer_id');
+    }
+
+    public function events()
+    {
+        return $this->hasMany(Event::class, 'customer_id');
     }
 }

@@ -21,4 +21,9 @@ class ErrorNotification extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function visits()
+    {
+        return $this->hasMany(Visit::class, 'error_notification_id');
+    }
 }

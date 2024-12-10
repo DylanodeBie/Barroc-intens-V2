@@ -14,7 +14,6 @@ class ErrornotificationSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get customers between ID 1 and 10 and limit users to ID 2
         $customers = Customer::whereBetween('id', [1, 10])->get();
         $user = User::find(2);
 
@@ -23,7 +22,6 @@ class ErrornotificationSeeder extends Seeder
             return;
         }
 
-        // Seed 10 error notifications with specific customer and user IDs
         $errorNotifications = [
             [
                 'customer_id' => 1,

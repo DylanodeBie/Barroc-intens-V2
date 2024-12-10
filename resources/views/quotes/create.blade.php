@@ -18,6 +18,7 @@
                 </select>
             </div>
 
+
             <!-- User Dropdown -->
             <div class="mb-4">
                 <label for="user_id" class="block font-semibold text-gray-700">Gebruiker</label>
@@ -93,10 +94,16 @@
                 </select>
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded">
-                Opslaan en Verzenden
-            </button>
+            <!-- Action Buttons -->
+            <div class="flex justify-between mt-6">
+                <a href="{{ route('quotes.index') }}"
+                    class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                    Terug
+                </a>
+                <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded">
+                    Opslaan en Verzenden
+                </button>
+            </div>
         </form>
     </div>
 @endsection

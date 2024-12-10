@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Machine;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class QuoteController extends Controller
 {
@@ -16,7 +17,7 @@ class QuoteController extends Controller
      */
     public function index()
     {
-        $quotes = Quote::with(['customer', 'user', 'machines', 'beans'])->get(); // Added 'beans' back
+        $quotes = Quote::with(['customer', 'user', 'machines', 'beans'])->get(); // Added 'beans'
         return view('quotes.index', compact('quotes'));
     }
 
@@ -177,5 +178,16 @@ class QuoteController extends Controller
     {
         $quote->delete();
         return redirect()->route('quotes.index')->with('success', 'Quote deleted successfully!');
+    }
+
+    /**
+     * Generate and download a PDF for the specified quote.
+     */
+    public function downloadPdf(Quote $quote)
+    {
+        $quote->load(['customer', 'user', 'machines', 'beans']);
+
+        $pdf = Pdf::loadView('quotes.pdf', compact('quote'));
+        return $pdf->download("quote-{$quote->id}.pdf");
     }
 }

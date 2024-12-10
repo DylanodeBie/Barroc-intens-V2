@@ -44,7 +44,7 @@
                                 {{ $quote->quote_date ? $quote->quote_date->format('d-m-Y') : 'N/A' }}
                             </td>
                             <td class="px-6 py-4 text-center flex justify-center gap-4">
-                                <!-- Action icons -->
+                                <!-- View icon -->
                                 <a href="{{ route('quotes.show', $quote->id) }}" class="hover:text-gray-700"
                                     title="Bekijken" style="color: black;">
                                     <i class="fas fa-eye"></i>
@@ -58,10 +58,11 @@
                                     </a>
                                 @endif
 
-                                <!-- Download placeholder -->
-                                <span class="hover:text-gray-700 cursor-pointer" title="Download" style="color: black;">
+                                <!-- Download action -->
+                                <a href="{{ route('quotes.download', $quote->id) }}" class="hover:text-gray-700"
+                                    title="Download PDF" style="color: black;">
                                     <i class="fas fa-download"></i>
-                                </span>
+                                </a>
                             </td>
                         </tr>
                     @empty

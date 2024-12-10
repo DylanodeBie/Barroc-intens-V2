@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HeadMarketing\ProductController;
 use App\Http\Controllers\VisitController;
+use App\Http\Controllers\QuoteController;
 
 // Default login route
 Route::get('/', function () {
@@ -60,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('visits/maintenance-tickets', [VisitController::class, 'maintenanceTickets'])->name('visits.maintenance_tickets');
     });
 
+    // Product resource routes
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
@@ -67,6 +69,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    // Quotes resource routes restricted to Sales, Head Sales, and CEO
+    Route::middleware('role:3,7,10')->group(function () {
+        Route::resource('quotes', QuoteController::class);
+    });
 });
 
 Route::middleware('auth')->group(function () {

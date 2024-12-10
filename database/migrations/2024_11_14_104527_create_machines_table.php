@@ -12,9 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('machines', function (Blueprint $table) {
-            $table->id(); // Primary key
-            $table->string('name'); // Machine name
-            $table->text('description')->nullable(); // Optional description
+            $table->id();
+            $table->string('name');
+            $table->string('code'); // Machine code
+            $table->decimal('lease_price', 8, 2); // Lease price per month
+            $table->decimal('installation_cost', 8, 2); // Installation cost
+            $table->string('image')->nullable(); // Image file path
             $table->timestamps();
         });
     }

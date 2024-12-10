@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('quote_beans', function (Blueprint $table) {
-            $table->id();
-            // Foreign key reference to 'products' table instead of 'coffee_beans'
+            $table->id(); // Primary key
+            $table->foreignId('quote_id')->constrained('quotes')->onDelete('cascade');
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            $table->integer('quantity')->default(1);
+            $table->integer('quantity')->default(1); // Quantity of beans
             $table->timestamps();
         });
     }

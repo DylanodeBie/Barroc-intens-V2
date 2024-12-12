@@ -26,7 +26,8 @@ class InvoiceController extends Controller
     public function create()
     {
         $customers = Customer::all();
-        return view('invoices.create', compact('customers'));
+        $quotes = Quote::whereDoesntHave('invoice')->get(); // Offertes zonder gekoppelde factuur
+        return view('invoices.create', compact('customers', 'quotes'));
     }
 
     // Store a newly created invoice in the database
@@ -36,15 +37,28 @@ class InvoiceController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'invoice_date' => 'required|date',
             'price' => 'required|numeric|min:0',
+            'quote_id' => 'nullable|exists:quotes,id',
         ]);
 
-        $invoice = Invoice::create([
-            'customer_id' => $request->customer_id,
-            'user_id' => auth()->id(),
-            'invoice_date' => $request->invoice_date,
-            'price' => $request->price,
-            'is_paid' => $request->has('is_paid'),
-        ]);
+        if ($request->quote_id) {
+            $quote = Quote::findOrFail($request->quote_id);
+            $invoice = Invoice::create([
+                'customer_id' => $quote->customer_id,
+                'user_id' => auth()->id(),
+                'quote_id' => $quote->id,
+                'invoice_date' => $request->invoice_date,
+                'price' => $quote->price,
+                'is_paid' => $request->has('is_paid'),
+            ]);
+        } else {
+            $invoice = Invoice::create([
+                'customer_id' => $request->customer_id,
+                'user_id' => auth()->id(),
+                'invoice_date' => $request->invoice_date,
+                'price' => $request->price,
+                'is_paid' => $request->has('is_paid'),
+            ]);
+        }
 
         return redirect()->route('invoices.show', $invoice->id)
             ->with('success', 'Factuur succesvol aangemaakt.');

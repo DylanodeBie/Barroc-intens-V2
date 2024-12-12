@@ -2,18 +2,18 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HeadMarketing\ProductController;
 use App\Http\Controllers\VisitController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\InvoiceController;
 use App\Models\Customer;
 use App\Models\Event;
 
 Route::get('/', function () {
-    return view('auth.login')->name('login');
+    return view('auth.login');
 });
 
 // Logout route
@@ -67,6 +67,12 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('role:3,7,10')->group(function () {
         Route::resource('quotes', QuoteController::class);
         Route::get('/quotes/{quote}/download', [QuoteController::class, 'downloadPdf'])->name('quotes.download');
+    });
+
+    // Invoices resource routes
+    Route::middleware('auth')->group(function () {
+        Route::resource('invoices', InvoiceController::class);
+        Route::get('/invoices/create-from-quote/{quoteId}', [InvoiceController::class, 'createFromQuote'])->name('invoices.createFromQuote');
     });
 });
 

@@ -100,11 +100,13 @@ class VisitController extends Controller
         $user = auth()->user();
 
         // Zorg ervoor dat alleen onderhoudsrollen hun tickets zien
-        if ($user->role_id !== 5) {
+        if (!in_array($user->role_id, [5, 9, 10])) {
             abort(403, 'Geen toegang tot deze pagina.');
         }
 
-        $visits = Visit::where('user_id', $user->id)->get();
+        $visits = auth()->user()->role_id === 9 || auth()->user()->role_id === 10
+        ? Visit::all()
+        : Visit::where('user_id', $user->id)->get();
 
         return view('visits.maintenance_tickets', compact('visits'));
     }

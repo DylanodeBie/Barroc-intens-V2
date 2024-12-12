@@ -54,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('visits/{visit}', [VisitController::class, 'show'])->name('visits.show');
     });
 
-    Route::middleware('role:5')->group(function () {
+    Route::middleware('role:5,9,10')->group(function () {
         Route::get('/maintenace-tickets', [VisitController::class, 'myTickets'])->name('visits.my_tickets');
     });
 
@@ -65,7 +65,6 @@ Route::middleware(['auth'])->group(function () {
         // Allow Head Maintenance (role 9) and CEO (role 10) to assign visits and manage tickets
         Route::get('visits/{id}/assign', [VisitController::class, 'assignToMaintenance'])->name('visits.assign');
         Route::post('visits/{id}/assign', [VisitController::class, 'storeAssignedToMaintenance'])->name('visits.store_assigned');
-        Route::get('visits/maintenance-tickets', [VisitController::class, 'maintenanceTickets'])->name('visits.maintenance_tickets');
     });
 
     Route::post('/maintenance-reports', [MaintenanceReportController::class, 'store'])->name('maintenance-reports.store');

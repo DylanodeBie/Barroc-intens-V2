@@ -19,6 +19,7 @@ Route::get('/', function () {
 // Logout route
 Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
+// Dashboard routes
 Route::middleware(['auth'])->get('/dashboard', function () {
     return view('dashboard');
 });
@@ -69,27 +70,30 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/quotes/{quote}/download', [QuoteController::class, 'downloadPdf'])->name('quotes.download');
     });
 
-    // Invoices resource routes
-    Route::middleware('auth')->group(function () {
+    // Invoices resource routes restricted to Sales, Finance, Head Sales, Head Finance, and CEO
+    Route::middleware('role:2,3,6,7,10')->group(function () {
         Route::resource('invoices', InvoiceController::class);
         Route::get('/invoices/create-from-quote/{quoteId}', [InvoiceController::class, 'createFromQuote'])->name('invoices.createFromQuote');
     });
 });
 
+// Agenda and event routes
 Route::get('/agenda', [VisitController::class, 'calendar'])->middleware('auth')->name('agenda');
 Route::get('/events', [EventController::class, 'index'])->middleware('auth');
 Route::post('/events', [EventController::class, 'store'])->middleware('auth');
 Route::put('/events/{id}', [EventController::class, 'update'])->middleware('auth');
 Route::delete('/events/{id}', [EventController::class, 'destroy'])->middleware('auth');
 
-Route::get('/api/events', function(){
+// API routes
+Route::get('/api/events', function () {
     return Event::all();
 });
 
-Route::get('/api/customers', function(){
+Route::get('/api/customers', function () {
     return Customer::all();
 });
 
+// Forbidden error page
 Route::get('/forbidden', function () {
     return view('errors.forbidden');
 })->name('forbidden');

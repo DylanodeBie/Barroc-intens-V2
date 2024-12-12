@@ -11,7 +11,7 @@ class Product extends Model
     protected $fillable = [
         'name', 'brand', 'description', 'stock', 'price'
     ];
-    
+
     public function invoices()
     {
         return $this->belongsToMany(Invoice::class, 'invoice_product')

@@ -13,30 +13,31 @@
 @endif
 
 <div class="container">
-    <h1>Visit Details</h1>
+    <strong>Onderhoudsbezoek Details</strong>
 
     <div class="card mt-4">
         <div class="card-body">
-            <p><strong>Customer:</strong>
+            <p><strong>Klant:</strong>
                 @if ($visit->customer)
                     {{ $visit->customer->company_name }}
                 @else
-                    <em>No customer linked</em>
+                    <em>Geen klant gekoppeld</em>
                 @endif
             </p>
-            <p><strong>Assigned User:</strong>
+            <p><strong>Toegewezen Gebruiker:</strong>
                 @if ($visit->user)
                     {{ $visit->user->name }}
                 @else
-                    <em>No user assigned</em>
+                    <em>Geen gebruiker toegewezen</em>
                 @endif
             </p>
-            <p><strong>Address:</strong> {{ $visit->address }}</p>
-            <p><strong>Visit Date:</strong> {{ $visit->visit_date }}</p>
-            <p><strong>Start Time:</strong> {{ $visit->start_time }}</p>
-            <p><strong>End Time:</strong> {{ $visit->end_time }}</p>
-            <p><strong>Error Details:</strong> {{ $visit->error_details }}</p>
-            <p><strong>Used Parts:</strong> {{ $visit->used_parts }}</p>
+            <p><strong>Adres:</strong> {{ $visit->address }}</p>
+            <p><strong>Bezoekdatum:</strong> {{ $visit->visit_date }}</p>
+            <p><strong>Starttijd:</strong> {{ $visit->start_time }}</p>
+            <p><strong>Eindtijd:</strong> {{ $visit->end_time }}</p>
+            <p><strong>Sales details:</strong> {{ $visit->error_details }}</p>
+            <p><strong>Gebruikte Onderdelen:</strong> {{ $visit->used_parts }}</p>
+
 
             @if ($visit->maintenanceReport)
                 <div class="mt-4">

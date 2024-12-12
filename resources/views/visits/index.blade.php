@@ -45,6 +45,9 @@
                         <th class="px-6 py-3 text-left font-semibold text-black">Starttijd</th>
                         <th class="px-6 py-3 text-left font-semibold text-black">Eindtijd</th>
                         <th class="px-6 py-3 text-left font-semibold text-black">Adres</th>
+                        @if (in_array(auth()->user()->role_id, [10]))
+                            <th class="px-6 py-3 text-left font-semibold text-black">Type</th>
+                        @endif
                         <th class="px-6 py-3 text-left font-semibold text-black">Status</th>
                         <th class="px-6 py-3 text-center font-semibold text-black">Acties</th>
                     </tr>
@@ -62,6 +65,9 @@
                             <td class="px-6 py-4 whitespace-nowrap">{{ $visit->start_time }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $visit->end_time }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $visit->address }}</td>
+                            @if (in_array(auth()->user()->role_id, [10]))
+                                <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($visit->type) }}</td>
+                            @endif
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
                                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ $visit->status == 'scheduled' ? 'yellow' : ($visit->status == 'completed' ? 'green' : 'red') }}-100 text-{{ $visit->status == 'scheduled' ? 'yellow' : ($visit->status == 'completed' ? 'green' : 'red') }}-800">

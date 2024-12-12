@@ -14,6 +14,7 @@ class VisitController extends Controller
 
     public function index(Request $request)
     {
+
         $search = $request->input('search');
 
         $visits = Visit::with('customer', 'user')
@@ -23,6 +24,12 @@ class VisitController extends Controller
                 })
                 ->orWhere('address', 'like', "%{$search}%")
                 ->orWhere('visit_date', 'like', "%{$search}%");
+            })
+            ->when(auth()->user()->role_id === 3 || auth()->user()->role_id === 7, function ($query) {
+                return $query->where('type', 'sales');
+            })
+            ->when(auth()->user()->role_id === 9, function ($query) {
+                return $query->where('type', 'maintenance');
             })
             ->get();
 
@@ -53,6 +60,7 @@ class VisitController extends Controller
             'error_notification_id' => 'required|exists:error_notifications,id',
             'error_details' => 'nullable|string',
             'used_parts' => 'required|string',
+            'type' => 'required|in:maintenance,sales',
         ]);
 
         Visit::create($request->all()); // Create the visit record

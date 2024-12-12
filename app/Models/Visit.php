@@ -20,6 +20,7 @@ class Visit extends Model
         'address',
         'used_parts',
         'status',
+        'type',
     ];
 
     public function customer()

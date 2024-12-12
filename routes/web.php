@@ -44,7 +44,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Visit resource routes for scheduling and managing visits
     Route::middleware('role:3,7,10')->group(function () {
-        // Allow Sales (role 3), Head Sales (role 7), and CEO (role 10) to create and manage visits
         Route::resource('visits', VisitController::class)->except(['destroy']);
     });
 
@@ -61,7 +60,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/visits/{id}/sign', [VisitController::class, 'sign'])->name('visits.sign');
 
     // Visit assignment and maintenance tickets
-    Route::middleware('role:9,10')->group(function () {
+    Route::middleware('role:3,9,10')->group(function () {
         // Allow Head Maintenance (role 9) and CEO (role 10) to assign visits and manage tickets
         Route::get('visits/{id}/assign', [VisitController::class, 'assignToMaintenance'])->name('visits.assign');
         Route::post('visits/{id}/assign', [VisitController::class, 'storeAssignedToMaintenance'])->name('visits.store_assigned');

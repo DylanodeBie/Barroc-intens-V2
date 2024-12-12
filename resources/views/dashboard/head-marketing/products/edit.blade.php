@@ -38,10 +38,6 @@
             <label class="block text-gray-700 font-semibold">Prijs</label>
             <input type="number" name="price" class="w-full border-gray-300 rounded-lg p-2 mt-1" value="{{ $product->price }}" step="0.01" required>
         </div>
-        <div>
-            <label class="block text-gray-700 font-semibold">Afbeelding</label>
-            <input type="file" name="image" accept="image/*" class="border-gray-300 rounded-lg p-2 mt-1">
-        </div>
         <div class="flex justify-end mt-4">
             <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg">
                 Bijwerken

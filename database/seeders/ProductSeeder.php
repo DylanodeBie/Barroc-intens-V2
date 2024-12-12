@@ -116,8 +116,61 @@ class ProductSeeder extends Seeder
                 'updated_at' => now(),
             ],
         ];
+        DB::table('products')->insert([
+            'id' => 1,
+            'name' => 'Palmero Pro',
+            'brand' => 'Douwe Egberts',
+            'description' => 'Dit is de Palmero Pro',
+            'stock' => 5,
+            'price' => 159.99,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         // Insert all products
         DB::table('products')->insert($products);
+        DB::table('products')->insert([
+            'id' => 2,
+            'name' => 'Cafissimo Pure',
+            'brand' => 'Douwe Egberts',
+            'description' => 'Dit is de Cafissimo Pure',
+            'stock' => 3,
+            'price' => 199.99,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('products')->insert([
+            'id' => 3,
+            'name' => 'Aulika Top',
+            'brand' => 'Nespresso',
+            'description' => 'Dit is de Aulika Top',
+            'stock' => 1,
+            'price' => 249.99,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('products')->insert([
+            'id' => 4,
+            'name' => 'Niagara Plus',
+            'brand' => 'Nespresso',
+            'description' => 'Dit is de Niagara Plus',
+            'stock' => 2,
+            'price' => 299.99,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('products')->insert([
+            'id' => 5,
+            'name' => 'Colombia Speciaal',
+            'brand' => 'Nespesso',
+            'description' => 'Dit is de Colombia Speciaal',
+            'stock' => 0,
+            'price' => 349.99,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

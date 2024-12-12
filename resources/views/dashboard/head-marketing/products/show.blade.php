@@ -17,8 +17,6 @@
             <p><span class="font-semibold">Prijs:</span> {{ number_format($product->price, 2) }} €</p>
         </div>
 
-        <img src="{{ asset('storage/'.$product->image) }}" alt="{{ $product->name }}" class="w-full h-64 object-cover rounded-lg mb-4">
-
         <div class="flex space-x-4">
             <a href="{{ route('products.edit', $product) }}" class="text-yellow-500 hover:text-yellow-600 bg-gray-100 px-4 py-2 rounded-lg">
                 Bewerken

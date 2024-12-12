@@ -4,6 +4,7 @@ namespace App\Http\Controllers\HeadMarketing;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use Illuminate\Container\Attributes\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,13 @@ class ProductController extends Controller
                 ->orWhere('description', 'like', "%{$search}%");
         })->get();
 
-        return view('dashboard.head-marketing.products.index', compact('products'));
+        $error = null;
+
+        if ($search && $products->isEmpty()) {
+            $error = "Er is niets gevonden met de zoekopdracht: '{$search}'";
+        }
+
+        return view('dashboard.head-marketing.products.index', compact('products', 'error'));
     }
 
 
@@ -34,14 +41,8 @@ class ProductController extends Controller
             'brand' => 'required|string',
             'description' => 'required|string',
             'stock' => 'required|integer',
-            'price' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'price' => 'required|numeric|min:0',
         ]);
-
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('product_images', 'public');
-            $validatedData['image'] = $path;
-        }
 
         Product::create($validatedData);
 
@@ -66,18 +67,10 @@ class ProductController extends Controller
             'brand' => 'required|string',
             'description' => 'required|string',
             'stock' => 'required|integer',
-            'price' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'price' => 'required|numeric|min:0',
         ]);
 
         $product->update($request->all());
-
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('product_images', 'public');
-
-            $product->image = $path;
-            $product->save();
-        }
 
         return redirect()->route('products.index')->with('success', 'Product bijgewerkt');
     }

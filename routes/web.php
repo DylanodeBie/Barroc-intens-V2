@@ -13,7 +13,7 @@ use App\Models\Customer;
 use App\Models\Event;
 
 Route::get('/', function () {
-    return view('auth.login')->name('login');
+    return view('auth.login');
 });
 
 // Logout route

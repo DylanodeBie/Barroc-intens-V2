@@ -2,29 +2,56 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
-    protected $table = 'invoice';
+    use HasFactory;
 
+    // Table name
+    protected $table = 'invoices';
+
+    // Mass assignable fields
     protected $fillable = [
-        'customer_id', 'user_id', 'invoice_date', 'price', 'is_paid'
+        'customer_id',
+        'user_id',
+        'invoice_number',
+        'invoice_date',
+        'total_amount',
+        'notes',
+        'status',
     ];
 
-    public function customers()
+    /**
+     * Relationship: Invoice belongs to a Customer.
+     */
+    public function customer()
     {
-        return $this->belongsTo(Customer::class, 'customer_id');
+        return $this->belongsTo(Customer::class);
     }
 
-    public function users()
+    /**
+     * Relationship: Invoice belongs to a User (creator).
+     */
+    public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
-    public function products()
+    /**
+     * Relationship: Invoice has many Items.
+     */
+    public function items()
     {
-        return $this->belongsToMany(Product::class, 'invoice_id', 'product_id')
-                    ->withPivot('amount', 'price');
+        return $this->hasMany(InvoiceItem::class);
+    }
+
+    /**
+     * Helper Method: Calculate total amount based on items.
+     */
+    public function calculateTotal()
+    {
+        return $this->items()->sum('subtotal');
     }
 }

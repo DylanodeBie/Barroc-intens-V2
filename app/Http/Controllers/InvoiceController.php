@@ -3,114 +3,140 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
-use App\Models\Quote;
+use App\Models\InvoiceItem;
 use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Http\Request;
+use PDF;
 
 class InvoiceController extends Controller
 {
-    // Ensure user authentication
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    // Display a list of all invoices
+    /**
+     * Display a listing of invoices.
+     */
     public function index()
     {
-        $invoices = Invoice::with(['customer', 'user'])->orderBy('invoice_date', 'desc')->paginate(10);
+        $invoices = Invoice::with('customer', 'user')->latest()->get();
         return view('invoices.index', compact('invoices'));
     }
 
-    // Show the form for creating a new invoice
+    /**
+     * Show the form for creating a new invoice.
+     */
     public function create()
     {
         $customers = Customer::all();
-        return view('invoices.create', compact('customers'));
+        $users = User::all();
+        $items = [
+            ['id' => 1, 'name' => 'Koffiemachine 1', 'price' => 2600.75],
+            ['id' => 2, 'name' => 'Koffieboon type 1', 'price' => 43.55],
+        ];
+
+        return view('invoices.create', compact('customers', 'users', 'items'));
     }
 
-    // Store a newly created invoice in the database
+    /**
+     * Store a newly created invoice in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'invoice_date' => 'required|date',
-            'price' => 'required|numeric|min:0',
+            'notes' => 'nullable|string',
+            'items' => 'required|array',
+            'items.*.quantity' => 'required|integer|min:1',
         ]);
 
+        // Generate unique invoice number
+        $invoiceNumber = 'INV-' . time();
+
+        // Create the invoice
         $invoice = Invoice::create([
-            'customer_id' => $request->customer_id,
+            'customer_id' => $validated['customer_id'],
             'user_id' => auth()->id(),
-            'invoice_date' => $request->invoice_date,
-            'price' => $request->price,
-            'is_paid' => $request->has('is_paid'),
+            'invoice_number' => $invoiceNumber,
+            'invoice_date' => $validated['invoice_date'],
+            'total_amount' => 0,
+            'notes' => $validated['notes'],
         ]);
 
-        return redirect()->route('invoices.show', $invoice->id)
-            ->with('success', 'Factuur succesvol aangemaakt.');
+        // Add items to invoice
+        $totalAmount = 0;
+        foreach ($validated['items'] as $itemData) {
+            $subtotal = $itemData['quantity'] * $itemData['price'];
+            $totalAmount += $subtotal;
+
+            InvoiceItem::create([
+                'invoice_id' => $invoice->id,
+                'description' => $itemData['description'] ?? 'Item',
+                'quantity' => $itemData['quantity'],
+                'unit_price' => $itemData['price'],
+                'subtotal' => $subtotal,
+            ]);
+        }
+
+        // Update total amount
+        $invoice->update(['total_amount' => $totalAmount]);
+
+        return redirect()->route('invoices.index')->with('success', 'Factuur succesvol aangemaakt!');
     }
 
-    // Display a specific invoice
-    public function show($id)
+    /**
+     * Display the specified invoice.
+     */
+    public function show(Invoice $invoice)
     {
-        $invoice = Invoice::with(['customer', 'user', 'quote'])->findOrFail($id);
+        $invoice->load('customer', 'items', 'user');
         return view('invoices.show', compact('invoice'));
     }
 
-    // Show the form for editing an existing invoice
-    public function edit($id)
+    /**
+     * Generate and download a PDF for the specified invoice.
+     */
+    public function download(Invoice $invoice)
     {
-        $invoice = Invoice::findOrFail($id);
-        $customers = Customer::all();
-        return view('invoices.edit', compact('invoice', 'customers'));
+        $invoice->load('customer', 'items', 'user');
+
+        // Load the PDF view
+        $pdf = PDF::loadView('invoices.pdf', ['invoice' => $invoice]);
+
+        // Return the PDF for download
+        return $pdf->download("invoice-{$invoice->invoice_number}.pdf");
     }
 
-    // Update the specified invoice in the database
-    public function update(Request $request, $id)
+    /**
+     * Show the form for editing the specified invoice.
+     */
+    public function edit(Invoice $invoice)
     {
-        $request->validate([
+        $customers = Customer::all();
+        $users = User::all();
+        $invoice->load('items');
+        return view('invoices.edit', compact('invoice', 'customers', 'users'));
+    }
+
+    /**
+     * Update the specified invoice in storage.
+     */
+    public function update(Request $request, Invoice $invoice)
+    {
+        $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'invoice_date' => 'required|date',
-            'price' => 'required|numeric|min:0',
+            'notes' => 'nullable|string',
         ]);
 
-        $invoice = Invoice::findOrFail($id);
-        $invoice->update([
-            'customer_id' => $request->customer_id,
-            'invoice_date' => $request->invoice_date,
-            'price' => $request->price,
-            'is_paid' => $request->has('is_paid'),
-        ]);
-
-        return redirect()->route('invoices.show', $invoice->id)
-            ->with('success', 'Factuur succesvol bijgewerkt.');
+        $invoice->update($validated);
+        return redirect()->route('invoices.index')->with('success', 'Factuur succesvol bijgewerkt!');
     }
 
-    // Delete the specified invoice from the database
-    public function destroy($id)
+    /**
+     * Remove the specified invoice from storage.
+     */
+    public function destroy(Invoice $invoice)
     {
-        $invoice = Invoice::findOrFail($id);
         $invoice->delete();
-
-        return redirect()->route('invoices.index')
-            ->with('success', 'Factuur succesvol verwijderd.');
-    }
-
-    // Create an invoice based on a quote
-    public function createFromQuote($quoteId)
-    {
-        $quote = Quote::findOrFail($quoteId);
-
-        $invoice = Invoice::create([
-            'customer_id' => $quote->customer_id,
-            'user_id' => auth()->id(),
-            'quote_id' => $quote->id,
-            'invoice_date' => now()->toDateString(),
-            'price' => $quote->price,
-            'is_paid' => false,
-        ]);
-
-        return redirect()->route('invoices.show', $invoice->id)
-            ->with('success', 'Factuur succesvol aangemaakt op basis van offerte.');
+        return redirect()->route('invoices.index')->with('success', 'Factuur succesvol verwijderd!');
     }
 }

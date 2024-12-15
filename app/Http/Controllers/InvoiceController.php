@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\Product;
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -27,12 +28,12 @@ class InvoiceController extends Controller
     {
         $customers = Customer::all();
         $users = User::all();
-        $items = [
-            ['id' => 1, 'name' => 'Koffiemachine 1', 'price' => 2600.75],
-            ['id' => 2, 'name' => 'Koffieboon type 1', 'price' => 43.55],
-        ];
 
-        return view('invoices.create', compact('customers', 'users', 'items'));
+        // Fetch machines and coffee beans from the Product table
+        $machines = Product::where('type', 'machine')->get();
+        $beans = Product::where('type', 'coffee_bean')->get();
+
+        return view('invoices.create', compact('customers', 'users', 'machines', 'beans'));
     }
 
     /**
@@ -45,11 +46,12 @@ class InvoiceController extends Controller
             'invoice_date' => 'required|date',
             'notes' => 'nullable|string',
             'items' => 'required|array',
+            'items.*.selected' => 'nullable|in:1',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        // Generate unique invoice number
-        $invoiceNumber = 'INV-' . time();
+        // Generate a unique invoice number
+        $invoiceNumber = 'INV-' . now()->timestamp;
 
         // Create the invoice
         $invoice = Invoice::create([
@@ -57,26 +59,32 @@ class InvoiceController extends Controller
             'user_id' => auth()->id(),
             'invoice_number' => $invoiceNumber,
             'invoice_date' => $validated['invoice_date'],
-            'total_amount' => 0,
             'notes' => $validated['notes'],
+            'total_amount' => 0,
         ]);
 
-        // Add items to invoice
+        // Handle invoice items and calculate total amount
         $totalAmount = 0;
-        foreach ($validated['items'] as $itemData) {
-            $subtotal = $itemData['quantity'] * $itemData['price'];
-            $totalAmount += $subtotal;
 
-            InvoiceItem::create([
-                'invoice_id' => $invoice->id,
-                'description' => $itemData['description'] ?? 'Item',
-                'quantity' => $itemData['quantity'],
-                'unit_price' => $itemData['price'],
-                'subtotal' => $subtotal,
-            ]);
+        foreach ($validated['items'] as $productId => $itemData) {
+            if (isset($itemData['selected'])) {
+                $product = Product::findOrFail($productId);
+                $quantity = $itemData['quantity'];
+                $subtotal = $product->price * $quantity;
+
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'description' => $product->name,
+                    'quantity' => $quantity,
+                    'unit_price' => $product->price,
+                    'subtotal' => $subtotal,
+                ]);
+
+                $totalAmount += $subtotal;
+            }
         }
 
-        // Update total amount
+        // Update the total amount for the invoice
         $invoice->update(['total_amount' => $totalAmount]);
 
         return redirect()->route('invoices.index')->with('success', 'Factuur succesvol aangemaakt!');
@@ -98,10 +106,8 @@ class InvoiceController extends Controller
     {
         $invoice->load('customer', 'items', 'user');
 
-        // Load the PDF view
-        $pdf = PDF::loadView('invoices.pdf', ['invoice' => $invoice]);
+        $pdf = PDF::loadView('invoices.pdf', compact('invoice'));
 
-        // Return the PDF for download
         return $pdf->download("invoice-{$invoice->invoice_number}.pdf");
     }
 
@@ -109,12 +115,14 @@ class InvoiceController extends Controller
      * Show the form for editing the specified invoice.
      */
     public function edit(Invoice $invoice)
-    {
-        $customers = Customer::all();
-        $users = User::all();
-        $invoice->load('items');
-        return view('invoices.edit', compact('invoice', 'customers', 'users'));
-    }
+{
+    $customers = Customer::all();
+    $products = Product::all(); // Fetch all machines and beans
+    $invoice->load('items'); // Load existing invoice items
+
+    return view('invoices.edit', compact('invoice', 'customers', 'products'));
+}
+
 
     /**
      * Update the specified invoice in storage.
@@ -125,9 +133,44 @@ class InvoiceController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'invoice_date' => 'required|date',
             'notes' => 'nullable|string',
+            'items' => 'required|array',
+            'items.*.selected' => 'nullable|in:1',
+            'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        $invoice->update($validated);
+        // Update the invoice details
+        $invoice->update([
+            'customer_id' => $validated['customer_id'],
+            'invoice_date' => $validated['invoice_date'],
+            'notes' => $validated['notes'],
+        ]);
+
+        // Recalculate invoice items
+        $invoice->items()->delete();
+
+        $totalAmount = 0;
+
+        foreach ($validated['items'] as $productId => $itemData) {
+            if (isset($itemData['selected'])) {
+                $product = Product::findOrFail($productId);
+                $quantity = $itemData['quantity'];
+                $subtotal = $product->price * $quantity;
+
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'description' => $product->name,
+                    'quantity' => $quantity,
+                    'unit_price' => $product->price,
+                    'subtotal' => $subtotal,
+                ]);
+
+                $totalAmount += $subtotal;
+            }
+        }
+
+        // Update the total amount
+        $invoice->update(['total_amount' => $totalAmount]);
+
         return redirect()->route('invoices.index')->with('success', 'Factuur succesvol bijgewerkt!');
     }
 

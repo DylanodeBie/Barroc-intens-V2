@@ -45,11 +45,13 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 €{{ number_format($invoice->total_amount, 2, ',', '.') }}</td>
                             <td class="px-6 py-4 text-center flex justify-center gap-4">
+                                <!-- View Invoice -->
                                 <a href="{{ route('invoices.show', $invoice->id) }}" class="hover:text-gray-700"
                                     title="Bekijken" style="color: black;">
                                     <i class="fas fa-eye"></i>
                                 </a>
 
+                                <!-- Edit Invoice -->
                                 @if (in_array(auth()->user()->role->name, ['CEO', 'Admin']))
                                     <a href="{{ route('invoices.edit', $invoice->id) }}" class="hover:text-gray-700"
                                         title="Bewerken" style="color: black;">
@@ -57,6 +59,7 @@
                                     </a>
                                 @endif
 
+                                <!-- Download PDF -->
                                 <a href="{{ route('invoices.download', $invoice->id) }}" class="hover:text-gray-700"
                                     title="Download PDF" style="color: black;">
                                     <i class="fas fa-download"></i>

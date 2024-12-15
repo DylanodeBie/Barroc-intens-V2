@@ -4,7 +4,7 @@
     <div class="container mx-auto px-4">
         <h1 class="text-3xl font-bold mb-6 text-center">Factuur Maken</h1>
 
-        <form action="{{ route('invoices.store') }}" method="POST" id="invoiceForm">
+        <form action="{{ route('invoices.store') }}" method="POST">
             @csrf
 
             <!-- Customer Dropdown -->
@@ -33,28 +33,25 @@
                         <div class="border rounded-md shadow p-4 flex flex-col items-start">
                             <label class="flex items-center">
                                 <input type="checkbox" name="products[{{ $product->id }}][selected]" value="1"
-                                    class="mr-2 product-checkbox" data-price="{{ $product->price }}">
+                                    class="mr-2">
                                 <span class="font-semibold">{{ $product->name }}</span>
                             </label>
                             <p class="text-sm text-gray-600">Prijs: €{{ number_format($product->price, 2, ',', '.') }}</p>
                             <label class="mt-2 text-sm text-gray-700">
                                 Aantal:
                                 <input type="number" name="products[{{ $product->id }}][quantity]" min="1"
-                                    value="1" class="form-control w-full border rounded-md p-1 mt-1 product-quantity"
-                                    data-price="{{ $product->price }}" disabled>
+                                    value="1" class="form-control w-full border rounded-md p-1 mt-1">
                             </label>
                         </div>
                     @endforeach
                 </div>
             </div>
 
-            <!-- Totaal Prijs -->
+            <!-- Prijs -->
             <div class="mb-4">
-                <label for="total_price" class="block font-semibold text-gray-700">Totaal Prijs</label>
-                <input type="text" name="total_price" id="total_price" class="form-control w-full border rounded-md p-2"
-                    placeholder="Bijvoorbeeld: €100,00">
-                <small class="text-gray-600">De prijs wordt automatisch berekend, maar je kunt deze handmatig
-                    aanpassen.</small>
+                <label for="price" class="block font-semibold text-gray-700">Totaal Prijs</label>
+                <input type="number" step="0.01" name="price" id="price"
+                    class="form-control w-full border rounded-md p-2" placeholder="Bijvoorbeeld: 100.00">
             </div>
 
             <!-- Betaald Checkbox -->
@@ -75,57 +72,4 @@
             </div>
         </form>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const productCheckboxes = document.querySelectorAll('.product-checkbox');
-            const productQuantities = document.querySelectorAll('.product-quantity');
-            const totalPriceInput = document.getElementById('total_price');
-            let manualOverride = false;
-
-            function updateTotalPrice() {
-                if (manualOverride) return;
-
-                let total = 0;
-
-                productCheckboxes.forEach((checkbox, index) => {
-                    if (checkbox.checked) {
-                        const price = parseFloat(checkbox.dataset.price);
-                        const quantityInput = productQuantities[index];
-                        const quantity = parseInt(quantityInput.value) || 1;
-
-                        total += price * quantity;
-                    }
-                });
-
-                totalPriceInput.value = `€ ${total.toFixed(2).replace('.', ',')}`;
-            }
-
-            productCheckboxes.forEach((checkbox, index) => {
-                checkbox.addEventListener('change', function() {
-                    const quantityInput = productQuantities[index];
-                    quantityInput.disabled = !checkbox.checked;
-                    if (!checkbox.checked) {
-                        quantityInput.value = 1;
-                    }
-                    updateTotalPrice();
-                });
-            });
-
-            productQuantities.forEach(quantityInput => {
-                quantityInput.addEventListener('input', function() {
-                    if (parseInt(quantityInput.value) < 1 || isNaN(quantityInput.value)) {
-                        quantityInput.value = 1;
-                    }
-                    updateTotalPrice();
-                });
-            });
-
-            totalPriceInput.addEventListener('input', function() {
-                manualOverride = true;
-            });
-
-            updateTotalPrice(); // Initiële berekening
-        });
-    </script>
 @endsection

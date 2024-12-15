@@ -16,7 +16,7 @@ return new class extends Migration
     $table->foreignId('customer_id')->constrained('customers');
     $table->foreignId('user_id')->constrained('users');
     $table->foreignId('quote_id')->nullable()->constrained('quotes'); // Optionele koppeling aan een offerte
-    $table->date('invoice_date'); // Gebruik 'date' in plaats van 'string'
+    $table->string('invoice_date');
     $table->decimal('price', 10, 2); // Misschien verhogen voor grotere bedragen
     $table->boolean('is_paid')->default(false); // Standaard onbetaald
     $table->timestamps();

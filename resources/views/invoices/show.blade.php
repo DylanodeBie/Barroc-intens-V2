@@ -1,45 +1,47 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto">
-        <h1 class="text-3xl font-bold mb-4 text-center text-black">Factuur #{{ $invoice->id }}</h1>
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold mb-4">Factuur Details</h1>
 
-        <p><strong>Klant:</strong> {{ $invoice->customer?->company_name ?? 'N/A' }}</p>
-        <p><strong>Gebruiker:</strong> {{ $invoice->user?->name ?? 'N/A' }}</p>
-        <p><strong>Datum:</strong> {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d-m-Y') }}</p>
-        <p><strong>Status:</strong> {{ $invoice->is_paid ? 'Betaald' : 'Onbetaald' }}</p>
-        <p><strong>Totaalprijs:</strong> € {{ number_format($invoice->price, 2) }}</p>
-
-        <h2 class="text-2xl font-bold mt-6 mb-4 text-black">Producten</h2>
-        <div class="overflow-x-auto border border-gray-200 rounded-lg">
-            <table class="min-w-full bg-white border-collapse">
-                <thead style="background-color: #FFD700;">
-                    <tr>
-                        <th class="px-6 py-3 text-left font-semibold text-black">Product</th>
-                        <th class="px-6 py-3 text-left font-semibold text-black">Aantal</th>
-                        <th class="px-6 py-3 text-left font-semibold text-black">Prijs per stuk</th>
-                        <th class="px-6 py-3 text-left font-semibold text-black">Subtotaal</th>
-                    </tr>
-                </thead>
-                <tbody class="text-black">
-                    @forelse ($invoice->products as $product)
-                        <tr class="border-b hover:bg-gray-100">
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $product->name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $product->pivot->amount }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">€ {{ number_format($product->pivot->price, 2) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">€
-                                {{ number_format($product->pivot->amount * $product->pivot->price, 2) }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center py-4 text-gray-500">Geen producten gekoppeld aan deze
-                                factuur.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <!-- Invoice Details -->
+        <div class="border p-4 rounded-md shadow-md">
+            <p><strong>Factuurnummer:</strong> {{ $invoice->invoice_number }}</p>
+            <p><strong>Klant:</strong> {{ $invoice->customer->company_name }}</p>
+            <p><strong>Factuurdatum:</strong> {{ $invoice->invoice_date->format('d-m-Y') }}</p>
+            <p><strong>Totaalbedrag:</strong> €{{ number_format($invoice->total_amount, 2, ',', '.') }}</p>
+            <p><strong>Status:</strong> {{ ucfirst($invoice->status) }}</p>
+            <p><strong>Notities:</strong> {{ $invoice->notes ?? 'Geen' }}</p>
         </div>
 
-        <a href="{{ route('invoices.index') }}" class="btn btn-secondary mt-4">Terug naar overzicht</a>
+        <!-- Invoice Items -->
+        <h2 class="text-2xl font-semibold mt-6">Items</h2>
+        <table class="min-w-full mt-4 bg-white border rounded-md">
+            <thead>
+                <tr>
+                    <th class="py-2 px-4 border">Omschrijving</th>
+                    <th class="py-2 px-4 border">Aantal</th>
+                    <th class="py-2 px-4 border">Prijs per stuk</th>
+                    <th class="py-2 px-4 border">Subtotaal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($invoice->items as $item)
+                    <tr>
+                        <td class="py-2 px-4 border">{{ $item->description }}</td>
+                        <td class="py-2 px-4 border">{{ $item->quantity }}</td>
+                        <td class="py-2 px-4 border">€{{ number_format($item->unit_price, 2, ',', '.') }}</td>
+                        <td class="py-2 px-4 border">€{{ number_format($item->subtotal, 2, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <!-- Back Button -->
+        <div class="mt-6">
+            <a href="{{ route('invoices.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">
+                Terug naar overzicht
+            </a>
+        </div>
     </div>
 @endsection

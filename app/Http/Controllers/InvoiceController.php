@@ -3,131 +3,183 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
-use App\Models\Quote;
-use App\Models\Customer;
+use App\Models\InvoiceItem;
 use App\Models\Product;
+use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Http\Request;
+use PDF;
 
 class InvoiceController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    // Display a list of all invoices
+    /**
+     * Display a listing of invoices.
+     */
     public function index()
     {
-        $invoices = Invoice::with(['customer', 'user'])->orderBy('invoice_date', 'desc')->paginate(10);
+        $invoices = Invoice::with('customer', 'user')->latest()->get();
         return view('invoices.index', compact('invoices'));
     }
 
-    // Show the form for creating a new invoice
+    /**
+     * Show the form for creating a new invoice.
+     */
     public function create()
     {
         $customers = Customer::all();
-        $quotes = Quote::whereDoesntHave('invoice')->get(); // Offertes zonder gekoppelde factuur
-        $products = Product::all(); // Alle beschikbare producten
-        return view('invoices.create', compact('customers', 'quotes', 'products'));
+        $users = User::all();
+
+        // Fetch machines and coffee beans from the Product table
+        $machines = Product::where('type', 'machine')->get();
+        $beans = Product::where('type', 'coffee_bean')->get();
+
+        return view('invoices.create', compact('customers', 'users', 'machines', 'beans'));
     }
 
-    // Store a newly created invoice in the database
+    /**
+     * Store a newly created invoice in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'invoice_date' => 'required|date',
-            'price' => 'required|numeric|min:0',
-            'quote_id' => 'nullable|exists:quotes,id',
-            'products' => 'required|array', // Array van producten
-            'products.*.id' => 'exists:products,id', // Elk product moet bestaan
-            'products.*.amount' => 'required|integer|min:1',
-            'products.*.price' => 'required|numeric|min:0',
+            'notes' => 'nullable|string',
+            'items' => 'required|array',
+            'items.*.selected' => 'nullable|in:1',
+            'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        $invoiceData = [
-            'customer_id' => $request->customer_id,
+        // Generate a unique invoice number
+        $invoiceNumber = 'INV-' . now()->timestamp;
+
+        // Create the invoice
+        $invoice = Invoice::create([
+            'customer_id' => $validated['customer_id'],
             'user_id' => auth()->id(),
-            'quote_id' => $request->quote_id,
-            'invoice_date' => $request->invoice_date,
-            'price' => $request->price,
-            'is_paid' => $request->has('is_paid'),
-        ];
+            'invoice_number' => $invoiceNumber,
+            'invoice_date' => $validated['invoice_date'],
+            'notes' => $validated['notes'],
+            'total_amount' => 0,
+        ]);
 
-        $invoice = Invoice::create($invoiceData);
+        // Handle invoice items and calculate total amount
+        $totalAmount = 0;
 
-        // Koppel producten aan de factuur
-        foreach ($request->products as $product) {
-            $invoice->products()->attach($product['id'], [
-                'amount' => $product['amount'],
-                'price' => $product['price'],
-            ]);
+        foreach ($validated['items'] as $productId => $itemData) {
+            if (isset($itemData['selected'])) {
+                $product = Product::findOrFail($productId);
+                $quantity = $itemData['quantity'];
+                $subtotal = $product->price * $quantity;
+
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'description' => $product->name,
+                    'quantity' => $quantity,
+                    'unit_price' => $product->price,
+                    'subtotal' => $subtotal,
+                ]);
+
+                $totalAmount += $subtotal;
+            }
         }
 
-        return redirect()->route('invoices.show', $invoice->id)
-            ->with('success', 'Factuur succesvol aangemaakt.');
+        // Update the total amount for the invoice
+        $invoice->update(['total_amount' => $totalAmount]);
+
+        return redirect()->route('invoices.index')->with('success', 'Factuur succesvol aangemaakt!');
     }
 
-    // Display a specific invoice
-    public function show($id)
+    /**
+     * Display the specified invoice.
+     */
+    public function show(Invoice $invoice)
     {
-        $invoice = Invoice::with(['customer', 'user', 'products'])->findOrFail($id);
+        $invoice->load('customer', 'items', 'user');
         return view('invoices.show', compact('invoice'));
     }
 
-    // Show the form for editing an existing invoice
-    public function edit($id)
+    /**
+     * Generate and download a PDF for the specified invoice.
+     */
+    public function download(Invoice $invoice)
     {
-        $invoice = Invoice::with('products')->findOrFail($id);
-        $customers = Customer::all();
-        $products = Product::all();
-        return view('invoices.edit', compact('invoice', 'customers', 'products'));
+        $invoice->load('customer', 'items', 'user');
+
+        $pdf = PDF::loadView('invoices.pdf', compact('invoice'));
+
+        return $pdf->download("invoice-{$invoice->invoice_number}.pdf");
     }
 
-    // Update the specified invoice in the database
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'invoice_date' => 'required|date',
-            'price' => 'required|numeric|min:0',
-            'products' => 'required|array',
-            'products.*.id' => 'exists:products,id',
-            'products.*.amount' => 'required|integer|min:1',
-            'products.*.price' => 'required|numeric|min:0',
-        ]);
+    /**
+     * Show the form for editing the specified invoice.
+     */
+    public function edit(Invoice $invoice)
+{
+    $customers = Customer::all();
+    $products = Product::all(); // Fetch all machines and beans
+    $invoice->load('items'); // Load existing invoice items
 
-        $invoice = Invoice::findOrFail($id);
-
-        $invoice->update([
-            'customer_id' => $request->customer_id,
-            'invoice_date' => $request->invoice_date,
-            'price' => $request->price,
-            'is_paid' => $request->has('is_paid'),
-        ]);
-
-        // Werk producten bij
-        $invoice->products()->detach();
-        foreach ($request->products as $product) {
-            $invoice->products()->attach($product['id'], [
-                'amount' => $product['amount'],
-                'price' => $product['price'],
-            ]);
-        }
-
-        return redirect()->route('invoices.show', $invoice->id)
-            ->with('success', 'Factuur succesvol bijgewerkt.');
-    }
-
-    // Delete the specified invoice from the database
-    public function destroy($id)
-    {
-        $invoice = Invoice::findOrFail($id);
-        $invoice->delete();
-
-        return redirect()->route('invoices.index')
-            ->with('success', 'Factuur succesvol verwijderd.');
-    }
+    return view('invoices.edit', compact('invoice', 'customers', 'products'));
 }
 
 
+    /**
+     * Update the specified invoice in storage.
+     */
+    public function update(Request $request, Invoice $invoice)
+    {
+        $validated = $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'invoice_date' => 'required|date',
+            'notes' => 'nullable|string',
+            'items' => 'required|array',
+            'items.*.selected' => 'nullable|in:1',
+            'items.*.quantity' => 'required|integer|min:1',
+        ]);
+
+        // Update the invoice details
+        $invoice->update([
+            'customer_id' => $validated['customer_id'],
+            'invoice_date' => $validated['invoice_date'],
+            'notes' => $validated['notes'],
+        ]);
+
+        // Recalculate invoice items
+        $invoice->items()->delete();
+
+        $totalAmount = 0;
+
+        foreach ($validated['items'] as $productId => $itemData) {
+            if (isset($itemData['selected'])) {
+                $product = Product::findOrFail($productId);
+                $quantity = $itemData['quantity'];
+                $subtotal = $product->price * $quantity;
+
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'description' => $product->name,
+                    'quantity' => $quantity,
+                    'unit_price' => $product->price,
+                    'subtotal' => $subtotal,
+                ]);
+
+                $totalAmount += $subtotal;
+            }
+        }
+
+        // Update the total amount
+        $invoice->update(['total_amount' => $totalAmount]);
+
+        return redirect()->route('invoices.index')->with('success', 'Factuur succesvol bijgewerkt!');
+    }
+
+    /**
+     * Remove the specified invoice from storage.
+     */
+    public function destroy(Invoice $invoice)
+    {
+        $invoice->delete();
+        return redirect()->route('invoices.index')->with('success', 'Factuur succesvol verwijderd!');
+    }
+}

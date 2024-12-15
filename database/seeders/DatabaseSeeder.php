@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         ErrornotificationSeeder::class,
         VisitSeeder::class,
         QuoteSeeder::class,
-        CalendarSeeder::class,
+        InvoiceSeeder::class,
     ]);
 }
 }

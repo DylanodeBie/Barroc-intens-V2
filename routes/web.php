@@ -11,6 +11,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\InvoiceController;
 use App\Models\Customer;
 use App\Models\Event;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -26,7 +27,7 @@ Route::middleware(['auth'])->get('/dashboard', function () {
 
 // Group routes for authenticated users
 Route::middleware(['auth'])->group(function () {
-
+    // Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/finance', [DashboardController::class, 'finance'])->name('dashboard.finance');
     Route::get('/dashboard/sales', [DashboardController::class, 'sales'])->name('dashboard.sales');
@@ -38,8 +39,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/head-maintenance', [DashboardController::class, 'headMaintenance'])->name('dashboard.head-maintenance');
     Route::get('/dashboard/ceo', [DashboardController::class, 'ceo'])->name('dashboard.ceo');
 
+    // Customer routes
     Route::resource('customers', CustomerController::class);
 
+    // Visit routes
     Route::middleware('role:3,7,10')->group(function () {
         Route::resource('visits', VisitController::class)->except(['destroy']);
     });
@@ -55,36 +58,30 @@ Route::middleware(['auth'])->group(function () {
         Route::get('visits/maintenance-tickets', [VisitController::class, 'maintenanceTickets'])->name('visits.maintenance_tickets');
     });
 
-    // Product resource routes
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-    Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
-    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    // Product routes
+    Route::resource('products', ProductController::class);
 
-    // Quotes resource routes restricted to Sales, Head Sales, and CEO
+    // Quotes routes restricted to specific roles
     Route::middleware('role:3,7,10')->group(function () {
         Route::resource('quotes', QuoteController::class);
         Route::get('/quotes/{quote}/download', [QuoteController::class, 'downloadPdf'])->name('quotes.download');
     });
 
-    // Invoices resource routes restricted to Sales, Finance, Head Sales, Head Finance, and CEO
-    Route::middleware('role:2,3,6,7,10')->group(function () {
+    // Invoice routes restricted to Sales, Head Sales, and CEO roles
+    Route::middleware('role:3,7,10')->group(function () {
         Route::resource('invoices', InvoiceController::class);
-        Route::get('/invoices/create-from-quote/{quoteId}', [InvoiceController::class, 'createFromQuote'])->name('invoices.createFromQuote');
+        Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
     });
 });
 
-// Agenda and event routes
+// Calendar and events routes
 Route::get('/agenda', [VisitController::class, 'calendar'])->middleware('auth')->name('agenda');
 Route::get('/events', [EventController::class, 'index'])->middleware('auth');
 Route::post('/events', [EventController::class, 'store'])->middleware('auth');
 Route::put('/events/{id}', [EventController::class, 'update'])->middleware('auth');
 Route::delete('/events/{id}', [EventController::class, 'destroy'])->middleware('auth');
 
-// API routes
+// API routes for customers and events
 Route::get('/api/events', function () {
     return Event::all();
 });
@@ -93,12 +90,12 @@ Route::get('/api/customers', function () {
     return Customer::all();
 });
 
-// Forbidden error page
+// Forbidden route
 Route::get('/forbidden', function () {
     return view('errors.forbidden');
 })->name('forbidden');
 
-// User Profile routes
+// User profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

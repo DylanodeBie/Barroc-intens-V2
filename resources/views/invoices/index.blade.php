@@ -28,10 +28,9 @@
                 <thead style="background-color: #FFD700;">
                     <tr>
                         <th class="px-6 py-3 text-left font-semibold text-black">Klant</th>
-                        <th class="px-6 py-3 text-left font-semibold text-black">Gebruiker</th>
-                        <th class="px-6 py-3 text-left font-semibold text-black">Status</th>
+                        <th class="px-6 py-3 text-left font-semibold text-black">Factuurnummer</th>
                         <th class="px-6 py-3 text-left font-semibold text-black">Datum</th>
-                        <th class="px-6 py-3 text-left font-semibold text-black">Prijs</th>
+                        <th class="px-6 py-3 text-left font-semibold text-black">Totaal</th>
                         <th class="px-6 py-3 text-center font-semibold text-black">Acties</th>
                     </tr>
                 </thead>
@@ -39,47 +38,37 @@
                     @forelse ($invoices as $invoice)
                         <tr class="border-b hover:bg-gray-100">
                             <td class="px-6 py-4 whitespace-nowrap">{{ $invoice->customer?->company_name ?? 'N/A' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $invoice->user?->name ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $invoice->invoice_number }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                {{ $invoice->is_paid ? 'Betaald' : 'Onbetaald' }}
+                                {{ $invoice->invoice_date ? $invoice->invoice_date->format('d-m-Y') : 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d-m-Y') }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                € {{ number_format($invoice->price, 2) }}
-                            </td>
+                                €{{ number_format($invoice->total_amount, 2, ',', '.') }}</td>
                             <td class="px-6 py-4 text-center flex justify-center gap-4">
-                                <!-- View icon -->
+                                <!-- View Invoice -->
                                 <a href="{{ route('invoices.show', $invoice->id) }}" class="hover:text-gray-700"
                                     title="Bekijken" style="color: black;">
                                     <i class="fas fa-eye"></i>
                                 </a>
 
-                                <!-- Edit action for specific roles -->
-                                @if (in_array(auth()->user()->role->name, ['CEO', 'Sales', 'Head Sales']))
+                                <!-- Edit Invoice -->
+                                @if (in_array(auth()->user()->role->name, ['CEO', 'Admin']))
                                     <a href="{{ route('invoices.edit', $invoice->id) }}" class="hover:text-gray-700"
                                         title="Bewerken" style="color: black;">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 @endif
 
-                                <!-- Delete action -->
-                                <form action="{{ route('invoices.destroy', $invoice->id) }}" method="POST"
-                                    onsubmit="return confirm('Weet je zeker dat je deze factuur wilt verwijderen?');"
-                                    style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="hover:text-gray-700" title="Verwijderen"
-                                        style="color: black;">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                <!-- Download PDF -->
+                                <a href="{{ route('invoices.download', $invoice->id) }}" class="hover:text-gray-700"
+                                    title="Download PDF" style="color: black;">
+                                    <i class="fas fa-download"></i>
+                                </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-gray-500">Geen facturen gevonden.</td>
+                            <td colspan="5" class="text-center py-4 text-gray-500">Geen facturen gevonden.</td>
                         </tr>
                     @endforelse
                 </tbody>

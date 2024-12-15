@@ -2,42 +2,39 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'customer_id',
         'user_id',
-        'quote_id',
+        'invoice_number',
         'invoice_date',
-        'price',
-        'is_paid',
+        'notes',
+        'total_amount',
     ];
 
-    // Relatie met Customer
+    // Ensure invoice_date is treated as a Carbon instance
+    protected $casts = [
+        'invoice_date' => 'date',
+    ];
+
     public function customer()
     {
-        return $this->belongsTo(Customer::class, 'customer_id');
+        return $this->belongsTo(Customer::class);
     }
 
-    // Relatie met User
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
-    // Relatie met Quote
-    public function quote()
+    public function items()
     {
-        return $this->belongsTo(Quote::class, 'quote_id');
-    }
-
-    // Relatie met Products (via een pivot-tabel)
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'invoice_product', 'invoice_id', 'product_id')
-                    ->withPivot('amount', 'price')
-                    ->withTimestamps();
+        return $this->hasMany(InvoiceItem::class);
     }
 }

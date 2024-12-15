@@ -12,16 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('invoices', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('customer_id')->constrained('customers');
-    $table->foreignId('user_id')->constrained('users');
-    $table->foreignId('quote_id')->nullable()->constrained('quotes'); // Optionele koppeling aan een offerte
-    $table->string('invoice_date');
-    $table->decimal('price', 10, 2); // Misschien verhogen voor grotere bedragen
-    $table->boolean('is_paid')->default(false); // Standaard onbetaald
-    $table->timestamps();
-});
-
+            $table->id();
+            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('invoice_number')->unique();
+            $table->date('invoice_date');
+            $table->decimal('total_amount', 10, 2)->default(0.00);
+            $table->text('notes')->nullable();
+            $table->enum('status', ['pending', 'paid', 'overdue'])->default('pending');
+            $table->timestamps();
+        });
     }
 
     /**

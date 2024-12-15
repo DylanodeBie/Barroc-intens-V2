@@ -34,27 +34,35 @@ class InvoiceController extends Controller
     // Store a newly created invoice in the database
     public function store(Request $request)
     {
+        // Debug input om te controleren wat binnenkomt
+        // dd($request->all());
+
         $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'invoice_date' => 'required|date',
-            'price' => 'required|numeric|min:0',
             'quote_id' => 'nullable|exists:quotes,id',
-            'products' => 'required|array', // Array van producten
-            'products.*.id' => 'exists:products,id', // Elk product moet bestaan
+            'products' => 'required|array',
+            'products.*.id' => 'required|integer|exists:products,id',
             'products.*.amount' => 'required|integer|min:1',
             'products.*.price' => 'required|numeric|min:0',
         ]);
 
-        $invoiceData = [
+        // Bereken de totale prijs op basis van de geselecteerde producten
+        $totalPrice = 0;
+
+        foreach ($request->products as $product) {
+            $totalPrice += $product['price'] * $product['amount'];
+        }
+
+        // Sla de factuurgegevens op
+        $invoice = Invoice::create([
             'customer_id' => $request->customer_id,
             'user_id' => auth()->id(),
             'quote_id' => $request->quote_id,
             'invoice_date' => $request->invoice_date,
-            'price' => $request->price,
+            'price' => $totalPrice,
             'is_paid' => $request->has('is_paid'),
-        ];
-
-        $invoice = Invoice::create($invoiceData);
+        ]);
 
         // Koppel producten aan de factuur
         foreach ($request->products as $product) {
@@ -90,23 +98,29 @@ class InvoiceController extends Controller
         $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'invoice_date' => 'required|date',
-            'price' => 'required|numeric|min:0',
             'products' => 'required|array',
-            'products.*.id' => 'exists:products,id',
+            'products.*.id' => 'required|integer|exists:products,id',
             'products.*.amount' => 'required|integer|min:1',
             'products.*.price' => 'required|numeric|min:0',
         ]);
 
         $invoice = Invoice::findOrFail($id);
 
+        // Bereken opnieuw de totale prijs
+        $totalPrice = 0;
+
+        foreach ($request->products as $product) {
+            $totalPrice += $product['price'] * $product['amount'];
+        }
+
         $invoice->update([
             'customer_id' => $request->customer_id,
             'invoice_date' => $request->invoice_date,
-            'price' => $request->price,
+            'price' => $totalPrice,
             'is_paid' => $request->has('is_paid'),
         ]);
 
-        // Werk producten bij
+        // Werk de producten bij
         $invoice->products()->detach();
         foreach ($request->products as $product) {
             $invoice->products()->attach($product['id'], [
@@ -129,5 +143,3 @@ class InvoiceController extends Controller
             ->with('success', 'Factuur succesvol verwijderd.');
     }
 }
-
-

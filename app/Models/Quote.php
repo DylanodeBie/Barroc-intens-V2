@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quote extends Model
 {
-    protected $table = 'quotes'; // Zorg dat dit overeenkomt met je tabelnaam
+    protected $table = 'quotes'; // Ensure this matches your actual table name
 
     protected $fillable = [
         'customer_id',
@@ -19,11 +19,11 @@ class Quote extends Model
     ];
 
     protected $casts = [
-        'quote_date' => 'datetime', // Dit zorgt ervoor dat quote_date een Carbon-instance is
+        'quote_date' => 'datetime', // This ensures quote_date is cast to a Carbon instance
     ];
 
     /**
-     * Relatie met het Customer-model.
+     * Define the relationship with the Customer model.
      */
     public function customer()
     {
@@ -31,7 +31,7 @@ class Quote extends Model
     }
 
     /**
-     * Relatie met het User-model.
+     * Define the relationship with the User model.
      */
     public function user()
     {
@@ -39,15 +39,15 @@ class Quote extends Model
     }
 
     /**
-     * Relatie met machines die gekoppeld zijn aan de offerte.
+     * Define the relationship with QuoteMachine (machines linked to the quote).
      */
     public function machines()
     {
-        // Add the appropriate relationship or logic here
+        return $this->belongsToMany(Machine::class, 'quote_machines')->withPivot('quantity');
     }
 
     /**
-     * Relatie met beans die gekoppeld zijn aan de offerte.
+     * Define the relationship with QuoteBean (beans linked to the quote).
      */
     public function beans()
     {
@@ -55,19 +55,10 @@ class Quote extends Model
     }
 
     /**
-     * Relatie met de Invoice (factuur) gekoppeld aan de offerte.
-     */
-    public function invoice()
-    {
-        return $this->hasOne(Invoice::class, 'quote_id');
-    }
-
-    /**
-     * Accessor voor de geformatteerde totaalprijs.
+     * Accessor for formatted total price.
      */
     public function getFormattedTotalPriceAttribute()
     {
         return '€ ' . number_format($this->total_price, 2, ',', '.');
     }
 }
-

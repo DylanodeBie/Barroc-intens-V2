@@ -28,6 +28,14 @@ class UserSeeder extends Seeder
             'role_id' => 10,
         ]);
 
+        // Voeg jouw user toe
+        User::factory()->create([
+            'name' => 'Dylano',
+            'email' => 'dqdebie@gmail.com',
+            'password' => 'test12345',
+            'role_id' => 10,
+        ]);
+
         // Create users based on the organizational chart
         User::factory()->create([
             'name' => 'Joris Pulles',

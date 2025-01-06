@@ -9,6 +9,7 @@ use App\Http\Controllers\VisitController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\LeasecontractController;
 use App\Models\Customer;
 use App\Models\Event;
 use Illuminate\Support\Facades\Route;
@@ -17,17 +18,13 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-// Logout route
 Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-// Dashboard routes
 Route::middleware(['auth'])->get('/dashboard', function () {
     return view('dashboard');
 });
 
-// Group routes for authenticated users
 Route::middleware(['auth'])->group(function () {
-    // Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/finance', [DashboardController::class, 'finance'])->name('dashboard.finance');
     Route::get('/dashboard/sales', [DashboardController::class, 'sales'])->name('dashboard.sales');
@@ -39,10 +36,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/head-maintenance', [DashboardController::class, 'headMaintenance'])->name('dashboard.head-maintenance');
     Route::get('/dashboard/ceo', [DashboardController::class, 'ceo'])->name('dashboard.ceo');
 
-    // Customer routes
     Route::resource('customers', CustomerController::class);
 
-    // Visit routes
     Route::middleware('role:3,7,10')->group(function () {
         Route::resource('visits', VisitController::class)->except(['destroy']);
     });
@@ -58,30 +53,34 @@ Route::middleware(['auth'])->group(function () {
         Route::get('visits/maintenance-tickets', [VisitController::class, 'maintenanceTickets'])->name('visits.maintenance_tickets');
     });
 
-    // Product routes
     Route::resource('products', ProductController::class);
 
-    // Quotes routes restricted to specific roles
     Route::middleware('role:3,7,10')->group(function () {
         Route::resource('quotes', QuoteController::class);
         Route::get('/quotes/{quote}/download', [QuoteController::class, 'downloadPdf'])->name('quotes.download');
     });
 
-    // Invoice routes restricted to Sales, Head Sales, and CEO roles
     Route::middleware('role:3,7,10')->group(function () {
         Route::resource('invoices', InvoiceController::class);
         Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
     });
+
+
+    Route::middleware(['role:2,6,10'])->group(function () {
+        Route::get('/contracts', [LeasecontractController::class, 'index'])->name('leasecontracts.index');
+        Route::get('/contracts/create', [LeasecontractController::class, 'create'])->name('leasecontracts.create');
+        Route::get('leasecontracts/{leasecontract}', [LeasecontractController::class, 'show'])->name('leasecontracts.show');
+        Route::post('/contracts', [LeasecontractController::class, 'store'])->name('leasecontracts.store');
+        Route::delete('/leasecontracts/{leasecontract}', [LeasecontractController::class, 'destroy'])->name('leasecontracts.destroy');
+    });
 });
 
-// Agenda and event routes
 Route::get('/agenda', [VisitController::class, 'calendar'])->middleware('auth')->name('agenda');
 Route::get('/events', [EventController::class, 'index'])->middleware('auth');
 Route::post('/events', [EventController::class, 'store'])->middleware('auth');
 Route::put('/events/{id}', [EventController::class, 'update'])->middleware('auth');
 Route::delete('/events/{id}', [EventController::class, 'destroy'])->middleware('auth');
 
-// API routes
 Route::get('/api/events', function () {
     return Event::all();
 });
@@ -90,17 +89,14 @@ Route::get('/api/customers', function () {
     return Customer::all();
 });
 
-// Forbidden error page
 Route::get('/forbidden', function () {
     return view('errors.forbidden');
 })->name('forbidden');
 
-// User profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Include authentication routes
 require __DIR__ . '/auth.php';

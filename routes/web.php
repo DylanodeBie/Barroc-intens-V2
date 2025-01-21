@@ -9,6 +9,7 @@ use App\Http\Controllers\VisitController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\ProfitDistributionController;
 use App\Models\Customer;
 use App\Models\Event;
 use Illuminate\Support\Facades\Route;
@@ -75,6 +76,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('invoices', InvoiceController::class);
         Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
     });
+
+    // Winstverdeling routes
+    Route::get('/profit-distribution', [ProfitDistributionController::class, 'index'])->name('profit_distribution.index');
+    Route::get('/profit-distribution/export', [ProfitDistributionController::class, 'exportToExcel'])->name('profit_distribution.export');
+    Route::get('/profit-distribution/pdf', [ProfitDistributionController::class, 'exportToPdf'])->name('profit_distribution.pdf');
 });
 
 // Agenda and event routes

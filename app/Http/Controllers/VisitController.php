@@ -12,27 +12,45 @@ use Illuminate\Support\Facades\Storage;
 class VisitController extends Controller
 {
     public function index(Request $request)
-    {
-        $search = $request->input('search');
+{
+    $search = $request->input('search');
+    $companyName = $request->input('company_name');
+    $type = $request->input('type');
+    $userId = $request->input('user_id');
+    $status = $request->input('status');
 
-        $visits = Visit::with('customer', 'user')
-            ->when($search, function ($query, $search) {
-                return $query->whereHas('customer', function ($q) use ($search) {
-                    $q->where('company_name', 'like', "%{$search}%");
-                })
-                ->orWhere('address', 'like', "%{$search}%")
-                ->orWhere('visit_date', 'like', "%{$search}%");
+    // Query voor bezoeken met filters
+    $visits = Visit::with('customer', 'user')
+        ->when($search, function ($query, $search) {
+            return $query->whereHas('customer', function ($q) use ($search) {
+                $q->where('company_name', 'like', "%{$search}%");
             })
-            ->when(auth()->user()->role_id === 3 || auth()->user()->role_id === 7, function ($query) {
-                return $query->where('type', 'sales');
-            })
-            ->when(auth()->user()->role_id === 9, function ($query) {
-                return $query->where('type', 'maintenance');
-            })
-            ->get();
+            ->orWhere('address', 'like', "%{$search}%")
+            ->orWhere('visit_date', 'like', "%{$search}%");
+        })
+        ->when($companyName, function ($query, $companyName) {
+            return $query->whereHas('customer', function ($q) use ($companyName) {
+                $q->where('company_name', 'like', "%{$companyName}%");
+            });
+        })
+        ->when($type, function ($query, $type) {
+            return $query->where('type', $type);
+        })
+        ->when($userId, function ($query, $userId) {
+            return $query->where('user_id', $userId);
+        })
+        ->when($status, function ($query, $status) {
+            return $query->where('status', $status);
+        })
+        ->get();
 
-        return view('visits.index', compact('visits'));
-    }
+    // Data voor filters ophalen
+    $users = User::whereIn('role_id', [5, 9, 10])->get();
+    $statuses = Visit::select('status')->distinct()->pluck('status');
+
+    return view('visits.index', compact('visits', 'users', 'statuses'));
+}
+
 
     public function create()
     {

@@ -7,9 +7,13 @@
 @section('content')
     <div class="container mx-auto">
         <h1 class="text-3xl font-bold mb-4 text-center text-black">Bezoeken Lijst</h1>
-        <form method="GET" action="{{ route('visits.my_tickets') }}" class="bg-gray-100 p-6 rounded-lg shadow-md mb-6">
+        <form method="GET" action="{{ route('visits.index') }}" class="bg-gray-100 p-6 rounded-lg shadow-md mb-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <!-- Filter op type -->
+
+                <div>
+                    <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">Bedrijf</label>
+                    <input type="text" name="company_name" id="company_name" value="{{ request('company_name') }}" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500" placeholder="Zoek op bedrijf">
+                </div>
                 <div>
                     <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Afdeling</label>
                     <select name="type" id="type" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
@@ -19,7 +23,6 @@
                     </select>
                 </div>
 
-                <!-- Filter op medewerker -->
                 <div>
                     <label for="user_id" class="block text-sm font-medium text-gray-700 mb-1">Medewerker</label>
                     <select name="user_id" id="user_id" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
@@ -32,7 +35,8 @@
                     </select>
                 </div>
 
-                <!-- Filter op status -->
+                <div>
+                    <label for="status" class="block text
                 <div>
                     <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select name="status" id="status" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
@@ -45,11 +49,6 @@
                     </select>
                 </div>
 
-                <!-- Filter op bedrijf (text input) -->
-                <div>
-                    <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">Bedrijf</label>
-                    <input type="text" name="company_name" id="company_name" value="{{ request('company_name') }}" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500" placeholder="Zoek op bedrijf">
-                </div>
             </div>
 
             <div class="mt-4 text-right">
@@ -59,9 +58,7 @@
             </div>
         </form>
 
-        <!-- "Nieuw bezoek toevoegen" button with #FFD700 color -->
         @if (in_array(auth()->user()->role_id, [3, 7, 10]))
-            <!-- Alleen tonen aan Sales, Head Sales, en CEO -->
             <div class="flex justify-end mb-4">
                 <a href="{{ route('visits.create') }}" class="font-semibold px-6 py-2 rounded-md hover:bg-yellow-500"
                     style="background-color: #FFD700; color: black;">
@@ -69,16 +66,6 @@
                 </a>
             </div>
         @endif
-
-        <!-- Search bar with icon -->
-        <form action="{{ route('visits.index') }}" method="GET" class="flex justify-end mb-4">
-            <div class="relative">
-                <input type="text" name="search" value="{{ request()->input('search') }}" placeholder="Zoeken..." class="border border-gray-300 rounded-full px-4 py-2 pr-10">
-                <button type="submit" class="absolute right-3 top-2 text-black">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-        </form>
 
         @if($visits->isEmpty())
         <div class="flex items-center bg-red-100 border border-red-400 text-red-800 p-4 mb-4 rounded-md mt-4">

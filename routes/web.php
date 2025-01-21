@@ -65,6 +65,9 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('role:3,7,10')->group(function () {
         Route::resource('quotes', QuoteController::class);
         Route::get('/quotes/{quote}/download', [QuoteController::class, 'downloadPdf'])->name('quotes.download');
+
+        // New route to create invoice from quote
+        Route::post('/quotes/{quote}/invoice', [InvoiceController::class, 'createFromQuote'])->name('quotes.invoice');
     });
 
     // Invoice routes restricted to Sales, Head Sales, and CEO roles

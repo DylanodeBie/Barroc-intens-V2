@@ -20,7 +20,7 @@ class Product extends Model
 
     public function leasecontracts()
     {
-        return $this->belongsToMany(Leasecontract::class, 'leasecontract_product')
+        return $this->belongsToMany(Leasecontract::class, 'leasecontract_products')
                     ->withPivot('amount');
     }
 }

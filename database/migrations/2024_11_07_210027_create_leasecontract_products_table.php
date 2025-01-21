@@ -9,13 +9,12 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('leasecontract_products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('leasecontract_id')->constrained('leasecontracts');
-            $table->foreignId('product_id')->constrained('products');
-            $table->integer('quantity');
+            $table->foreignId('leasecontract_id')->constrained()->onDelete('cascade');
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

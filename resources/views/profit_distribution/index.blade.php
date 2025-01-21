@@ -64,11 +64,13 @@
 
     <!-- Export Button -->
     <div class="text-end">
-        <a href="{{ route('profit_distribution.export', ['year' => $year, 'customer_id' => $customerId]) }}"
-            class="btn btn-success">
-            Export to Excel
+        <a href="{{ route('profit_distribution.pdf', ['year' => $year, 'customer_id' => $customerId]) }}"
+            class="btn btn-danger">
+            Export to PDF
         </a>
     </div>
+
+
 </div>
 @endsection
 

@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf; // Gebruik DomPDF
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProfitDistributionExport;
 
@@ -84,5 +85,40 @@ class ProfitDistributionController extends Controller
         $customerId = $request->input('customer_id');
 
         return Excel::download(new ProfitDistributionExport($year, $customerId), 'profit_distribution.xlsx');
+    }
+
+    /**
+     * Export profit distribution data to a PDF.
+     */
+    public function exportToPdf(Request $request)
+    {
+        $year = $request->input('year', date('Y')); // Huidig jaar als standaard
+        $customerId = $request->input('customer_id'); // Filter voor specifieke klant
+
+        // Query voor betaalde facturen
+        $query = Invoice::where('status', 'paid')->whereYear('invoice_date', $year);
+
+        if ($customerId) {
+            $query->where('customer_id', $customerId);
+        }
+
+        $invoices = $query->get();
+
+        // Bereken totale inkomsten voor het geselecteerde jaar
+        $totalIncome = $query->sum('total_amount');
+
+        // Data voor de PDF
+        $data = [
+            'year' => $year,
+            'customerId' => $customerId,
+            'invoices' => $invoices,
+            'totalIncome' => $totalIncome,
+        ];
+
+        // Genereer PDF met DomPDF
+        $pdf = Pdf::loadView('profit_distribution.pdf', $data);
+
+        // Download de PDF
+        return $pdf->download('profit_distribution.pdf');
     }
 }

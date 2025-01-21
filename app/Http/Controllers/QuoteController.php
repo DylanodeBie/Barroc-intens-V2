@@ -15,11 +15,41 @@ class QuoteController extends Controller
     /**
      * Display a listing of the quotes.
      */
-    public function index()
-    {
-        $quotes = Quote::with(['customer', 'user', 'machines', 'beans'])->get(); // Added 'beans'
-        return view('quotes.index', compact('quotes'));
+    public function index(Request $request)
+{
+    $query = Quote::with(['customer', 'user', 'machines', 'beans']);
+
+    // Haal de gebruikers met de rol 2, 3, 6, 7, 10
+    $users = User::whereIn('role_id', [2, 3, 6, 7, 10])->get();
+
+    // Filter op klant
+    if ($request->has('customer') && $request->input('customer') != '') {
+        $query->whereHas('customer', function ($q) use ($request) {
+            $q->where('company_name', 'like', '%' . $request->input('customer') . '%');
+        });
     }
+
+    // Filter op gebruiker
+    if ($request->has('user') && $request->input('user') != '') {
+        $query->whereHas('user', function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->input('user') . '%');
+        });
+    }
+
+    // Filter op status
+    if ($request->has('status') && $request->input('status') != '') {
+        $query->where('status', 'like', '%' . $request->input('status') . '%');
+    }
+
+    // Filter op datum
+    if ($request->has('date') && $request->input('date') != '') {
+        $query->whereDate('quote_date', '=', $request->input('date'));
+    }
+
+    $quotes = $query->get();
+    return view('quotes.index', compact('quotes', 'users'));
+}
+
 
     /**
      * Show the form for creating a new quote.

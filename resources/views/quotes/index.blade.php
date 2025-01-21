@@ -4,7 +4,6 @@
     <div class="container mx-auto">
         <h1 class="text-3xl font-bold mb-4 text-center text-black">Offertes Lijst</h1>
 
-        <!-- "Nieuwe offerte maken" button -->
         <div class="flex justify-end mb-4">
             <a href="{{ route('quotes.create') }}" class="font-semibold px-6 py-2 rounded-md hover:bg-yellow-500"
                 style="background-color: #FFD700; color: black;">
@@ -12,17 +11,50 @@
             </a>
         </div>
 
-        <!-- Search bar -->
-        <div class="flex justify-end mb-4">
-            <div class="relative">
-                <input type="text" placeholder="Zoeken..." class="border border-gray-300 rounded-full px-4 py-2 pr-10">
-                <button class="absolute right-3 top-2 text-black">
-                    <i class="fas fa-search"></i>
+        <form method="GET" action="{{ route('quotes.index') }}" class="bg-gray-100 p-6 rounded-lg shadow-md mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+                <div>
+                    <label for="customer" class="block text-sm font-medium text-gray-700 mb-1">Klant</label>
+                    <input type="text" name="customer" id="customer" value="{{ request('customer') }}" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500" placeholder="Zoek op klant">
+                </div>
+
+                <div>
+                    <label for="user" class="block text-sm font-medium text-gray-700 mb-1">Gebruiker</label>
+                    <select name="user" id="user" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
+                        <option value="">Alle gebruikers</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}" {{ request('user') == $user->id ? 'selected' : '' }}>
+                                {{ $user->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select name="status" id="status" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
+                        <option value="">Alle statussen</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
+                        <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Datum</label>
+                    <input type="date" name="date" id="date" value="{{ request('date') }}" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
+                </div>
+
+            </div>
+
+            <div class="mt-4 text-right">
+                <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded-md shadow hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                    Filter
                 </button>
             </div>
-        </div>
+        </form>
 
-        <!-- Quotes table -->
         <div class="overflow-x-auto border border-gray-200 rounded-lg">
             <table class="min-w-full bg-white border-collapse">
                 <thead style="background-color: #FFD700;">
@@ -37,7 +69,6 @@
                 <tbody class="text-black">
                     @forelse ($quotes as $quote)
                         <tr class="border-b hover:bg-gray-100">
-                            <!-- Updated to display company_name -->
                             <td class="px-6 py-4 whitespace-nowrap">{{ $quote->customer?->company_name ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $quote->user?->name ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($quote->status) }}</td>
@@ -45,23 +76,15 @@
                                 {{ $quote->quote_date ? $quote->quote_date->format('d-m-Y') : 'N/A' }}
                             </td>
                             <td class="px-6 py-4 text-center flex justify-center gap-4">
-                                <!-- View icon -->
-                                <a href="{{ route('quotes.show', $quote->id) }}" class="hover:text-gray-700"
-                                    title="Bekijken" style="color: black;">
+                                <a href="{{ route('quotes.show', $quote->id) }}" class="hover:text-gray-700" title="Bekijken" style="color: black;">
                                     <i class="fas fa-eye"></i>
                                 </a>
-
-                                <!-- Edit action for specific roles -->
                                 @if (in_array(auth()->user()->role->name, ['CEO', 'Sales', 'Head Sales']))
-                                    <a href="{{ route('quotes.edit', $quote->id) }}" class="hover:text-gray-700"
-                                        title="Bewerken" style="color: black;">
+                                    <a href="{{ route('quotes.edit', $quote->id) }}" class="hover:text-gray-700" title="Bewerken" style="color: black;">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 @endif
-
-                                <!-- Download action -->
-                                <a href="{{ route('quotes.download', $quote->id) }}" class="hover:text-gray-700"
-                                    title="Download PDF" style="color: black;">
+                                <a href="{{ route('quotes.download', $quote->id) }}" class="hover:text-gray-700" title="Download PDF" style="color: black;">
                                     <i class="fas fa-download"></i>
                                 </a>
                             </td>

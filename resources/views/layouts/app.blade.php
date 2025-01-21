@@ -14,13 +14,8 @@
     <script src="//unpkg.com/alpinejs" defer></script>
     <script src="https://kit.fontawesome.com/bd40200337.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-<<<<<<< Updated upstream
 
     <!-- Scripts -->
-=======
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-
->>>>>>> Stashed changes
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 

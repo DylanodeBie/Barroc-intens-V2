@@ -50,24 +50,24 @@
         @endif
     </div>
 
-    <div class="mt-6">
+    <div class="mt-6 space-x-4">
         <a href="{{ route('leasecontracts.index') }}" class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700">Terug naar overzicht</a>
+        <a href="{{ route('leasecontracts.edit', $leasecontract->id) }}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Bewerken</a>
         <button type="button" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700" data-bs-toggle="modal" data-bs-target="#confirmationModal">
-            Verwijderen
+            Beëindigen
         </button>
     </div>
 </div>
 
-<!-- Modal -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmationModalLabel">Weet je zeker dat je dit contract wilt verwijderen?</h5>
+                <h5 class="modal-title" id="confirmationModalLabel">Weet je zeker dat je dit contract wilt beëindigen?</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Vul je naam in om de verwijderactie te bevestigen:</p>
+                <p>Vul je naam in om de beëindigactie te bevestigen:</p>
                 <p><strong>Ingelogde gebruiker:</strong> {{ Auth::user()->name }}</p> <!-- Laat de naam van de ingelogde gebruiker zien -->
                 <input type="text" id="username" class="form-control" placeholder="Vul je naam in om te bevestigen" value="">
             </div>
@@ -76,7 +76,7 @@
                 <form action="{{ route('leasecontracts.destroy', $leasecontract) }}" method="POST" id="deleteForm">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">Ja, verwijder het contract</button>
+                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">Ja, beëindig het contract</button>
                 </form>
             </div>
         </div>

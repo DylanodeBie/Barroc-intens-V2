@@ -71,6 +71,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/contracts/create', [LeasecontractController::class, 'create'])->name('leasecontracts.create');
         Route::get('leasecontracts/{leasecontract}', [LeasecontractController::class, 'show'])->name('leasecontracts.show');
         Route::post('/contracts', [LeasecontractController::class, 'store'])->name('leasecontracts.store');
+        Route::get('/leasecontracts/{leasecontract}/edit', [LeasecontractController::class, 'edit'])->name('leasecontracts.edit');
+        Route::put('/leasecontracts/{leasecontract}', [LeasecontractController::class, 'update'])->name('leasecontracts.update');
         Route::delete('/leasecontracts/{leasecontract}', [LeasecontractController::class, 'destroy'])->name('leasecontracts.destroy');
     });
 });

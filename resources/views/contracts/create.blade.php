@@ -34,6 +34,10 @@
             <div class="mb-4">
                 <label for="end_date" class="block text-gray-700 font-bold">Einddatum</label>
                 <input type="date" name="end_date" id="end_date" class="w-full border rounded p-2">
+
+                @if($errors->has('end_date'))
+                    <p class="text-red-500 text-sm mt-2">{{ $errors->first('end_date') }}</p>
+                @endif
             </div>
 
             <div class="mb-4">

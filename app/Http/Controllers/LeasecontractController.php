@@ -41,6 +41,8 @@ class LeasecontractController extends Controller
             'payment_method' => 'required|string',
             'machine_amount' => 'required|integer|min:1',
             'notice_period' => 'required|string',
+        ], [
+            'end_date.after_or_equal' => 'De einddatum mag niet eerder zijn dan de startdatum!',
         ]);
 
         $validated['status'] = 'pending';
@@ -58,6 +60,62 @@ class LeasecontractController extends Controller
 
         return redirect()->route('leasecontracts.index')->with('success', 'Leasecontract succesvol aangemaakt.');
     }
+
+    public function edit($id)
+    {
+        $leasecontract = LeaseContract::with('products')->findOrFail($id);
+        $customers = Customer::all();
+        $users = User::all();
+
+        // Haal de producten op die al gekoppeld zijn aan het contract
+        $linkedProducts = $leasecontract->products;
+
+        // Haal de producten op die niet gekoppeld zijn aan het contract
+        $unlinkedProducts = Product::whereNotIn('id', $linkedProducts->pluck('id'))->get();
+
+        return view('contracts.edit', compact(
+            'leasecontract',
+            'customers',
+            'users',
+            'linkedProducts',
+            'unlinkedProducts'
+        ));
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $leasecontract = LeaseContract::findOrFail($id);
+
+        // Update leasecontract details
+        $leasecontract->update($request->only([
+            'customer_id',
+            'user_id',
+            'start_date',
+            'end_date',
+            'payment_method',
+            'machine_amount',
+            'notice_period'
+        ]));
+
+        // Synchroniseer producten met hun pivot-data
+        $products = $request->input('products', []);
+        $syncData = [];
+
+        foreach ($products as $productId => $productData) {
+            if ($productData['product_id'] != '0') {
+                $syncData[$productId] = [
+                    'amount' => $productData['amount'] ?? 0,
+                    'price' => $productData['price'] ?? 0,
+                ];
+            }
+        }
+
+        $leasecontract->products()->sync($syncData);
+
+        return redirect()->route('leasecontracts.index')->with('success', 'Leasecontract bijgewerkt.');
+    }
+
 
     public function destroy(Leasecontract $leasecontract)
     {

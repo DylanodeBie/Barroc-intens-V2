@@ -11,10 +11,8 @@ use Illuminate\Support\Facades\Storage;
 
 class VisitController extends Controller
 {
-
     public function index(Request $request)
     {
-
         $search = $request->input('search');
 
         $visits = Visit::with('customer', 'user')
@@ -36,18 +34,15 @@ class VisitController extends Controller
         return view('visits.index', compact('visits'));
     }
 
-
-    // Show the form to create a new visit
     public function create()
     {
-        $customers = Customer::all(); // Retrieve all customers
-        $users = User::whereIn('role_id', [3, 7, 10])->get(); // Retrieve users with Sales, Head Sales, and CEO roles
-        $errorNotifications = ErrorNotification::all(); // Retrieve all error notifications
+        $customers = Customer::all();
+        $users = User::whereIn('role_id', [3, 7, 10])->get();
+        $errorNotifications = ErrorNotification::all();
 
         return view('visits.create', compact('customers', 'users', 'errorNotifications'));
     }
 
-    // Store a new visit
     public function store(Request $request)
     {
         $request->validate([
@@ -63,32 +58,28 @@ class VisitController extends Controller
             'type' => 'required|in:maintenance,sales',
         ]);
 
-        Visit::create($request->all()); // Create the visit record
+        Visit::create($request->all());
         return redirect()->route('visits.index')->with('success', 'Bezoek succesvol ingepland.');
     }
 
-    // Show method to display details of a specific visit
     public function show($id)
     {
-        $visit = Visit::findOrFail($id); // Retrieve visit by ID
-        return view('visits.show', compact('visit')); // Show visit details
+        $visit = Visit::findOrFail($id);
+        return view('visits.show', compact('visit'));
     }
 
-    // Assign a visit to Maintenance team
     public function assignToMaintenance($id)
     {
         $visit = Visit::findOrFail($id);
 
-        // Check if the current user has role 9 (Head Maintenance) or role 10 (CEO)
         if (!in_array(auth()->user()->role_id, [9, 10])) {
             abort(403, 'Geen toegang tot deze actie.');
         }
 
-        $maintenanceUsers = User::where('role_id', 5)->get(); // Retrieve users with Maintenance role (role_id 5)
+        $maintenanceUsers = User::where('role_id', 5)->get();
         return view('visits.assign', compact('visit', 'maintenanceUsers'));
     }
 
-    // Store the assignment of a visit to a maintenance team member
     public function storeAssignedToMaintenance(Request $request, $id)
     {
         $request->validate([
@@ -96,27 +87,48 @@ class VisitController extends Controller
         ]);
 
         $visit = Visit::findOrFail($id);
-        $visit->user_id = $request->user_id; // Assign maintenance user
+        $visit->user_id = $request->user_id;
         $visit->save();
 
         return redirect()->route('visits.index')->with('success', 'Bezoek succesvol toegewezen aan onderhoud.');
     }
 
-
-    public function myTickets()
+    public function myTickets(Request $request)
     {
         $user = auth()->user();
 
-        // Zorg ervoor dat alleen onderhoudsrollen hun tickets zien
         if (!in_array($user->role_id, [5, 9, 10])) {
             abort(403, 'Geen toegang tot deze pagina.');
         }
 
-        $visits = auth()->user()->role_id === 9 || auth()->user()->role_id === 10
-        ? Visit::all()
-        : Visit::where('user_id', $user->id)->get();
+        $query = auth()->user()->role_id === 9 || auth()->user()->role_id === 10
+            ? Visit::query()
+            : Visit::where('user_id', $user->id);
 
-        return view('visits.maintenance_tickets', compact('visits'));
+        if ($request->filled('type')) {
+            $query->where('type', $request->input('type'));
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->input('user_id'));
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        if ($request->filled('company_name')) {
+            $query->whereHas('customer', function ($q) use ($request) {
+                $q->where('company_name', 'like', '%' . $request->input('company_name') . '%');
+            });
+        }
+
+        $visits = $query->get();
+
+        $users = User::whereIn('role_id', [5, 9, 10])->get();
+        $statuses = Visit::select('status')->distinct()->pluck('status');
+
+        return view('visits.maintenance_tickets', compact('visits', 'users', 'statuses'));
     }
 
     public function sign(Request $request, $id)
@@ -145,7 +157,4 @@ class VisitController extends Controller
 
         return response()->json(['message' => 'Bezoek succesvol ondertekend', 'path' => $fileName]);
     }
-
-
-
 }

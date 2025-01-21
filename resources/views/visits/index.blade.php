@@ -7,6 +7,57 @@
 @section('content')
     <div class="container mx-auto">
         <h1 class="text-3xl font-bold mb-4 text-center text-black">Bezoeken Lijst</h1>
+        <form method="GET" action="{{ route('visits.my_tickets') }}" class="bg-gray-100 p-6 rounded-lg shadow-md mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Filter op type -->
+                <div>
+                    <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Afdeling</label>
+                    <select name="type" id="type" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
+                        <option value="">Alle</option>
+                        <option value="sales" {{ request('type') == 'sales' ? 'selected' : '' }}>Sales</option>
+                        <option value="maintenance" {{ request('type') == 'maintenance' ? 'selected' : '' }}>Maintenance</option>
+                    </select>
+                </div>
+
+                <!-- Filter op medewerker -->
+                <div>
+                    <label for="user_id" class="block text-sm font-medium text-gray-700 mb-1">Medewerker</label>
+                    <select name="user_id" id="user_id" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
+                        <option value="">Alle</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
+                                {{ $user->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Filter op status -->
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select name="status" id="status" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
+                        <option value="">Alle</option>
+                        @foreach($statuses as $status)
+                            <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
+                                {{ ucfirst($status) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Filter op bedrijf (text input) -->
+                <div>
+                    <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">Bedrijf</label>
+                    <input type="text" name="company_name" id="company_name" value="{{ request('company_name') }}" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500" placeholder="Zoek op bedrijf">
+                </div>
+            </div>
+
+            <div class="mt-4 text-right">
+                <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded-md shadow hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                    Filter
+                </button>
+            </div>
+        </form>
 
         <!-- "Nieuw bezoek toevoegen" button with #FFD700 color -->
         @if (in_array(auth()->user()->role_id, [3, 7, 10]))

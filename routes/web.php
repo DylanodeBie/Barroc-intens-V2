@@ -76,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('parts/create', [MarketingController::class, 'create'])->name('parts.create');
     Route::post('parts', [MarketingController::class, 'store'])->name('parts.store');
     Route::post('parts/order', [MarketingController::class, 'order'])->name('parts.order');
+    Route::post('/order/signature', [MarketingController::class, 'storeSignature'])->name('storeSignature');
 
 
     // Quotes resource routes restricted to Sales, Head Sales, and CEO

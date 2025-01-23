@@ -41,6 +41,7 @@
                     <tr>
                         <th class="px-6 py-3 text-left font-semibold text-black">Naam</th>
                         <th class="px-6 py-3 text-left font-semibold text-black">Voorraad</th>
+                        <th class="px-6 py-3 text-left font-semibold text-black">Prijs</th>
                         <th class="px-6 py-3 text-center font-semibold text-black">Acties</th>
                     </tr>
                 </thead>
@@ -49,6 +50,7 @@
                         <tr class="border-b hover:bg-gray-100">
                             <td class="px-6 py-4 whitespace-nowrap">{{ $part->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $part->stock }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $part->price }} €</td>
                             <td class="px-6 py-4 text-center">
                                 <button
                                     class="px-4 py-2 rounded-md mr-10 text-white bg-blue-600 hover:bg-blue-500"
@@ -96,16 +98,64 @@
             </form>
         </div>
     </div>
+    @if (session('totalPrice') > 500)
+    <div id="signatureModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h2 class="text-2xl font-bold mb-4">Bestelling boven de 500 euro, handtekening vereist</h2>
+            <form action="{{ route('storeSignature') }}" method="POST">
+                @csrf
+                <canvas id="signatureCanvas" class="border border-gray-300 rounded w-full h-400" height="300"></canvas>
+                <div class="mt-4">
+                    <button id="clearSignature" class="btn btn-warning">Handtekening Wissen</button>
+                </div>
+                <div class="flex justify-end gap-4 mt-4">
+                    <button type="button" onclick="closeModal()"
+                        class="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400">
+                        Annuleren
+                    </button>
+                    <button type="submit" id="saveSignature"
+                        class="px-4 py-2 rounded-md text-white bg-blue-600 hover:bg-blue-500">
+                        Opslaan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+@endif
 
-    <script>
-        function openOrderModal(partId, partName) {
-            document.getElementById('partId').value = partId;
-            document.getElementById('partName').innerText = `Onderdeel: ${partName}`;
-            document.getElementById('orderModal').classList.remove('hidden');
-        }
 
-        function closeOrderModal() {
-            document.getElementById('orderModal').classList.add('hidden');
-        }
-    </script>
+<script>
+    let signaturePad;
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialiseer de SignaturePad zodra de modal geladen is
+    signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
+
+    // Clear de handtekening
+    document.getElementById('clearSignature').addEventListener('click', function () {
+        signaturePad.clear(); // Wis de handtekening
+    });
+
+    // Bij het klikken op de opslaan knop
+
+});
+
+function openOrderModal(partId, partName) {
+    document.getElementById('partId').value = partId;
+    document.getElementById('partName').innerText = `Onderdeel: ${partName}`;
+    document.getElementById('orderModal').classList.remove('hidden');
+
+    // Reset de SignaturePad en de knop bij het openen van de modal
+    signaturePad.clear();
+    document.getElementById('orderSubmitBtn').disabled = true; // Start met de knop uitgeschakeld
+}
+
+function closeOrderModal() {
+    document.getElementById('orderModal').classList.add('hidden');
+}
+
+</script>
+
+
+
 @endsection

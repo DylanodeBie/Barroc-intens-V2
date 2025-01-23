@@ -77,10 +77,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
     });
 
-    // Winstverdeling routes
-    Route::get('/profit-distribution', [ProfitDistributionController::class, 'index'])->name('profit_distribution.index');
-    Route::get('/profit-distribution/export', [ProfitDistributionController::class, 'exportToExcel'])->name('profit_distribution.export');
-    Route::get('/profit-distribution/pdf', [ProfitDistributionController::class, 'exportToPdf'])->name('profit_distribution.pdf');
+    // Winstverdeling routes (alleen Head Finance, Finance en CEO)
+    Route::middleware('role:2,6,10')->group(function () {
+        Route::get('/profit-distribution', [ProfitDistributionController::class, 'index'])->name('profit_distribution.index');
+        Route::get('/profit-distribution/export', [ProfitDistributionController::class, 'exportToExcel'])->name('profit_distribution.export');
+        Route::get('/profit-distribution/pdf', [ProfitDistributionController::class, 'exportToPdf'])->name('profit_distribution.pdf');
+    });
 });
 
 // Agenda and event routes

@@ -12,6 +12,7 @@
                     <li class="p-2 rounded hover:bg-gray-700"><a href="http://barroc-intens-v2.test/quotes">Offertes</a>
                     <li class="p-2 rounded hover:bg-gray-700"><a href="http://barroc-intens-v2.test/invoices">Facturen</a>
                     <li class="p-2 rounded hover:bg-gray-700"><a href="http://barroc-intens-v2.test/lease-contracts">Leasecontracten</a>
+                    <li class="p-2 rounded hover:bg-gray-700"><a href="http://barroc-intens-v2.test/profit-distribution">Winstverdeling</a>
                     </li>
                     </li>
                 </ul>

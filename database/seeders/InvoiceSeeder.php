@@ -25,7 +25,7 @@ class InvoiceSeeder extends Seeder
         $statuses = ['pending', 'paid', 'overdue'];
 
         // Genereer 100+ facturen
-        for ($i = 0; $i < 120; $i++) {
+        for ($i = 0; $i < 999; $i++) {
             // Kies willekeurig een klant, een geautoriseerde gebruiker en een status
             $customer = $customers->random();
             $user = $authorizedUsers->random();

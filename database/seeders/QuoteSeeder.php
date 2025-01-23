@@ -52,7 +52,7 @@ class QuoteSeeder extends Seeder
                 'customer_id' => $customer->id,
                 'user_id' => $user->id,
                 'status' => collect(['pending', 'approved', 'rejected'])->random(),
-                'quote_date' => now()->subDays(rand(1, 60)),
+                'quote_date' => now()->subDays(rand(1, 900)),
                 'agreement_length' => rand(6, 24) . ' maanden',
                 'maintenance_agreement' => collect(['basic', 'standard', 'premium'])->random(),
                 'total_price' => 0, // Wordt hieronder berekend

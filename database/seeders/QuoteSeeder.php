@@ -29,7 +29,7 @@ class QuoteSeeder extends Seeder
         }
 
         // Genereer 100+ offertes
-        for ($i = 0; $i < 999; $i++) {
+        for ($i = 0; $i < 120; $i++) {
             $customer = $customers->random();
             $user = $authorizedUsers->random();
 
@@ -52,7 +52,7 @@ class QuoteSeeder extends Seeder
                 'customer_id' => $customer->id,
                 'user_id' => $user->id,
                 'status' => collect(['pending', 'approved', 'rejected'])->random(),
-                'quote_date' => now()->subDays(rand(1, 60)),
+                'quote_date' => now()->subDays(rand(1, 900)),
                 'agreement_length' => rand(6, 24) . ' maanden',
                 'maintenance_agreement' => collect(['basic', 'standard', 'premium'])->random(),
                 'total_price' => 0, // Wordt hieronder berekend

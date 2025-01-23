@@ -22,7 +22,7 @@ class InvoiceSeeder extends Seeder
         $products = Product::all();
 
         // Genereer 100+ facturen
-        for ($i = 0; $i < 999; $i++) {
+        for ($i = 0; $i < 120; $i++) {
             // Kies willekeurig een klant en een geautoriseerde gebruiker
             $customer = $customers->random();
             $user = $authorizedUsers->random();
@@ -32,7 +32,7 @@ class InvoiceSeeder extends Seeder
                 'customer_id' => $customer->id,
                 'user_id' => $user->id,
                 'invoice_number' => 'INV-' . now()->timestamp . '-' . $customer->id . '-' . $i,
-                'invoice_date' => now()->subDays(rand(1, 90)), // Willekeurige datum binnen de laatste 90 dagen
+                'invoice_date' => now()->subDays(rand(1, 900)), // Willekeurige datum binnen de laatste 900 dagen
                 'notes' => 'Dit is een automatisch gegenereerde factuur.',
                 'total_amount' => 0,
             ]);

@@ -1,100 +1,88 @@
-<?php
+@extends('layouts.app')
 
-namespace Database\Seeders;
+@section('content')
+<div class="container mx-auto">
+    <h1 class="text-3xl font-bold mb-4 text-center text-black">Facturen Lijst</h1>
 
-use Illuminate\Database\Seeder;
-use App\Models\Customer;
-use App\Models\User;
-use App\Models\Product;
-use App\Models\Invoice;
-use App\Models\InvoiceItem;
+    <!-- "Nieuwe factuur maken" button -->
+    <div class="flex justify-end mb-4">
+        <a href="{{ route('invoices.create') }}" class="font-semibold px-6 py-2 rounded-md hover:bg-yellow-500"
+            style="background-color: #FFD700; color: black;">
+            <i class="fas fa-plus mr-2"></i> Nieuwe factuur maken
+        </a>
+    </div>
 
-class InvoiceSeeder extends Seeder
-{
-    /**
-     * Run the database seeds.
-     */
-    public function run()
-    {
-        // Haal klanten, gebruikers en producten op
-        $customers = Customer::all();
-        $authorizedUsers = User::whereIn('role_id', [7, 10])->get(); // Sales, Head Sales, en CEO
-        $products = Product::all();
+    <!-- Search bar -->
+    <div class="flex justify-end mb-4">
+        <div class="relative">
+            <input type="text" placeholder="Zoeken..." class="border border-gray-300 rounded-full px-4 py-2 pr-10">
+            <button class="absolute right-3 top-2 text-black">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
 
-        // Genereer 100+ facturen
-        for ($i = 0; $i < 120; $i++) {
-            // Kies willekeurig een klant en een geautoriseerde gebruiker
-            $customer = $customers->random();
-            $user = $authorizedUsers->random();
+    <!-- Invoices table -->
+    <div class="overflow-x-auto border border-gray-200 rounded-lg">
+        <table class="min-w-full bg-white border-collapse">
+            <thead style="background-color: #FFD700;">
+                <tr>
+                    <th class="px-6 py-3 text-left font-semibold text-black">Klant</th>
+                    <th class="px-6 py-3 text-left font-semibold text-black">Gebruiker</th>
+                    <th class="px-6 py-3 text-left font-semibold text-black">Status</th>
+                    <th class="px-6 py-3 text-left font-semibold text-black">Datum</th>
+                    <th class="px-6 py-3 text-left font-semibold text-black">Prijs</th>
+                    <th class="px-6 py-3 text-center font-semibold text-black">Acties</th>
+                </tr>
+            </thead>
+            <tbody class="text-black">
+                @forelse ($invoices as $invoice)
+                    <tr class="border-b hover:bg-gray-100">
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $invoice->customer?->company_name ?? 'N/A' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $invoice->user?->name ?? 'N/A' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {{ $invoice->is_paid ? 'Betaald' : 'Onbetaald' }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d-m-Y') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            € {{ number_format($invoice->price, 2) }}
+                        </td>
+                        <td class="px-6 py-4 text-center flex justify-center gap-4">
+                            <!-- View icon -->
+                            <a href="{{ route('invoices.show', $invoice->id) }}" class="hover:text-gray-700"
+                                title="Bekijken" style="color: black;">
+                                <i class="fas fa-eye"></i>
+                            </a>
 
-            // Maak een nieuwe factuur
-            $invoice = Invoice::create([
-                'customer_id' => $customer->id,
-                'user_id' => $user->id,
-                'invoice_number' => 'INV-' . now()->timestamp . '-' . $customer->id . '-' . $i,
-                'invoice_date' => now()->subDays(rand(1, 900)), // Willekeurige datum binnen de laatste 900 dagen
-                'notes' => 'Dit is een automatisch gegenereerde factuur.',
-                'total_amount' => 0,
-            ]);
+                            <!-- Edit action for specific roles -->
+                            @if (in_array(auth()->user()->role->name, ['CEO', 'Sales', 'Head Sales']))
+                                <a href="{{ route('invoices.edit', $invoice->id) }}" class="hover:text-gray-700"
+                                    title="Bewerken" style="color: black;">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            @endif
 
-            $totalAmount = 0;
-
-            // Voeg 2-4 willekeurige producten toe aan de factuur
-            $selectedProducts = $products->random(rand(2, 4));
-
-            foreach ($selectedProducts as $product) {
-                $quantity = rand(1, 5); // Hoeveelheid tussen 1 en 5
-                $subtotal = $product->price * $quantity;
-
-                // Maak een factuurregel aan
-                InvoiceItem::create([
-                    'invoice_id' => $invoice->id,
-                    'description' => $product->name,
-                    'quantity' => $quantity,
-                    'unit_price' => $product->price,
-                    'subtotal' => $subtotal,
-                ]);
-
-                $totalAmount += $subtotal;
-            }
-
-            // Update het totaalbedrag van de factuur
-            $invoice->update(['total_amount' => $totalAmount]);
-        }
-    }
-}
-dit is mijn invoice migration:
-<?php
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('invoices', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('invoice_number')->unique();
-            $table->date('invoice_date');
-            $table->decimal('total_amount', 10, 2)->default(0.00);
-            $table->text('notes')->nullable();
-            $table->enum('status', ['pending', 'paid', 'overdue'])->default('pending');
-            $table->timestamps();
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('invoices');
-    }
-};
+                            <!-- Delete action -->
+                            <form action="{{ route('invoices.destroy', $invoice->id) }}" method="POST"
+                                onsubmit="return confirm('Weet je zeker dat je deze factuur wilt verwijderen?');"
+                                style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="hover:text-gray-700" title="Verwijderen" style="color: black;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-gray-500">Geen facturen gevonden.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+@endsection

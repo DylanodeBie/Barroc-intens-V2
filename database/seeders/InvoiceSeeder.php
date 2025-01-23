@@ -21,11 +21,15 @@ class InvoiceSeeder extends Seeder
         $authorizedUsers = User::whereIn('role_id', [7, 10])->get(); // Sales, Head Sales, en CEO
         $products = Product::all();
 
+        // Mogelijke statussen
+        $statuses = ['pending', 'paid', 'overdue'];
+
         // Genereer 100+ facturen
         for ($i = 0; $i < 120; $i++) {
-            // Kies willekeurig een klant en een geautoriseerde gebruiker
+            // Kies willekeurig een klant, een geautoriseerde gebruiker en een status
             $customer = $customers->random();
             $user = $authorizedUsers->random();
+            $status = $statuses[array_rand($statuses)];
 
             // Maak een nieuwe factuur
             $invoice = Invoice::create([
@@ -35,6 +39,7 @@ class InvoiceSeeder extends Seeder
                 'invoice_date' => now()->subDays(rand(1, 900)), // Willekeurige datum binnen de laatste 900 dagen
                 'notes' => 'Dit is een automatisch gegenereerde factuur.',
                 'total_amount' => 0,
+                'status' => $status, // Willekeurige status
             ]);
 
             $totalAmount = 0;

@@ -29,7 +29,7 @@ class QuoteSeeder extends Seeder
         }
 
         // Genereer 100+ offertes
-        for ($i = 0; $i < 999; $i++) {
+        for ($i = 0; $i < 120; $i++) {
             $customer = $customers->random();
             $user = $authorizedUsers->random();
 

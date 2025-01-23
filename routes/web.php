@@ -9,6 +9,7 @@ use App\Http\Controllers\HeadMarketing\ProductController;
 use App\Http\Controllers\VisitController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\MarketingController;
 use App\Models\Customer;
 use App\Models\Event;
 
@@ -48,7 +49,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('visits/{visit}', [VisitController::class, 'show'])->name('visits.show');
     });
 
-    Route::middleware('role:9,10')->group(function () {
+    Route::middleware('role:5,9,10')->group(function () {
+        Route::get('/maintenace-tickets', [VisitController::class, 'myTickets'])->name('visits.my_tickets');
+    });
+
+    Route::post('/visits/{id}/sign', [VisitController::class, 'sign'])->name('visits.sign');
+
+    // Visit assignment and maintenance tickets
+    Route::middleware('role:3,9,10')->group(function () {
+        // Allow Head Maintenance (role 9) and CEO (role 10) to assign visits and manage tickets
         Route::get('visits/{id}/assign', [VisitController::class, 'assignToMaintenance'])->name('visits.assign');
         Route::post('visits/{id}/assign', [VisitController::class, 'storeAssignedToMaintenance'])->name('visits.store_assigned');
         Route::get('visits/maintenance-tickets', [VisitController::class, 'maintenanceTickets'])->name('visits.maintenance_tickets');
@@ -62,6 +71,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    Route::resource('parts', MarketingController::class);
+    Route::get('parts/create', [MarketingController::class, 'create'])->name('parts.create');
+    Route::post('parts', [MarketingController::class, 'store'])->name('parts.store');
+    Route::post('parts/order', [MarketingController::class, 'order'])->name('parts.order');
+
 
     // Quotes resource routes restricted to Sales, Head Sales, and CEO
     Route::middleware('role:3,7,10')->group(function () {

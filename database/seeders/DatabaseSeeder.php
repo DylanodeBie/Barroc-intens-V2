@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         VisitSeeder::class,
         QuoteSeeder::class,
         CalendarSeeder::class,
+        PartSeeder::class,
     ]);
 }
 }

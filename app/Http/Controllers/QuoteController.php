@@ -31,9 +31,7 @@ class QuoteController extends Controller
 
     // Filter op gebruiker
     if ($request->has('user') && $request->input('user') != '') {
-        $query->whereHas('user', function ($q) use ($request) {
-            $q->where('name', 'like', '%' . $request->input('user') . '%');
-        });
+        $query->where('user_id', $request->input('user'));
     }
 
     // Filter op status

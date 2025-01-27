@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         QuoteSeeder::class,
         InvoiceSeeder::class,
         CalendarSeeder::class,
+        LeaseContractSeeder::class,
     ]);
 }
 }

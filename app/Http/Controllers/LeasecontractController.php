@@ -7,12 +7,22 @@ use App\Models\Leasecontract;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class LeasecontractController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $leasecontracts = Leasecontract::with('customers')->get();
+        if ($request->user()->role_id == 10) { // role_id 1 = Admin
+            // Admin ziet ALLE contracten, ongeacht de status
+            $leasecontracts = Leasecontract::with(['customers', 'products'])->get();
+        } elseif (in_array($request->user()->role_id, [2])) { // role_id 2 = Finance, 10 = Manager
+            // Finance en Manager zien alleen de contracten met status 'pending' voor goedkeuring
+            $leasecontracts = Leasecontract::where('status', 'pending')
+                ->with(['customers', 'products']) // Voeg producten toe via de relatie
+                ->get();
+        }
+
         return view('contracts.index', compact('leasecontracts'));
     }
 
@@ -122,5 +132,48 @@ class LeasecontractController extends Controller
         $leasecontract->delete();
 
         return redirect()->route('leasecontracts.index')->with('success', 'Leasecontract succesvol verwijderd.');
+    }
+
+    public function exportPdf(Leasecontract $leasecontract)
+    {
+        // Haal het leasecontract op met gerelateerde gegevens
+        $leasecontract = Leasecontract::with(['customers', 'users', 'products'])->findOrFail($leasecontract->id);
+
+        // Maak een PDF-weergave met de gegevens
+        $pdf = \PDF::loadView('contracts.pdf', compact('leasecontract'));
+
+        // Geef het PDF-bestand terug als download
+        return $pdf->download('leasecontract-' . $leasecontract->id . '.pdf');
+    }
+
+    public function pendingContracts()
+    {
+        // Haal de laatste 5 goedgekeurde of afgekeurde contracten op
+        $recentContracts = Leasecontract::whereIn('status', ['completed', 'rejected'])
+            ->latest()  // Zorg ervoor dat je de meest recente contracten haalt
+            ->take(5)   // Beperk het aantal contracten tot 5
+            ->get();
+
+        $leasecontracts = Leasecontract::with('products')->where('status', 'pending')->get();
+
+        return view('contracts.approval', compact('leasecontracts', 'recentContracts'));
+    }
+
+    public function approve(Request $request, Leasecontract $leasecontract)
+    {
+        $leasecontract->update([
+            'status' => 'completed',
+        ]);
+
+        return redirect()->route('contracts.approval')->with('success', 'Contract goedgekeurd.');
+    }
+
+    public function reject(Request $request, Leasecontract $leasecontract)
+    {
+        $leasecontract->update([
+            'status' => 'rejected',
+        ]);
+
+        return redirect()->route('contracts.approval')->with('error', 'Contract afgekeurd.');
     }
 }

@@ -12,7 +12,7 @@
         <p><strong>Einddatum:</strong> {{ $leasecontract->end_date }}</p>
         <p><strong>Betalingsmethode:</strong> {{ $leasecontract->payment_method }}</p>
         <p><strong>Aantal Machines:</strong> {{ $leasecontract->machine_amount }}</p>
-        <p><strong>Opzegtermijn:</strong> {{ $leasecontract->notice_period }}</p>
+        <p><strong>Opzegtermijn:</strong> {{ $leasecontract->notice_period }} dagen</p>
         <p><strong>Status:</strong> {{ ucfirst($leasecontract->status) }}</p>
     </div>
 
@@ -21,7 +21,7 @@
         @if($leasecontract->products->count())
         <table class="table-auto w-full border">
             <thead>
-                <tr class="bg-gray-100">
+                <tr style="background-color: #FFD700;">
                     <th class="border px-4 py-2">Product</th>
                     <th class="border px-4 py-2">Hoeveelheid</th>
                     <th class="border px-4 py-2">Prijs per stuk</th>
@@ -35,8 +35,8 @@
                 <tr>
                     <td class="border px-4 py-2">{{ $product->name }}</td>
                     <td class="border px-4 py-2">{{ $product->pivot->amount }}</td>
-                    <td class="border px-4 py-2">€{{ number_format($product->pivot->price, 2) }}</td>
-                    <td class="border px-4 py-2">€{{ number_format($totalProductPrice, 2) }}</td>
+                    <td class="border px-4 py-2 text-right">€{{ number_format($product->pivot->price, 2) }}</td>
+                    <td class="border px-4 py-2 text-right">€{{ number_format($totalProductPrice, 2) }}</td>
                 </tr>
                 @php $totalContractPrice += $totalProductPrice; @endphp
                 @endforeach

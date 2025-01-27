@@ -74,6 +74,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/leasecontracts/{leasecontract}/edit', [LeasecontractController::class, 'edit'])->name('leasecontracts.edit');
         Route::put('/leasecontracts/{leasecontract}', [LeasecontractController::class, 'update'])->name('leasecontracts.update');
         Route::delete('/leasecontracts/{leasecontract}', [LeasecontractController::class, 'destroy'])->name('leasecontracts.destroy');
+        Route::get('/leasecontracts/{leasecontract}/export-pdf', [LeasecontractController::class, 'exportPdf'])->name('leasecontracts.exportPdf');
+    });
+
+    Route::middleware(['role:2,10'])->group(function () {
+        Route::get('/contracts/approval', [LeasecontractController::class, 'pendingContracts'])->name('contracts.approval');
+        Route::post('/contracts/{leasecontract}/approve', [LeasecontractController::class, 'approve'])->name('contracts.approve');
+        Route::post('/contracts/{leasecontract}/reject', [LeasecontractController::class, 'reject'])->name('contracts.reject');
     });
 });
 

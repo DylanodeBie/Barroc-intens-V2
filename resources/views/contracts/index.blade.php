@@ -16,37 +16,94 @@
     @endif
 
     <h2 class="text-2xl font-semibold mb-4">Overzicht Leasecontracten</h2>
-    <a href="{{ route('leasecontracts.create') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Nieuw Contract</a>
+    <a style="background-color: #FFD700;" href="{{ route('leasecontracts.create') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"><i class="fas fa-plus mr-2"></i>Nieuw contract maken</a>
 
     <div class="mt-6">
         <table class="min-w-full bg-white shadow rounded-lg">
-            <thead>
+            <thead style="background-color: #FFD700; rounded-lg">
                 <tr>
                     <th class="px-4 py-2 border-b">Klant</th>
                     <th class="px-4 py-2 border-b">Startdatum</th>
                     <th class="px-4 py-2 border-b">Einddatum</th>
+                    <th class="px-4 py-2 border-b">Status</th>
                     <th class="px-4 py-2 border-b">Betalingsoptie</th>
                     <th class="px-4 py-2 border-b">Acties</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($leasecontracts as $contract)
+                @foreach($leasecontracts->sortBy(function($contract) {
+                    // Sorteer op basis van status: 'completed' > 'pending' > 'overdue'
+                    $order = ['completed' => 1, 'pending' => 2, 'overdue' => 3];
+                    return $order[$contract->status] ?? 4; // Default is onbekend
+                }) as $contract)
                 @php
-                $isExpired = \Carbon\Carbon::parse($contract->end_date)->isPast();
+                    // Bepaal de status op basis van de contractstatus
+                    $status = $contract->status;
+                    $statusClass = '';
+                    $statusText = '';
+                    $circleColor = '';
+                    $iconColor = ''; // Dit wordt gebruikt om de kleur van de icoontjes te bepalen
+                    $trashIconColor = ''; // Dit wordt gebruikt om de kleur van de prullenbak te bepalen
+
+                    // Kijk naar de status van het contract
+                    if ($status === 'overdue') {
+                        $statusClass = 'bg-red-500 text-white'; // Rood voor verlopen
+                        $statusText = 'Verlopen';
+                        $circleColor = 'bg-red-500'; // Rode cirkel
+                        $iconColor = 'text-white'; // Witte icoontjes voor verlopen
+                        $trashIconColor = 'text-white'; // Witte prullenbak voor verlopen
+                    } elseif ($status === 'pending') {
+                        $statusClass = ''; // Geen extra kleur voor de rij
+                        $statusText = 'In afwachting';
+                        $circleColor = 'bg-yellow-500'; // Gele cirkel
+                        $iconColor = 'text-black'; // Zwarte icoontjes voor in afwachting
+                        $trashIconColor = 'text-black'; // Zwarte prullenbak voor in afwachting
+                    } elseif ($status === 'completed') {
+                        $statusClass = ''; // Geen extra kleur voor de rij
+                        $statusText = 'Actief';
+                        $circleColor = 'bg-green-500'; // Groene cirkel
+                        $iconColor = 'text-black'; // Zwarte icoontjes voor actief
+                        $trashIconColor = 'text-black'; // Zwarte prullenbak voor actief
+                    } else {
+                        $statusClass = 'bg-gray-300 text-black'; // Grijs als de status onbekend is
+                        $statusText = 'Onbekend';
+                        $circleColor = 'bg-gray-300'; // Grijze cirkel
+                        $iconColor = 'text-black'; // Zwarte icoontjes voor onbekend
+                        $trashIconColor = 'text-black'; // Zwarte prullenbak voor onbekend
+                    }
                 @endphp
-                <tr class="{{ $isExpired ? 'bg-red-500 text-white' : '' }}">
-                    <td class="px-4 py-2 border-b">{{ $contract->customers->company_name }}</td>
-                    <td class="px-4 py-2 border-b">{{ $contract->start_date }}</td>
-                    <td class="px-4 py-2 border-b">{{ $contract->end_date }}</td>
+                <tr class="{{ $statusClass }}">
+                    <td class="px-4 py-2 border-b flex items-center">
+                        <span>{{ $contract->customers->company_name ?? 'Geen klant' }}</span>
+                        <span class="w-3 h-3 rounded-full ml-2 {{ $circleColor }}"></span> <!-- Cirkel naast de klantnaam -->
+                    </td>
+                    <td class="px-4 py-2 border-b">{{ \Carbon\Carbon::parse($contract->start_date)->format('d-m-Y') }}</td>
+                    <td class="px-4 py-2 border-b">{{ \Carbon\Carbon::parse($contract->end_date)->format('d-m-Y') }}</td>
+                    <td class="px-4 py-2 border-b">{{ $statusText }}</td>
                     <td class="px-4 py-2 border-b">{{ ucfirst($contract->payment_method) }}</td>
                     <td class="px-4 py-2 border-b">
-                        @if($isExpired)
-                        <span class="mr-2">⚠️</span>
-                        @endif
-                        <a href="{{ route('leasecontracts.show', $contract->id) }}" class="text-blue-500 hover:underline inline-block mr-2">Bekijken</a>
-                        <a href="{{ route('leasecontracts.edit', $contract->id) }}" class="text-yellow-500 hover:underline inline-block mr-2">Bewerken</a>
-                        <button type="button" class="inline-block {{ $isExpired ? 'text-black hover:underline' : 'text-red-500 hover:underline' }}" data-bs-toggle="modal" data-bs-target="#confirmationModal{{ $contract->id }}">
-                            Beëindigen
+                        <a href="{{ route('leasecontracts.show', $contract->id) }}"
+                            class="inline-block mr-2 {{ $iconColor }} hover:text-gray-700"
+                            title="Bekijken">
+                            <i class="fas fa-eye"></i>
+                        </a>
+
+                        <a href="{{ route('leasecontracts.edit', $contract->id) }}"
+                            class="inline-block mr-2 {{ $iconColor }} hover:text-gray-700"
+                            title="Bewerken">
+                            <i class="fas fa-edit"></i>
+                        </a>
+
+                        <a href="{{ route('leasecontracts.exportPdf', $contract->id) }}"
+                            class="inline-block mr-2 {{ $iconColor }} hover:text-gray-700"
+                            title="Download PDF">
+                            <i class="fas fa-download"></i>
+                        </a>
+
+                        <button type="button"
+                            class="inline-block {{ $trashIconColor }} hover:underline"
+                            data-bs-toggle="modal" data-bs-target="#confirmationModal{{ $contract->id }}">
+                            <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </td>
                 </tr>
@@ -85,12 +142,18 @@
 <script>
     // Validatie om ervoor te zorgen dat de naam van de ingelogde gebruiker overeenkomt
     @foreach($leasecontracts as $contract)
-    document.getElementById('deleteForm{{ $contract->id }}').addEventListener('submit', function(event) {
-        const username = document.getElementById('username{{ $contract->id }}').value;
+    document.getElementById('username{{ $contract->id }}').addEventListener('input', function(event) {
+        const username = event.target.value;
+        const deleteButton = document.querySelector("#confirmationModal{{ $contract->id }} button[type='submit']");
 
-        if (username !== "{{ Auth::user()->name }}") {
-            event.preventDefault();
-            alert('De naam komt niet overeen met de ingelogde gebruiker.');
+        if (username === "{{ Auth::user()->name }}") {
+            deleteButton.disabled = false;
+            deleteButton.classList.remove('bg-gray-400');
+            deleteButton.classList.add('bg-red-500', 'hover:bg-red-700');
+        } else {
+            deleteButton.disabled = true;
+            deleteButton.classList.add('bg-gray-400');
+            deleteButton.classList.remove('bg-red-500', 'hover:bg-red-700');
         }
     });
     @endforeach

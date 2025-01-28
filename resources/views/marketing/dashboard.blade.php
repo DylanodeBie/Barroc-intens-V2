@@ -1,6 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    #signatureCanvas {
+        border: 1px solid #ccc;
+        width: 100%;
+        height: 200px;
+    }
+    .button {
+        margin-top: 10px;
+    }
+</style>
+
 <div class="container mx-auto">
     <h1 class="text-3xl font-bold mb-4 text-center text-black">Onderdelenbeheer</h1>
 
@@ -72,6 +83,49 @@
     </div>
 </div>
 
+<h2 class="text-2xl font-bold mt-8 mb-4">Bestellingslog</h2>
+<div class="overflow-x-auto border border-gray-200 rounded-lg">
+    <table class="min-w-full bg-white border-collapse">
+        <thead style="background-color: #FFD700;">
+            <tr>
+                <th class="px-6 py-3 text-left font-semibold text-black">Onderdeel</th>
+                <th class="px-6 py-3 text-left font-semibold text-black">Gebruiker</th>
+                <th class="px-6 py-3 text-left font-semibold text-black">Aantal</th>
+                <th class="px-6 py-3 text-left font-semibold text-black">Handtekening</th>
+                <th class="px-6 py-3 text-left font-semibold text-black">Totaalprijs</th>
+                <th class="px-6 py-3 text-left font-semibold text-black">Datum</th>
+            </tr>
+        </thead>
+        <tbody class="text-black">
+            @foreach ($orders as $order)
+                <tr class="border-b hover:bg-gray-100">
+                    <td class="px-6 py-4">{{ $order->part->name }}</td>
+                    <td class="px-6 py-4">{{ $order->user->name ?? 'Onbekend' }}</td>
+                    <td class="px-6 py-4">{{ $order->quantity }}</td>
+                    <td class="px-6 py-4">
+                        @if ($order->requires_signature && $order->signature_path)
+                            <img src="{{ asset('storage/' . $order->signature_path) }}" alt="Handtekening" class="h-16">
+                        @elseif($order->requires_signature)
+                            Handtekening vereist
+                        @else
+                            N.v.t.
+                        @endif
+                    </td>
+                    <td class="px-6 py-4">{{ number_format($order->total_price, 2) }} €</td>
+                    <td class="px-6 py-4">{{ $order->created_at->format('d-m-Y H:i') }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+<!-- Paginering -->
+<div class="mt-4">
+    {{ $orders->links() }}
+</div>
+
+
+
 <!-- Bestel Modal -->
 <div id="orderModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
     <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
@@ -104,20 +158,11 @@
 <div id="signatureModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
         <h2 class="text-2xl font-bold mb-4">Bestelling boven de 500 euro, handtekening vereist</h2>
-        <form action="{{ route('storeSignature') }}" method="POST">
+        <form id="signatureForm" method="POST" action="{{ route('storeSignature') }}">
             @csrf
-            <canvas id="signatureCanvas" class="border border-gray-300 rounded"></canvas>
-            <div class="mt-4">
-                <button type="button" id="clearSignature" class="btn btn-warning">Handtekening Wissen</button>
-            </div>
-            <div class="flex justify-end gap-4 mt-4">
-                <button type="button" onclick="closeSignatureModal()" class="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400">
-                    Annuleren
-                </button>
-                <button type="submit" id="saveSignature" class="px-4 py-2 rounded-md text-white bg-blue-600 hover:bg-blue-500">
-                    Opslaan
-                </button>
-            </div>
+            <canvas id="signatureCanvas"></canvas>
+            <button type="button" id="clearButton" class="button">Wis handtekening</button>
+            <button type="submit" id="submitButton" class="button">Versturen</button>
         </form>
     </div>
 </div>
@@ -136,16 +181,49 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        const signatureCanvas = document.getElementById('signatureCanvas');
-        const signaturePad = new SignaturePad(signatureCanvas);
+    const canvas = document.getElementById('signatureCanvas');
+    const clearButton = document.getElementById('clearButton');
+    const submitButton = document.getElementById('submitButton');
+    const form = document.getElementById('signatureForm');
 
-        document.getElementById('clearSignature').addEventListener('click', function () {
-            signaturePad.clear();
-        });
+    // Initialiseer SignaturePad
+    const signaturePad = new SignaturePad(canvas);
+
+    // Canvas dynamisch schalen
+    function resizeCanvas() {
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = 200 * ratio; // Zelfde als CSS hoogte
+        canvas.getContext('2d').scale(ratio, ratio);
+        signaturePad.clear(); // Canvas leegmaken
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Handtekening wissen
+    clearButton.addEventListener('click', function () {
+        signaturePad.clear();
     });
 
-    function closeSignatureModal() {
-        document.getElementById('signatureModal').classList.add('hidden');
-    }
+    // Formulier verzenden
+    submitButton.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        if (signaturePad.isEmpty()) {
+            alert('Voeg een handtekening toe!');
+            return;
+        }
+
+        // Voeg de Base64-handtekening toe aan het formulier
+        const signatureInput = document.createElement('input');
+        signatureInput.type = 'hidden';
+        signatureInput.name = 'signature';
+        signatureInput.value = signaturePad.toDataURL('image/png');
+        form.appendChild(signatureInput);
+
+        form.submit();
+    });
+});
+
 </script>
 @endsection

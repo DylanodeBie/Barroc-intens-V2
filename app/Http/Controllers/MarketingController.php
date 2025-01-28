@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Part;
+use App\Models\Order;
+use Illuminate\Support\Facades\Auth;
+
 
 class MarketingController extends Controller
 {
@@ -11,8 +14,19 @@ class MarketingController extends Controller
     {
         $parts = Part::all();
         $lowStockParts = Part::where('stock', '<', 10)->get();
-        return view('marketing.dashboard', compact('parts', 'lowStockParts'));
+
+        // Haal de orders op met paginering
+        $orders = Order::with('part', 'user')->latest()->paginate(10);
+
+        // Voeg totaalprijs toe aan de orders
+        foreach ($orders as $order) {
+            $order->total_price = $order->part->price * $order->quantity; // Bereken totaalprijs
+        }
+
+        return view('marketing.dashboard', compact('parts', 'lowStockParts', 'orders'));
     }
+
+
 
     public function create()
     {
@@ -31,6 +45,7 @@ class MarketingController extends Controller
         return redirect()->route('parts.index')->with('success', 'Nieuw onderdeel toegevoegd!');
     }
 
+
     public function order(Request $request)
     {
         $request->validate([
@@ -41,10 +56,20 @@ class MarketingController extends Controller
         $part = Part::findOrFail($request->part_id);
         $totalPrice = $part->price * $request->quantity;
 
+        // Update voorraad
         $part->stock += $request->quantity;
         $part->save();
 
-        if ($totalPrice > 500) {
+        // Maak bestelling aan
+        $order = Order::create([
+            'part_id' => $part->id,
+            'user_id' => Auth::id(),
+            'quantity' => $request->quantity,
+            'requires_signature' => $totalPrice > 500,
+        ]);
+
+        // Check of een handtekening nodig is
+        if ($order->requires_signature) {
             return redirect()->route('parts.index')->with('totalPrice', $totalPrice)->with('requiresSignature', true);
         }
 
@@ -52,14 +77,30 @@ class MarketingController extends Controller
     }
 
     public function storeSignature(Request $request)
-    {
+{
+    // Zoek de meest recente bestelling van de ingelogde gebruiker
+    $order = Order::where('user_id', Auth::id())->latest()->first();
+
+    if ($order) {
+        // Haal de handtekeningdata op uit het request
         $signatureData = $request->input('signature');
 
-        $signaturePath = storage_path('app/public/signatures/') . uniqid() . '.png';
-        file_put_contents($signaturePath, base64_decode(preg_replace('/^data:image\/png;base64,/', '', $signatureData)));
+        if ($signatureData) {
+            // Converteer en sla de handtekening op
+            $signaturePath = 'signatures/' . uniqid() . '.png';
+            file_put_contents(storage_path('app/public/' . $signaturePath), base64_decode(preg_replace('/^data:image\/png;base64,/', '', $signatureData)));
 
-        return redirect()->route('parts.index')->with('success', 'De bestelling is succesvol geplaatst met een handtekening.');
+            // Update de bestelling met het pad van de handtekening
+            $order->update(['signature_path' => $signaturePath]);
+
+            return redirect()->route('parts.index')->with('success', 'De bestelling is succesvol geplaatst met een handtekening.');
+        }
+
+        return redirect()->back()->with('error', 'Handtekening ontbreekt, probeer opnieuw.');
     }
+
+    return redirect()->back()->with('error', 'Geen bestelling gevonden om een handtekening aan toe te voegen.');
+}
 
     public function destroy(Part $part)
     {

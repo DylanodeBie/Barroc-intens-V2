@@ -16,36 +16,42 @@ class InvoiceSeeder extends Seeder
      */
     public function run()
     {
-        // Step 1: Fetch customers, users (finance), and products
+        // Haal klanten, gebruikers en producten op
         $customers = Customer::all();
-        $financeUsers = User::where('role_id', 2)->get(); // Finance role
+        $authorizedUsers = User::whereIn('role_id', [7, 10])->get(); // Sales, Head Sales, en CEO
         $products = Product::all();
 
-        // Step 2: Generate invoices
-        foreach ($customers as $customer) {
-            // Randomly pick a finance user for the invoice
-            $user = $financeUsers->random();
+        // Mogelijke statussen
+        $statuses = ['pending', 'paid', 'overdue'];
 
-            // Create the invoice
+        // Genereer 100+ facturen
+        for ($i = 0; $i < 999; $i++) {
+            // Kies willekeurig een klant, een geautoriseerde gebruiker en een status
+            $customer = $customers->random();
+            $user = $authorizedUsers->random();
+            $status = $statuses[array_rand($statuses)];
+
+            // Maak een nieuwe factuur
             $invoice = Invoice::create([
                 'customer_id' => $customer->id,
                 'user_id' => $user->id,
-                'invoice_number' => 'INV-' . now()->timestamp . '-' . $customer->id,
-                'invoice_date' => now()->subDays(rand(1, 60)), // Random date within the last 2 months
-                'notes' => 'Dit is een gegenereerde factuur voor testdoeleinden.',
+                'invoice_number' => 'INV-' . now()->timestamp . '-' . $customer->id . '-' . $i,
+                'invoice_date' => now()->subDays(rand(1, 900)), // Willekeurige datum binnen de laatste 900 dagen
+                'notes' => 'Dit is een automatisch gegenereerde factuur.',
                 'total_amount' => 0,
+                'status' => $status, // Willekeurige status
             ]);
 
             $totalAmount = 0;
 
-            // Step 3: Add 2-4 random products (machines and beans) as invoice items
+            // Voeg 2-4 willekeurige producten toe aan de factuur
             $selectedProducts = $products->random(rand(2, 4));
 
             foreach ($selectedProducts as $product) {
-                $quantity = rand(1, 5);
+                $quantity = rand(1, 5); // Hoeveelheid tussen 1 en 5
                 $subtotal = $product->price * $quantity;
 
-                // Create invoice items
+                // Maak een factuurregel aan
                 InvoiceItem::create([
                     'invoice_id' => $invoice->id,
                     'description' => $product->name,
@@ -57,7 +63,7 @@ class InvoiceSeeder extends Seeder
                 $totalAmount += $subtotal;
             }
 
-            // Update total amount
+            // Update het totaalbedrag van de factuur
             $invoice->update(['total_amount' => $totalAmount]);
         }
     }

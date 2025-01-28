@@ -9,6 +9,7 @@ use App\Http\Controllers\VisitController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\ProfitDistributionController;
 use App\Http\Controllers\LeasecontractController;
 use App\Models\Customer;
 use App\Models\Event;
@@ -58,11 +59,21 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('role:3,7,10')->group(function () {
         Route::resource('quotes', QuoteController::class);
         Route::get('/quotes/{quote}/download', [QuoteController::class, 'downloadPdf'])->name('quotes.download');
+
+        // New route to create invoice from quote
+        Route::post('/quotes/{quote}/invoice', [InvoiceController::class, 'createFromQuote'])->name('quotes.invoice');
     });
 
     Route::middleware('role:3,7,10')->group(function () {
         Route::resource('invoices', InvoiceController::class);
         Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
+    });
+
+    // Winstverdeling routes (alleen Head Finance, Finance en CEO)
+    Route::middleware('role:2,6,10')->group(function () {
+        Route::get('/profit-distribution', [ProfitDistributionController::class, 'index'])->name('profit_distribution.index');
+        Route::get('/profit-distribution/export', [ProfitDistributionController::class, 'exportToExcel'])->name('profit_distribution.export');
+        Route::get('/profit-distribution/pdf', [ProfitDistributionController::class, 'exportToPdf'])->name('profit_distribution.pdf');
     });
 
 

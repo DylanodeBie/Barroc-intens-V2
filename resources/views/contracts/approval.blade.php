@@ -29,7 +29,7 @@
             <div class="mb-4">
                 <h4 class="text-md font-medium">Details:</h4>
                 <ul class="list-disc list-inside">
-                    <li><strong>Totale Prijs:</strong> €{{ number_format($leasecontract->price, 2) }}</li>
+                    <li><strong>Totale Prijs:</strong> €{{ number_format($leasecontract->total_price, 2) }}</li>
                     <li><strong>Status:</strong> {{ ucfirst($leasecontract->status) }}</li>
                 </ul>
             </div>

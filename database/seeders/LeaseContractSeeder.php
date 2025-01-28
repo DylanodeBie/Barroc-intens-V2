@@ -66,16 +66,17 @@ class LeaseContractSeeder extends Seeder
             // Willekeurige opzegtermijn (14, 7 of 21 dagen)
             $noticePeriod = $faker->randomElement([14, 7, 21]);
 
-            // Maak een LeaseContract
+            // Maak een LeaseContract zonder de totale prijs in te vullen
             $leaseContract = LeaseContract::create([
-                'customer_id' => $customer->id, // Gebruik het willekeurige klant-ID
-                'user_id' => $user->id, // Gebruik het willekeurige user-ID
+                'customer_id' => $customer->id,
+                'user_id' => $user->id,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
                 'payment_method' => $paymentMethod,
                 'machine_amount' => $machineAmount,
                 'notice_period' => $noticePeriod,
                 'status' => $status,
+                'total_price' => 0, // Placeholder, wordt later berekend
             ]);
 
             // Selecteer willekeurig 3 producten
@@ -93,6 +94,14 @@ class LeaseContractSeeder extends Seeder
 
             // Koppel de producten aan het leasecontract met extra gegevens
             $leaseContract->products()->attach($productDetails);
+
+            // Bereken de totale prijs van het leasecontract
+            $totalPrice = $productDetails->reduce(function ($carry, $details) {
+                return $carry + ($details['price'] * $details['amount']);
+            }, 0);
+
+            // Werk de total_price bij in het leasecontract
+            $leaseContract->update(['total_price' => $totalPrice]);
         }
     }
 }

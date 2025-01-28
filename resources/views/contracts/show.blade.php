@@ -6,6 +6,7 @@
 
     <div class="bg-white shadow-md rounded p-6">
         <h2 class="text-xl font-semibold mb-2">Contractinformatie</h2>
+        <p><strong>Contractnummer:</strong> {{ $leasecontract->id }}</p>
         <p><strong>Klant:</strong> {{ $leasecontract->customers->company_name }}</p>
         <p><strong>Medewerker:</strong> {{ $leasecontract->users->name }}</p>
         <p><strong>Startdatum:</strong> {{ $leasecontract->start_date }}</p>
@@ -29,22 +30,30 @@
                 </tr>
             </thead>
             <tbody>
-                @php $totalContractPrice = 0; @endphp
                 @foreach($leasecontract->products as $product)
-                @php $totalProductPrice = $product->pivot->amount * $product->pivot->price; @endphp
                 <tr>
                     <td class="border px-4 py-2">{{ $product->name }}</td>
                     <td class="border px-4 py-2">{{ $product->pivot->amount }}</td>
                     <td class="border px-4 py-2 text-right">€{{ number_format($product->pivot->price, 2) }}</td>
-                    <td class="border px-4 py-2 text-right">€{{ number_format($totalProductPrice, 2) }}</td>
+                    <td class="border px-4 py-2 text-right">
+                        €{{ number_format($product->pivot->amount * $product->pivot->price, 2) }}
+                    </td>
                 </tr>
-                @php $totalContractPrice += $totalProductPrice; @endphp
                 @endforeach
             </tbody>
         </table>
         <div class="text-right mt-4">
+            @php
+            $totalContractPrice = 0;
+            @endphp
+            @foreach($leasecontract->products as $product)
+            @php
+            $totalContractPrice += $product->pivot->amount * $product->pivot->price;
+            @endphp
+            @endforeach
             <span class="font-bold">Totale prijs voor het contract: €{{ number_format($totalContractPrice, 2) }}</span>
         </div>
+
         @else
         <p>Geen producten gekoppeld aan dit contract.</p>
         @endif

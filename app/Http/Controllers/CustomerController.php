@@ -7,11 +7,21 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::all();  // Haal customers op
+        $search = $request->input('search'); // Haal de zoekterm op
+
+        $customers = Customer::query()
+            ->when($search, function ($query, $search) {
+                return $query->where('company_name', 'LIKE', "%{$search}%")
+                    ->orWhere('contact_person', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            })
+            ->get();
+
         return view('customers.index', compact('customers'));
     }
+
 
     public function create()
     {

@@ -90,8 +90,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['role:2,10'])->group(function () {
         Route::get('/contracts/approval', [LeasecontractController::class, 'pendingContracts'])->name('contracts.approval');
-        Route::post('/contracts/{leasecontract}/approve', [LeasecontractController::class, 'approve'])->name('contracts.approve');
-        Route::post('/contracts/{leasecontract}/reject', [LeasecontractController::class, 'reject'])->name('contracts.reject');
+        Route::post('/contracts/{id}/approve', [LeaseContractController::class, 'approve'])->name('contracts.approve')->middleware('auth');
+        Route::post('/contracts/{id}/reject', [LeaseContractController::class, 'reject'])->name('contracts.reject')->middleware('auth');
     });
 });
 

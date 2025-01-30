@@ -66,7 +66,7 @@
                         $trashIconColor = 'text-black'; // Zwarte prullenbak voor actief
                     } else {
                         $statusClass = 'bg-gray-300 text-black'; // Grijs als de status onbekend is
-                        $statusText = 'Onbekend';
+                        $statusText = 'Afgekeurd';
                         $circleColor = 'bg-gray-300'; // Grijze cirkel
                         $iconColor = 'text-black'; // Zwarte icoontjes voor onbekend
                         $trashIconColor = 'text-black'; // Zwarte prullenbak voor onbekend

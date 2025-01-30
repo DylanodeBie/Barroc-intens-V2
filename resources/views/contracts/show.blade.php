@@ -15,6 +15,10 @@
         <p><strong>Aantal Machines:</strong> {{ $leasecontract->machine_amount }}</p>
         <p><strong>Opzegtermijn:</strong> {{ $leasecontract->notice_period }} dagen</p>
         <p><strong>Status:</strong> {{ ucfirst($leasecontract->status) }}</p>
+        <p><strong>Goedgekeurd door:</strong> {{ $leasecontract->approvedBy->name ?? 'N.v.t.' }}</p>
+        <p><strong>Goedkeuringsreden:</strong> {{ $leasecontract->approval_reason ?? 'N.v.t.' }}</p>
+        <p><strong>Afgekeurd door:</strong> {{ $leasecontract->rejectedBy->name ?? 'N.v.t.' }}</p>
+        <p><strong>Afkeuringsreden:</strong> {{ $leasecontract->rejection_reason ?? 'N.v.t.' }}</p>
     </div>
 
     <div class="mt-6">

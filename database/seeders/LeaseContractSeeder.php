@@ -54,7 +54,7 @@ class LeaseContractSeeder extends Seeder
 
                 // Genereer een willekeurige einddatum, altijd minstens 12 maanden na de startdatum
                 $endDate = $startDate->copy()->addMonths(rand(12, 24));
-                $status = $faker->randomElement(['pending', 'completed', 'overdue']); // Willekeurige status
+                $status = $faker->randomElement(['pending', 'completed', 'rejected', 'overdue']); // Willekeurige status
             }
 
             // Willekeurige betaalmethode: maandelijks of per kwartaal
@@ -102,6 +102,23 @@ class LeaseContractSeeder extends Seeder
 
             // Werk de total_price bij in het leasecontract
             $leaseContract->update(['total_price' => $totalPrice]);
+
+            // Voeg goedkeuring/afkeuring toe op basis van de status
+            if ($status == 'completed') {
+                // Als het contract 'completed' is, stel goedkeuring in
+                $approvedBy = $users->random(); // Kies een willekeurige gebruiker met role_id = 2
+                $leaseContract->update([
+                    'approval_reason' => $faker->sentence(), // Voeg een willekeurige goedkeuringsreden toe
+                    'approved_by' => $approvedBy->id, // Voeg de gebruiker toe die het contract heeft goedgekeurd
+                ]);
+            } elseif ($status == 'rejected') {
+                // Als het contract 'rejected' is, stel afkeuring in
+                $rejectedBy = $users->random(); // Kies een willekeurige gebruiker met role_id = 2
+                $leaseContract->update([
+                    'rejection_reason' => $faker->sentence(), // Voeg een willekeurige afkeuringsreden toe
+                    'rejected_by' => $rejectedBy->id, // Voeg de gebruiker toe die het contract heeft afgekeurd
+                ]);
+            }
         }
     }
 }

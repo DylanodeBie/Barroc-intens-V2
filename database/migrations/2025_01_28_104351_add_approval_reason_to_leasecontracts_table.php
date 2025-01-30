@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('leasecontracts', function (Blueprint $table) {
-            $table->decimal('total_price', 8, 2)->default(0)->after('notice_period')->default(0);
+            $table->text('approval_reason')->nullable();
+            $table->text('rejection_reason')->nullable();
+            $table->text('approved_by')->nullable();
+            $table->text('rejected_by')->nullable();
         });
     }
 
@@ -22,7 +25,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('leasecontracts', function (Blueprint $table) {
-            $table -> dropColumn('total_price');
+            $table->dropColumn('approval_reason');
+            $table->dropColumn('rejection_reason');
+            $table->dropColumn('approved_by');
+            $table->dropColumn('rejected_by');
         });
     }
 };

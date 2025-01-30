@@ -51,27 +51,38 @@ class LeasecontractController extends Controller
             'payment_method' => 'required|string',
             'machine_amount' => 'required|integer|min:1',
             'notice_period' => 'required|string',
-            'total_price' => 'required|numeric',
         ], [
             'end_date.after_or_equal' => 'De einddatum mag niet eerder zijn dan de startdatum!',
         ]);
 
         $validated['status'] = 'pending';
 
-        $leasecontract = Leasecontract::create($validated);
-
+        // **Berekening van totaalprijs**
         $totalPrice = 0;
+        $products = collect($request->input('products', []));
 
-        if ($request->has('products')) {
-            foreach ($request->products as $product) {
-                $leasecontract->products()->attach($product['product_id'], [
-                    'amount' => $product['amount'],
-                    'price' => $product['price'],
-                ]);
+        foreach ($products as $product) {
+            if (!empty($product['amount']) && !empty($product['price'])) {
                 $totalPrice += $product['amount'] * $product['price'];
             }
         }
-        $leasecontract->update(['total_price' => $totalPrice]);
+
+        $validated['total_price'] = $totalPrice;
+
+        // **Maak het leasecontract aan**
+        $leasecontract = Leasecontract::create($validated);
+
+        // **Koppel de producten**
+        if ($products->isNotEmpty()) {
+            foreach ($products as $product) {
+                if (!empty($product['product_id'])) {
+                    $leasecontract->products()->attach($product['product_id'], [
+                        'amount' => $product['amount'],
+                        'price' => $product['price'],
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('leasecontracts.index')->with('success', 'Leasecontract succesvol aangemaakt.');
     }
@@ -168,21 +179,44 @@ class LeasecontractController extends Controller
         return view('contracts.approval', compact('leasecontracts', 'recentContracts'));
     }
 
-    public function approve(Request $request, Leasecontract $leasecontract)
+    public function approve(Request $request, $id)
     {
-        $leasecontract->update([
-            'status' => 'completed',
+
+        $request->validate([
+            'approval_reason' => 'required|string|min:3',
+        ], [
+            'approval_reason.required' => 'Een reden voor goedkeuring is verplicht!',
+            'approval_reason.min' => 'De reden moet minimaal 3 tekens bevatten.',
         ]);
 
-        return redirect()->route('contracts.approval')->with('success', 'Contract goedgekeurd.');
+        $leasecontract = LeaseContract::findOrFail($id);
+
+        $leasecontract->status = 'approved';
+        $leasecontract->approval_reason = $request->input('approval_reason'); // Reden van goedkeuring
+        $leasecontract->approved_by = auth()->id(); // User ID van de goedkeurder
+        $leasecontract->save();
+
+        return redirect()->back()->with('success', 'Contract succesvol goedgekeurd met reden: ' . $request->input('approval_reason'));
     }
 
-    public function reject(Request $request, Leasecontract $leasecontract)
+
+    public function reject(Request $request, $id)
     {
-        $leasecontract->update([
-            'status' => 'rejected',
+
+        $request->validate([
+            'rejection_reason' => 'required|string|min:3',
+        ], [
+            'rejection_reason.required' => 'Een reden voor afkeuring is verplicht!',
+            'rejection_reason.min' => 'De reden moet minimaal 3 tekens bevatten.',
         ]);
 
-        return redirect()->route('contracts.approval')->with('error', 'Contract afgekeurd.');
+        $leasecontract = LeaseContract::findOrFail($id);
+
+        $leasecontract->status = 'rejected';
+        $leasecontract->rejection_reason = $request->input('rejection_reason'); // Reden van afkeuring
+        $leasecontract->rejected_by = auth()->id(); // User ID van de afkeurder
+        $leasecontract->save();
+
+        return redirect()->back()->with('success', 'Contract succesvol afgekeurd met reden: ' . $request->input('rejection_reason'));
     }
 }

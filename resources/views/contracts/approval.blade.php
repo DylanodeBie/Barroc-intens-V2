@@ -35,14 +35,21 @@
             </div>
 
             <!-- Acties -->
-            <div class="mt-4 flex justify-between">
-                <form action="{{ route('contracts.approve', $leasecontract->id) }}" method="POST">
+            <div class="mt-4">
+                <!-- Form Goedkeuren -->
+                <form action="{{ route('contracts.approve', $leasecontract->id) }}" method="POST" class="mb-4">
                     @csrf
-                    <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700">Goedkeuren</button>
+                    <label for="approve-reason-{{ $leasecontract->id }}" class="block text-sm font-medium text-gray-700 mb-2">Reden voor goedkeuring:</label>
+                    <textarea name="approval_reason" id="approve-reason-{{ $leasecontract->id }}" rows="2" class="w-full p-2 border rounded-md mb-2" required></textarea>
+                    <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700 w-full">Goedkeuren</button>
                 </form>
+
+                <!-- Form Afkeuren -->
                 <form action="{{ route('contracts.reject', $leasecontract->id) }}" method="POST">
                     @csrf
-                    <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700">Afkeuren</button>
+                    <label for="reject-reason-{{ $leasecontract->id }}" class="block text-sm font-medium text-gray-700 mb-2">Reden voor afkeuring:</label>
+                    <textarea name="rejection_reason" id="reject-reason-{{ $leasecontract->id }}" rows="2" class="w-full p-2 border rounded-md mb-2" required></textarea>
+                    <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700 w-full">Afkeuren</button>
                 </form>
             </div>
         </div>
@@ -54,3 +61,17 @@
     </div>
 </div>
 @endsection
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("form").forEach(form => {
+            form.addEventListener("submit", function (event) {
+                const textarea = this.querySelector("textarea");
+                if (textarea && textarea.value.trim() === "") {
+                    event.preventDefault();
+                    alert("Vul een reden in voordat je dit contract goedkeurt of afkeurt.");
+                }
+            });
+        });
+    });
+</script>

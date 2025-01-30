@@ -38,13 +38,13 @@
             <!-- Start Time Field -->
             <div class="mb-6">
                 <label for="start_time" class="block text-gray-700">Starttijd</label>
-                <input type="time" name="start_time" class="w-full px-4 py-2 border rounded-md border-gray-300" required>
+                <input type="time" name="start_time" class="w-full px-4 py-2 border rounded-md border-gray-300" step="60" required>
             </div>
 
             <!-- End Time Field -->
             <div class="mb-6">
                 <label for="end_time" class="block text-gray-700">Eindtijd</label>
-                <input type="time" name="end_time" class="w-full px-4 py-2 border rounded-md border-gray-300" required>
+                <input type="time" name="end_time" class="w-full px-4 py-2 border rounded-md border-gray-300" step="60" required>
             </div>
 
             <!-- Address Field -->
@@ -83,8 +83,27 @@
             <div class="mt-8 flex justify-between">
                 <a href="{{ route('visits.index') }}" class="bg-gray-400 text-white px-6 py-2 rounded-md">Annuleren</a>
                 <button type="submit"
-                    class="bg-yellow-400 text-black px-6 py-2 rounded-md hover:bg-yellow-500">Opslaan</button>
+                    class="bg-yellow-400 text-black px-6 py-2 rounded-md hover:bg-yellow-500">Opslaan
+                </button>
             </div>
         </form>
     </div>
 @endsection
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.querySelector("form");
+    const startTimeInput = document.querySelector("input[name='start_time']");
+    const endTimeInput = document.querySelector("input[name='end_time']");
+
+    form.addEventListener("submit", function(event) {
+        const startTime = startTimeInput.value;
+        const endTime = endTimeInput.value;
+
+        if (startTime && endTime && startTime >= endTime) {
+            event.preventDefault();
+            alert("De eindtijd moet later zijn dan de starttijd.");
+        }
+    });
+});
+</script>

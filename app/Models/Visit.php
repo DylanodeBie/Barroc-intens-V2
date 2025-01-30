@@ -14,10 +14,12 @@ class Visit extends Model
     protected $fillable = [
         'customer_id',
         'user_id',
-        'error_notification_id',
         'visit_date',
-        'error_details',
+        'start_time',
+        'end_time',
         'address',
+        'error_notification_id',
+        'error_details',
         'used_parts',
     ];
 

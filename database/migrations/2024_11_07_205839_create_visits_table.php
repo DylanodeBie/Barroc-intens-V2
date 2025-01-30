@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('error_notification_id')->constrained('error_notifications');
             $table->date('visit_date');
-            $table->string('error_details');
+            $table->string('error_details')->nullable();
             $table->string('address');
             $table->string('used_parts');
             $table->timestamps();

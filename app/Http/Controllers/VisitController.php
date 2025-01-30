@@ -32,12 +32,16 @@ class VisitController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'user_id' => 'required|exists:users,id',
             'visit_date' => 'required|date',
-            'start_time' => 'required',
-            'end_time' => 'required|after:start_time',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
             'address' => 'required|string',
             'error_notification_id' => 'required|exists:error_notifications,id',
             'error_details' => 'nullable|string',
             'used_parts' => 'required|string',
+        ], [
+            'end_time.after' => 'De eindtijd moet later zijn dan de starttijd.',
+            'start_time.date_format' => 'De starttijd moet in 24-uurs formaat zijn (HH:MM).',
+            'end_time.date_format' => 'De eindtijd moet in 24-uurs formaat zijn (HH:MM).',
         ]);
 
         Visit::create($request->all());

@@ -18,72 +18,15 @@
     </div>
 @endif
 
-<div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="signatureModalLabel">Ondertekenen</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <canvas id="signatureCanvas" class="border border-gray-300 rounded" width="500" height="300"></canvas>
-                <div class="mt-4">
-                    <button id="clearSignature" class="btn btn-warning">Handtekening Wissen</button>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-                <button type="button" id="saveSignature" class="btn btn-primary">Opslaan</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="maintenanceReportModal" tabindex="-1" aria-labelledby="maintenanceReportModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="maintenanceReportModalLabel">Maak Storingsmelding</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="maintenanceReportForm" method="POST" action="{{ route('maintenance-reports.store') }}">
-                    @csrf
-                    <input type="hidden" name="visit_id" id="currentVisitId">
-
-                    <div class="mb-3">
-                        <label for="issueDescription" class="form-label">Probleembeschrijving</label>
-                        <textarea class="form-control" id="issueDescription" name="issue_description" rows="4" required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="usedParts" class="form-label">Gebruikte Onderdelen</label>
-                        <textarea class="form-control" id="usedParts" name="used_parts" rows="4" required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="followUpNotes" class="form-label">Opvolgnotities (optioneel)</label>
-                        <textarea class="form-control" id="followUpNotes" name="follow_up_notes" rows="3"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-                <button type="submit" form="maintenanceReportForm" class="btn btn-primary">Opslaan</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="container mx-auto">
+<div class="container mx-auto px-4">
     <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Mijn Bezoeken</h1>
+
     <form method="GET" action="{{ route('visits.my_tickets') }}" class="bg-gray-100 p-6 rounded-lg shadow-md mb-6">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">Bedrijf</label>
                 <input type="text" name="company_name" id="company_name" value="{{ request('company_name') }}" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500" placeholder="Zoek op bedrijf">
             </div>
-            <!-- Filter op type -->
             <div>
                 <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Afdeling</label>
                 <select name="type" id="type" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
@@ -92,8 +35,6 @@
                     <option value="maintenance" {{ request('type') == 'maintenance' ? 'selected' : '' }}>Maintenance</option>
                 </select>
             </div>
-
-            <!-- Filter op medewerker -->
             <div>
                 <label for="user_id" class="block text-sm font-medium text-gray-700 mb-1">Medewerker</label>
                 <select name="user_id" id="user_id" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
@@ -105,8 +46,6 @@
                     @endforeach
                 </select>
             </div>
-
-            <!-- Filter op status -->
             <div>
                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <select name="status" id="status" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
@@ -118,8 +57,6 @@
                     @endforeach
                 </select>
             </div>
-
-
         </div>
 
         <div class="mt-4 text-right">
@@ -129,12 +66,11 @@
         </div>
     </form>
 
-
     @if ($visits->isEmpty())
         <p class="text-center text-gray-500">Je hebt momenteel geen toegewezen bezoeken.</p>
     @else
-
-        <div class="overflow-x-auto">
+        <!-- Tabel voor grotere schermen -->
+        <div class="hidden lg:block overflow-x-auto mb-6">
             <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow">
                 <thead class="bg-yellow-500 text-white">
                     <tr>
@@ -146,7 +82,7 @@
                         <th class="px-6 py-3 text-left">Adres</th>
                         <th class="px-6 py-3 text-left">Status</th>
                         @if(in_array(auth()->user()->role_id, [9, 10]))
-                            <th class="px-6 py-3 text left">Medewerker</th>
+                            <th class="px-6 py-3 text-left">Medewerker</th>
                         @endif
                         <th class="px-6 py-3 text-left">Acties</th>
                     </tr>
@@ -162,9 +98,10 @@
                             <td class="px-6 py-4 border-t">{{ $visit->address }}</td>
                             <td class="px-6 py-4 border-t capitalize">{{ $visit->status }}</td>
                             @if(in_array(auth()->user()->role_id, [9, 10]))
-                                <td class="px-6 py-4 border-t">{{ $visit->user->name ?? "Geen medewerker"}}</th>
+                                <td class="px-6 py-4 border-t">{{ $visit->user->name ?? "Geen medewerker"}}</td>
                             @endif
                             <td class="px-6 py-4 border-t flex space-x-4">
+                                <!-- Acties met icoontjes -->
                                 @if ($visit->maintenanceReport)
                                     <a href="{{ route('maintenance-reports.show', $visit->maintenanceReport->id) }}" class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600">
                                         Bekijk Storingsmelding
@@ -192,42 +129,82 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Kaarten voor kleinere schermen -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:hidden gap-6">
+            @foreach ($visits as $visit)
+                <div class="bg-white border border-gray-300 rounded-lg shadow p-6">
+                    <h2 class="text-xl font-bold text-gray-800">{{ $visit->customer->company_name ?? 'Geen klant gekoppeld' }}</h2>
+                    <p class="text-gray-600"><strong>Bezoekdatum:</strong> {{ $visit->visit_date }}</p>
+                    <p class="text-gray-600"><strong>Tijd:</strong> {{ $visit->start_time }} - {{ $visit->end_time }}</p>
+                    <p class="text-gray-600"><strong>Adres:</strong> {{ $visit->address }}</p>
+                    <p class="text-gray-600"><strong>Status:</strong> <span class="capitalize">{{ $visit->status }}</span></p>
+
+                    @if(in_array(auth()->user()->role_id, [9, 10]))
+                        <p class="text-gray-600"><strong>Medewerker:</strong> {{ $visit->user->name ?? "Geen medewerker" }}</p>
+                    @endif
+
+                    <div class="mt-4 space-y-2">
+                        <!-- Acties met icoontjes -->
+                        @if ($visit->maintenanceReport)
+                            <a href="{{ route('maintenance-reports.show', $visit->maintenanceReport->id) }}" class="block bg-gray-700 text-white text-center px-4 py-2 rounded hover:bg-gray-600">
+                                Bekijk Storingsmelding
+                            </a>
+                        @else
+                            <button type="button" class="block w-full bg-yellow-500 text-black text-center px-4 py-2 rounded hover:bg-yellow-400"
+                                data-bs-toggle="modal" data-bs-target="#maintenanceReportModal"
+                                data-visit-id="{{ $visit->id }}">
+                                Maak Storingsmelding
+                            </button>
+                        @endif
+
+                        @if ($visit->status === 'pending')
+                            <button type="button" class="block w-full bg-blue-500 text-white text-center px-4 py-2 rounded hover:bg-blue-400"
+                                data-bs-toggle="modal" data-bs-target="#signatureModal"
+                                data-visit-id="{{ $visit->id }}">
+                                Ondertekenen
+                            </button>
+                        @else
+                            <p class="text-green-600 font-medium text-center">Voltooid</p>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        </div>
     @endif
 </div>
 
 <script>
-    let signaturePad;
-
     document.addEventListener('DOMContentLoaded', () => {
-    const signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
-    let currentVisitId = null;
+        let signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
+        let currentVisitId = null;
 
-    document.querySelectorAll('[data-bs-toggle="modal"]').forEach(button => {
-        button.addEventListener('click', event => {
-            currentVisitId = button.getAttribute('data-visit-id');
+        document.querySelectorAll('[data-bs-toggle="modal"]').forEach(button => {
+            button.addEventListener('click', event => {
+                currentVisitId = button.getAttribute('data-visit-id');
+                signaturePad.clear();
+            });
+        });
+
+        document.getElementById('clearSignature').addEventListener('click', () => {
             signaturePad.clear();
         });
-    });
 
-    document.getElementById('clearSignature').addEventListener('click', () => {
-        signaturePad.clear();
-    });
+        document.getElementById('saveSignature').addEventListener('click', () => {
+            if (signaturePad.isEmpty()) {
+                alert('Geen handtekening gevonden!');
+                return;
+            }
 
-    document.getElementById('saveSignature').addEventListener('click', () => {
-        if (signaturePad.isEmpty()) {
-            alert('Geen handtekening gevonden!');
-            return;
-        }
-
-        const signatureData = signaturePad.toDataURL();
-        fetch(`/visits/${currentVisitId}/sign`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            },
-            body: JSON.stringify({ signature: signatureData }),
-        })
+            const signatureData = signaturePad.toDataURL();
+            fetch(`/visits/${currentVisitId}/sign`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+                body: JSON.stringify({ signature: signatureData }),
+            })
             .then(response => response.json())
             .then(data => {
                 if (data.message === 'Bezoek succesvol ondertekend') {
@@ -241,21 +218,8 @@
                 console.error('Fout:', error);
                 alert('Er ging iets mis.');
             });
-    });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-bs-toggle="modal"]').forEach(button => {
-        button.addEventListener('click', event => {
-            const visitId = button.getAttribute('data-visit-id');
-            document.getElementById('currentVisitId').value = visitId;
         });
     });
-});
-
-
 </script>
 
-
 @endsection
-

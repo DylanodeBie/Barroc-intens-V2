@@ -34,9 +34,7 @@
                 </ul>
             </div>
 
-            <!-- Acties -->
             <div class="mt-4">
-                <!-- Form Goedkeuren -->
                 <form action="{{ route('contracts.approve', $leasecontract->id) }}" method="POST" class="mb-4">
                     @csrf
                     <label for="approve-reason-{{ $leasecontract->id }}" class="block text-sm font-medium text-gray-700 mb-2">Reden voor goedkeuring:</label>
@@ -44,7 +42,6 @@
                     <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700 w-full">Goedkeuren</button>
                 </form>
 
-                <!-- Form Afkeuren -->
                 <form action="{{ route('contracts.reject', $leasecontract->id) }}" method="POST">
                     @csrf
                     <label for="reject-reason-{{ $leasecontract->id }}" class="block text-sm font-medium text-gray-700 mb-2">Reden voor afkeuring:</label>

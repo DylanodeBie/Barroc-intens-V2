@@ -52,6 +52,7 @@
                     <th class="px-6 py-3 text-left font-semibold text-black">Maand</th>
                     <th class="px-6 py-3 text-left font-semibold text-black">Inkomsten (€)</th>
                     <th class="px-6 py-3 text-left font-semibold text-black">Uitgaven (€)</th>
+                    <th class="px-6 py-3 text-left font-semibold text-black">Winst (€)</th>
                 </tr>
             </thead>
             <tbody class="text-black">
@@ -64,6 +65,10 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             €{{ number_format($data['expenses'], 2, ',', '.') }}
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap font-bold
+                                {{ $data['income'] - $data['expenses'] < 0 ? 'text-red-600' : 'text-green-600' }}">
+                            €{{ number_format($data['income'] - $data['expenses'], 2, ',', '.') }}
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
@@ -72,6 +77,10 @@
                     <td class="px-6 py-3">Totaal</td>
                     <td class="px-6 py-3">€{{ number_format($totalIncome, 2, ',', '.') }}</td>
                     <td class="px-6 py-3">€{{ number_format($totalExpenses, 2, ',', '.') }}</td>
+                    <td class="px-6 py-3
+                        {{ $totalIncome - $totalExpenses < 0 ? 'text-red-600' : 'text-green-600' }}">
+                        €{{ number_format($totalIncome - $totalExpenses, 2, ',', '.') }}
+                    </td>
                 </tr>
             </tfoot>
         </table>

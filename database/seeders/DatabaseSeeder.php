@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         CalendarSeeder::class,
         LeaseContractSeeder::class,
         PartSeeder::class,
+        OrdersSeeder::class,
     ]);
 }
 }

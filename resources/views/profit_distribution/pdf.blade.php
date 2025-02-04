@@ -1,25 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Profit Distribution Report</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winstverdeling - {{ $year }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
+            line-height: 1.6;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
 
         h1 {
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #000;
+        }
+
+        h2 {
+            font-size: 16px;
             text-align: center;
             margin-bottom: 20px;
+            color: #666;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         th,
@@ -30,37 +42,55 @@
         }
 
         th {
-            background-color: #f4f4f4;
+            background-color: #FFD700;
+            color: black;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        tfoot th {
+            background-color: #FFD700;
+            color: black;
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body>
-    <h1>Profit Distribution Report</h1>
-    <p><strong>Year:</strong> {{ $year }}</p>
-    <p><strong>Total Income:</strong> €{{ number_format($totalIncome, 2) }}</p>
+    <h1>Winstverdeling - {{ $year }}</h1>
+    <h2>Bedrijf: {{ $companyName }}</h2>
 
     <table>
         <thead>
             <tr>
-                <th>Invoice ID</th>
-                <th>Customer ID</th>
-                <th>Invoice Number</th>
-                <th>Total Amount</th>
-                <th>Invoice Date</th>
+                <th>Maand</th>
+                <th>Inkomsten (€)</th>
+                <th>Uitgaven (€)</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($invoices as $invoice)
+            @foreach ($monthlyData as $data)
                 <tr>
-                    <td>{{ $invoice->id }}</td>
-                    <td>{{ $invoice->customer_id }}</td>
-                    <td>{{ $invoice->invoice_number }}</td>
-                    <td>€{{ number_format($invoice->total_amount, 2) }}</td>
-                    <td>{{ $invoice->invoice_date }}</td>
+                    <td>{{ $data['month'] }}</td>
+                    <td class="text-right">€{{ number_format($data['income'], 2, ',', '.') }}</td>
+                    <td class="text-right">€{{ number_format($data['expenses'], 2, ',', '.') }}</td>
                 </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <th>Totaal</th>
+                <th class="text-right">€{{ number_format($totalIncome, 2, ',', '.') }}</th>
+                <th class="text-right">€{{ number_format($totalExpenses, 2, ',', '.') }}</th>
+            </tr>
+        </tfoot>
     </table>
 </body>
 

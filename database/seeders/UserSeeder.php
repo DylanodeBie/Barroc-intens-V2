@@ -22,6 +22,14 @@ class UserSeeder extends Seeder
 
         // Voeg jouw user toe
         User::factory()->create([
+            'name' => 'Laurens',
+            'email' => 'laurens_vt@icloud.com',
+            'password' => bcrypt('bamba009'),
+            'role_id' => 10,
+        ]);
+
+         // Voeg jouw user toe
+        User::factory()->create([
             'name' => 'Daan',
             'email' => 'daan.sinke@hotmail.com',
             'password' => bcrypt('BQV-bhw4jnh*qep6qxk'),

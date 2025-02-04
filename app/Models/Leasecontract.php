@@ -16,7 +16,12 @@ class Leasecontract extends Model
         'payment_method',
         'machine_amount',
         'notice_period',
-        'status'
+        'status',
+        'total_price',
+        'approved_by',
+        'rejected_by',
+        'approved_at',
+        'rejected_at',
     ];
 
     protected static function boot()
@@ -45,5 +50,15 @@ class Leasecontract extends Model
     {
         return $this->belongsToMany(Product::class, 'leasecontract_products', 'leasecontract_id', 'product_id')
             ->withPivot('amount', 'price');
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function rejectedBy()
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
     }
 }

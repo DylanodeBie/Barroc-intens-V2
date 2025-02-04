@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         InvoiceSeeder::class,
         CalendarSeeder::class,
         PartSeeder::class,
+        OrdersSeeder::class,
     ]);
 }
 }

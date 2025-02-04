@@ -55,6 +55,16 @@
             text-align: right;
         }
 
+        .profit-positive {
+            color: green;
+            font-weight: bold;
+        }
+
+        .profit-negative {
+            color: red;
+            font-weight: bold;
+        }
+
         tfoot th {
             background-color: #FFD700;
             color: black;
@@ -73,22 +83,33 @@
                 <th>Maand</th>
                 <th>Inkomsten (€)</th>
                 <th>Uitgaven (€)</th>
+                <th>Winst (€)</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($monthlyData as $data)
-                <tr>
-                    <td>{{ $data['month'] }}</td>
-                    <td class="text-right">€{{ number_format($data['income'], 2, ',', '.') }}</td>
-                    <td class="text-right">€{{ number_format($data['expenses'], 2, ',', '.') }}</td>
-                </tr>
+                        @php
+                            $profit = $data['income'] - $data['expenses'];
+                            $profitClass = $profit < 0 ? 'profit-negative' : 'profit-positive';
+                        @endphp
+                        <tr>
+                            <td>{{ $data['month'] }}</td>
+                            <td class="text-right">€{{ number_format($data['income'], 2, ',', '.') }}</td>
+                            <td class="text-right">€{{ number_format($data['expenses'], 2, ',', '.') }}</td>
+                            <td class="text-right {{ $profitClass }}">€{{ number_format($profit, 2, ',', '.') }}</td>
+                        </tr>
             @endforeach
         </tbody>
         <tfoot>
+            @php
+                $totalProfit = $totalIncome - $totalExpenses;
+                $totalProfitClass = $totalProfit < 0 ? 'profit-negative' : 'profit-positive';
+            @endphp
             <tr>
                 <th>Totaal</th>
                 <th class="text-right">€{{ number_format($totalIncome, 2, ',', '.') }}</th>
                 <th class="text-right">€{{ number_format($totalExpenses, 2, ',', '.') }}</th>
+                <th class="text-right {{ $totalProfitClass }}">€{{ number_format($totalProfit, 2, ',', '.') }}</th>
             </tr>
         </tfoot>
     </table>

@@ -32,16 +32,32 @@ class VisitController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'user_id' => 'required|exists:users,id',
             'visit_date' => 'required|date',
-            'start_time' => 'required',
-            'end_time' => 'required|after:start_time',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
             'address' => 'required|string',
             'error_notification_id' => 'required|exists:error_notifications,id',
             'error_details' => 'nullable|string',
             'used_parts' => 'required|string',
+        ], [
+            'end_time.after' => 'De eindtijd moet later zijn dan de starttijd.',
+            'start_time.date_format' => 'De starttijd moet in 24-uurs formaat zijn (HH:MM).',
+            'end_time.date_format' => 'De eindtijd moet in 24-uurs formaat zijn (HH:MM).',
         ]);
 
-        Visit::create($request->all());
-        return redirect()->route('visits.index')->with('success', 'Bezoek succesvol ingepland.');
+        // Bezoek opslaan
+        $visit = Visit::create($request->all());
+
+        // Event voor de verkoper aanmaken
+        Event::create([
+            'user_id' => $request->user_id, // Toegewezen verkoper
+            'customer_id' => $request->customer_id,
+            'title' => "Bezoek aan " . $visit->customer->company_name,
+            'start' => $visit->visit_date . " " . $visit->start_time,
+            'end' => $visit->visit_date . " " . $visit->end_time,
+            'description' => "Bezoek gepland op " . $visit->address,
+        ]);
+
+        return redirect()->route('visits.index')->with('success', 'Bezoek succesvol ingepland en toegevoegd aan de kalender.');
     }
 
     public function show($id)
@@ -88,5 +104,20 @@ class VisitController extends Controller
         $customers = Customer::all();
 
         return view('visits.calendar', ['events' => $events, 'customers' => $customers]);
+    }
+
+    public function destroy($id)
+    {
+        $visit = Visit::findOrFail($id);
+
+        // Verwijder het gekoppelde event
+        Event::where('customer_id', $visit->customer_id)
+            ->where('start', $visit->visit_date . " " . $visit->start_time)
+            ->where('end', $visit->visit_date . " " . $visit->end_time)
+            ->delete();
+
+        $visit->delete();
+
+        return redirect()->route('visits.index')->with('success', 'Bezoek en bijbehorend evenement succesvol verwijderd.');
     }
 }

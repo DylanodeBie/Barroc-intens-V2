@@ -10,6 +10,7 @@
                     <li class="p-2 rounded hover:bg-gray-700"><a href="http://barroc-intens-v2.test/visits">Bezoeken</a></li>
                     <li class="p-2 rounded hover:bg-gray-700"><a href="http://barroc-intens-v2.test/products">Producten</a>
                     <li class="p-2 rounded hover:bg-gray-700"><a href="http://barroc-intens-v2.test/quotes">Offertes</a>
+                    <li class="p-2 rounded hover:bg-gray-700"><a href="http://barroc-intens-v2.test/parts">parts</a>
                     </li>
                 </ul>
             </nav>

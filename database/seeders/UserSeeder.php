@@ -28,6 +28,14 @@ class UserSeeder extends Seeder
             'role_id' => 10,
         ]);
 
+         // Voeg jouw user toe
+        User::factory()->create([
+            'name' => 'Daan',
+            'email' => 'daan.sinke@hotmail.com',
+            'password' => bcrypt('BQV-bhw4jnh*qep6qxk'),
+            'role_id' => 10,
+        ]);
+
         // Voeg jouw user toe
         User::factory()->create([
             'name' => 'Dylano',

@@ -11,6 +11,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProfitDistributionController;
 use App\Http\Controllers\LeasecontractController;
+use App\Http\Controllers\MarketingController;
 use App\Models\Customer;
 use App\Models\Event;
 use Illuminate\Support\Facades\Route;
@@ -48,13 +49,27 @@ Route::middleware(['auth'])->group(function () {
         Route::get('visits/{visit}', [VisitController::class, 'show'])->name('visits.show');
     });
 
-    Route::middleware('role:9,10')->group(function () {
+    Route::middleware('role:5,9,10')->group(function () {
+        Route::get('/maintenace-tickets', [VisitController::class, 'myTickets'])->name('visits.my_tickets');
+    });
+
+    Route::post('/visits/{id}/sign', [VisitController::class, 'sign'])->name('visits.sign');
+
+    // Visit assignment and maintenance tickets
+    Route::middleware('role:3,9,10')->group(function () {
+        // Allow Head Maintenance (role 9) and CEO (role 10) to assign visits and manage tickets
         Route::get('visits/{id}/assign', [VisitController::class, 'assignToMaintenance'])->name('visits.assign');
         Route::post('visits/{id}/assign', [VisitController::class, 'storeAssignedToMaintenance'])->name('visits.store_assigned');
         Route::get('visits/maintenance-tickets', [VisitController::class, 'maintenanceTickets'])->name('visits.maintenance_tickets');
     });
 
     Route::resource('products', ProductController::class);
+
+    Route::resource('parts', MarketingController::class);
+    Route::get('parts/create', [MarketingController::class, 'create'])->name('parts.create');
+    Route::post('parts', [MarketingController::class, 'store'])->name('parts.store');
+    Route::post('parts/order', [MarketingController::class, 'order'])->name('parts.order');
+    Route::post('/order/signature', [MarketingController::class, 'storeSignature'])->name('storeSignature');
 
     Route::middleware('role:3,7,10')->group(function () {
         Route::resource('quotes', QuoteController::class);

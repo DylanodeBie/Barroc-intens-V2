@@ -35,7 +35,7 @@ class LeaseContractSeeder extends Seeder
         }
 
         // Maak 120 LeaseContracten
-        for ($i = 0; $i < 120; $i++) {
+        for ($i = 0; $i < 920; $i++) {
             // Kies een willekeurige klant
             $customer = $customers->random();
 

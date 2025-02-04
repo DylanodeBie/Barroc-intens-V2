@@ -40,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('customers', CustomerController::class);
 
     Route::middleware('role:3,7,10')->group(function () {
-        Route::resource('visits', VisitController::class)->except(['destroy']);
+        Route::resource('visits', VisitController::class);
     });
 
     Route::middleware('role:9')->group(function () {

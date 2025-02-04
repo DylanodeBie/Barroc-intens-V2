@@ -10,21 +10,15 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::where('user_id', auth()->id())
+        $events = Event::where('user_id', auth()->id()) // Alleen events van de ingelogde gebruiker
+            ->orWhereHas('customer', function ($query) {
+                $query->where('user_id', auth()->id()); // Events van gekoppelde klanten tonen
+            })
             ->with('customer:id,company_name')
-            ->get(['id', 'customer_id', 'title', 'start', 'end', 'description'])
-            ->map(function ($event) {
-                return $event;
-            });
+            ->get(['id', 'customer_id', 'title', 'start', 'end', 'description']);
 
-        $customers = Customer::where('user_id', auth()->id())->get(['id', 'company_name']);
-
-        return response()->json([
-            'events' => $events,
-            'customers' => $customers,
-        ]);
+        return response()->json(['events' => $events]);
     }
-
 
     public function store(Request $request)
     {
@@ -44,7 +38,6 @@ class EventController extends Controller
 
     public function update(Request $request, $id)
     {
-        
         $event = Event::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
         $event->update($request->all());
 

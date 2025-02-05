@@ -15,6 +15,7 @@ use App\Http\Controllers\MarketingController;
 use App\Models\Customer;
 use App\Models\Event;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MaintenanceReportController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -60,7 +61,6 @@ Route::middleware(['auth'])->group(function () {
         // Allow Head Maintenance (role 9) and CEO (role 10) to assign visits and manage tickets
         Route::get('visits/{id}/assign', [VisitController::class, 'assignToMaintenance'])->name('visits.assign');
         Route::post('visits/{id}/assign', [VisitController::class, 'storeAssignedToMaintenance'])->name('visits.store_assigned');
-        Route::get('visits/maintenance-tickets', [VisitController::class, 'maintenanceTickets'])->name('visits.maintenance_tickets');
     });
 
     Route::resource('products', ProductController::class);
@@ -108,6 +108,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/contracts/{id}/approve', [LeaseContractController::class, 'approve'])->name('contracts.approve')->middleware('auth');
         Route::post('/contracts/{id}/reject', [LeaseContractController::class, 'reject'])->name('contracts.reject')->middleware('auth');
     });
+    Route::post('/maintenance-reports', [MaintenanceReportController::class, 'store'])->name('maintenance-reports.store');
+    Route::get('/maintenance-reports/{id}', [MaintenanceReportController::class, 'show'])->name('maintenance-reports.show');
 });
 
 Route::get('/agenda', [VisitController::class, 'calendar'])->middleware('auth')->name('agenda');

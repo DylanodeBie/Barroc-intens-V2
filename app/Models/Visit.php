@@ -21,6 +21,8 @@ class Visit extends Model
         'error_notification_id',
         'error_details',
         'used_parts',
+        'status',
+        'type',
     ];
 
     public function customer()
@@ -31,5 +33,10 @@ class Visit extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function maintenanceReport()
+    {
+        return $this->hasOne(MaintenanceReport::class);
     }
 }

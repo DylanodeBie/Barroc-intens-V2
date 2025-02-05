@@ -72,9 +72,18 @@
                     placeholder="Voer de gebruikte onderdelen in" required>
             </div>
 
+            <div class="mb-6">
+                <label for="type" class="block text-gray-700">Type Bezoek</label>
+                <select name="type" class="w-full px-4 py-2 border rounded-md border-gray-300" required>
+                    <option value="" disabled selected>Selecteer type</option>
+                    <option value="maintenance">Onderhoud</option>
+                    <option value="sales">Sales</option>
+                </select>
+            </div>
+
             <!-- Error Details Field -->
             <div class="mb-6">
-                <label for="error_details" class="block text-gray-700">Foutdetails (optioneel)</label>
+                <label for="error_details" class="block text-gray-700">Details (optioneel)</label>
                 <textarea name="error_details" class="w-full px-4 py-2 border rounded-md border-gray-300" rows="4"
                     placeholder="Voer eventuele foutdetails in"></textarea>
             </div>

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('error_details')->nullable();
             $table->string('address');
             $table->string('used_parts');
+            $table->enum('type', ['maintenance', 'sales'])->default('sales');
             $table->timestamps();
         });
     }

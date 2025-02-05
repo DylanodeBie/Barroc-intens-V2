@@ -1,4 +1,4 @@
-<nav class="">
+<nav>
     <div class="bg-white border-b border-gray-200 shadow-sm w-full">
         <div class="container mx-auto flex items-center justify-between py-3 px-4 max-w-screen-xl">
             <div class="flex items-center">
@@ -8,7 +8,7 @@
             </div>
 
             <h1 class="text-lg font-semibold text-gray-800 mx-auto">
-                @yield('greeting', 'Goedemorgen')
+                {{ $greeting }}
             </h1>
 
             <div x-data="{ open: false }" class="relative">

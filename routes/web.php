@@ -56,9 +56,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/visits/{id}/sign', [VisitController::class, 'sign'])->name('visits.sign');
 
-    // Visit assignment and maintenance tickets
     Route::middleware('role:3,9,10')->group(function () {
-        // Allow Head Maintenance (role 9) and CEO (role 10) to assign visits and manage tickets
         Route::get('visits/{id}/assign', [VisitController::class, 'assignToMaintenance'])->name('visits.assign');
         Route::post('visits/{id}/assign', [VisitController::class, 'storeAssignedToMaintenance'])->name('visits.store_assigned');
     });
@@ -75,7 +73,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('quotes', QuoteController::class);
         Route::get('/quotes/{quote}/download', [QuoteController::class, 'downloadPdf'])->name('quotes.download');
 
-        // New route to create invoice from quote
+
         Route::post('/quotes/{quote}/invoice', [InvoiceController::class, 'createFromQuote'])->name('quotes.invoice');
     });
 
@@ -84,7 +82,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
     });
 
-    // Winstverdeling routes (alleen Head Finance, Finance en CEO)
     Route::middleware('role:2,6,10')->group(function () {
         Route::get('/profit-distribution', [ProfitDistributionController::class, 'index'])->name('profit_distribution.index');
         Route::get('/profit-distribution/export', [ProfitDistributionController::class, 'exportToExcel'])->name('profit_distribution.export');

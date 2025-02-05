@@ -13,18 +13,13 @@ use PDF;
 
 class InvoiceController extends Controller
 {
-    /**
-     * Display a listing of invoices.
-     */
+
     public function index()
     {
         $invoices = Invoice::with('customer', 'user')->latest()->get();
         return view('invoices.index', compact('invoices'));
     }
 
-    /**
-     * Show the form for creating a new invoice.
-     */
     public function create()
     {
         $customers = Customer::all();
@@ -35,9 +30,6 @@ class InvoiceController extends Controller
         return view('invoices.create', compact('customers', 'users', 'machines', 'beans'));
     }
 
-    /**
-     * Create an invoice from a quote.
-     */
     public function createFromQuote(Quote $quote)
     {
         $invoiceData = [
@@ -49,7 +41,6 @@ class InvoiceController extends Controller
             'maintenance_agreement' => $quote->maintenance_agreement,
         ];
 
-        // Haal de machines en bonen van de offerte op
         $machines = $quote->machines->map(function ($machine) {
             return [
                 'id' => $machine->id,
@@ -74,9 +65,6 @@ class InvoiceController extends Controller
             ->with(['machines' => $machines, 'beans' => $beans]);
     }
 
-    /**
-     * Store a newly created invoice in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -124,28 +112,18 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.index')->with('success', 'Factuur succesvol aangemaakt!');
     }
 
-    /**
-     * Display the specified invoice.
-     */
     public function show(Invoice $invoice)
     {
         $invoice->load('customer', 'items', 'user');
         return view('invoices.show', compact('invoice'));
     }
 
-    /**
-     * Generate and download a PDF for the specified invoice.
-     */
     public function download(Invoice $invoice)
     {
         $invoice->load('customer', 'items', 'user');
         $pdf = PDF::loadView('invoices.pdf', compact('invoice'));
         return $pdf->download("invoice-{$invoice->invoice_number}.pdf");
     }
-
-    /**
-     * Show the form for editing the specified invoice.
-     */
     public function edit(Invoice $invoice)
     {
         $customers = Customer::all();
@@ -155,9 +133,6 @@ class InvoiceController extends Controller
         return view('invoices.edit', compact('invoice', 'customers', 'products'));
     }
 
-    /**
-     * Update the specified invoice in storage.
-     */
     public function update(Request $request, Invoice $invoice)
     {
         $validated = $request->validate([
@@ -202,9 +177,6 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.index')->with('success', 'Factuur succesvol bijgewerkt!');
     }
 
-    /**
-     * Remove the specified invoice from storage.
-     */
     public function destroy(Invoice $invoice)
     {
         $invoice->delete();

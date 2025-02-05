@@ -8,7 +8,6 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts, Tailwind, Alpine, FontAwesome, Bootstrap, etc. -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,16 +17,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="font-sans antialiased">
     <div class="min-h-screen flex flex-col">
-        {{-- Include the header --}}
         @include('components.header')
 
-        {{-- Optional page header --}}
         @isset($header)
             <header class="bg-white shadow">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -37,9 +33,7 @@
         @endisset
 
         <div class="flex flex-grow">
-            {{-- Sidebar Navigation --}}
             @php
-                // Retrieve the current user's role; default to 'Guest' if not logged in.
                 $user = auth()->user();
                 $role = $user ? $user->role->name : 'Guest';
             @endphp
@@ -47,7 +41,6 @@
             <nav class="bg-white text-black w-20 md:w-64 p-4 space-y-4 border-r">
                 <ul class="space-y-2">
                     @if($role === 'CEO')
-                        <!-- CEO: Unified navigation with all links -->
                         <li
                             class="p-2 rounded text-center {{ Request::is('dashboard/ceo*') ? 'bg-gray-200' : 'hover:bg-[#FFD700]' }}">
                             <a href="{{ route('dashboard.ceo') }}" class="flex items-center justify-center space-x-2">
@@ -93,7 +86,6 @@
                         </li>
 
                     @elseif($role === 'Finance' || $role === 'Head Finance')
-                        <!-- Finance Navigation -->
                         <li
                             class="p-2 rounded text-center {{ Request::is('dashboard/finance*') ? 'bg-gray-200' : 'hover:bg-[#FFD700]' }}">
                             <a href="{{ route('dashboard.finance') }}" class="flex items-center justify-center space-x-2">
@@ -118,7 +110,6 @@
                         </li>
 
                     @elseif($role === 'Sales' || $role === 'Head Sales')
-                        <!-- Sales Navigation -->
                         <li
                             class="p-2 rounded text-center {{ Request::is('dashboard/sales*') ? 'bg-gray-200' : 'hover:bg-[#FFD700]' }}">
                             <a href="{{ route('dashboard.sales') }}" class="flex items-center justify-center space-x-2">
@@ -141,13 +132,11 @@
                         <li class="p-2 rounded hover:bg-[#FFD700]">
                             <a href="{{ route('agenda') }}">Agenda</a>
                         </li>
-                        <!-- For Sales, "Meldingen" is handled via visits -->
                         <li class="p-2 rounded hover:bg-[#FFD700]">
                             <a href="{{ route('visits.index') }}">Meldingen</a>
                         </li>
 
                     @elseif($role === 'Marketing' || $role === 'Inkoop')
-                        <!-- Inkoop Navigation -->
                         <li
                             class="p-2 rounded text-center {{ Request::is('dashboard/marketing*') ? 'bg-gray-200' : 'hover:bg-[#FFD700]' }}">
                             <a href="{{ route('dashboard.marketing') }}" class="flex items-center justify-center space-x-2">
@@ -166,7 +155,6 @@
                         </li>
 
                     @elseif($role === 'Maintenance' || $role === 'Head Maintenance')
-                        <!-- Maintenance Navigation -->
                         <li
                             class="p-2 rounded text-center {{ Request::is('dashboard/maintenance*') ? 'bg-gray-200' : 'hover:bg-[#FFD700]' }}">
                             <a href="{{ route('dashboard.maintenance') }}"
@@ -178,7 +166,6 @@
                         <li class="p-2 rounded hover:bg-[#FFD700]">
                             <a href="{{ route('products.index') }}">Producten</a>
                         </li>
-                        <!-- For Maintenance, "Meldingen" points to maintenance tickets -->
                         <li class="p-2 rounded hover:bg-[#FFD700]">
                             <a href="{{ route('visits.my_tickets') }}">Meldingen</a>
                         </li>
@@ -190,7 +177,6 @@
                         </li>
 
                     @else
-                        <!-- Default fallback -->
                         <li class="p-2 rounded text-center">
                             <a href="{{ route('dashboard') }}" class="flex items-center justify-center space-x-2">
                                 <i class="fas fa-home"></i>
@@ -201,13 +187,11 @@
                 </ul>
             </nav>
 
-            <!-- Main Content Area -->
             <div class="flex-grow p-6 overflow-auto">
                 @yield('content')
             </div>
         </div>
 
-        {{-- Include the footer --}}
         @include('components.footer')
     </div>
 </body>

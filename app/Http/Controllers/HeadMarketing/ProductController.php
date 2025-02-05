@@ -23,13 +23,11 @@ class ProductController extends Controller
             $error = "Er is niets gevonden met de zoekopdracht: '{$search}'";
         }
 
-        // Updated view path to "products.index"
         return view('products.index', compact('products', 'error'));
     }
 
     public function create()
     {
-        // Updated view path to "products.create"
         return view('products.create');
     }
 
@@ -50,13 +48,12 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        // Updated view path to "products.show"
+
         return view('products.show', compact('product'));
     }
 
     public function edit(Product $product)
     {
-        // Updated view path to "products.edit"
         return view('products.edit', compact('product'));
     }
 

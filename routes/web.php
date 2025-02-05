@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HeadMarketing\ProductController;
 use App\Http\Controllers\VisitController;
 use App\Http\Controllers\QuoteController;
@@ -40,6 +41,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/ceo', [DashboardController::class, 'ceo'])->name('dashboard.ceo');
 
     Route::resource('customers', CustomerController::class);
+
+    Route::resource('employees', EmployeeController::class);	
 
     Route::middleware('role:3,7,10')->group(function () {
         Route::resource('visits', VisitController::class);

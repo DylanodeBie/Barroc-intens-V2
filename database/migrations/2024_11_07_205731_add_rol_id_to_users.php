@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('role_id')->constrained('roles')->after('password')->default(1);
+            // Maak de role_id nullable
+            $table->foreignId('role_id')->constrained('roles')->nullable()->change();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            // Verwijder de foreign key als je deze migratie wilt terugdraaien
+            $table->dropForeign(['role_id']);
+            $table->dropColumn('role_id');
         });
     }
 };

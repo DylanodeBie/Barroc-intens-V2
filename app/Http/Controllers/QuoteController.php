@@ -16,37 +16,37 @@ class QuoteController extends Controller
      * Display a listing of the quotes.
      */
     public function index(Request $request)
-{
-    $query = Quote::with(['customer', 'user', 'machines', 'beans']);
+    {
+        $query = Quote::with(['customer', 'user', 'machines', 'beans']);
 
-    // Haal de gebruikers met de rol 2, 3, 6, 7, 10
-    $users = User::whereIn('role_id', [2, 3, 6, 7, 10])->get();
+        // Haal de gebruikers met de rol 2, 3, 6, 7, 10
+        $users = User::whereIn('role_id', [2, 3, 6, 7, 10])->get();
 
-    // Filter op klant
-    if ($request->has('customer') && $request->input('customer') != '') {
-        $query->whereHas('customer', function ($q) use ($request) {
-            $q->where('company_name', 'like', '%' . $request->input('customer') . '%');
-        });
+        // Filter op klant
+        if ($request->has('customer') && $request->input('customer') != '') {
+            $query->whereHas('customer', function ($q) use ($request) {
+                $q->where('company_name', 'like', '%' . $request->input('customer') . '%');
+            });
+        }
+
+        // Filter op gebruiker
+        if ($request->has('user') && $request->input('user') != '') {
+            $query->where('user_id', $request->input('user'));
+        }
+
+        // Filter op status
+        if ($request->has('status') && $request->input('status') != '') {
+            $query->where('status', 'like', '%' . $request->input('status') . '%');
+        }
+
+        // Filter op datum
+        if ($request->has('date') && $request->input('date') != '') {
+            $query->whereDate('quote_date', '=', $request->input('date'));
+        }
+
+        $quotes = $query->get();
+        return view('quotes.index', compact('quotes', 'users'));
     }
-
-    // Filter op gebruiker
-    if ($request->has('user') && $request->input('user') != '') {
-        $query->where('user_id', $request->input('user'));
-    }
-
-    // Filter op status
-    if ($request->has('status') && $request->input('status') != '') {
-        $query->where('status', 'like', '%' . $request->input('status') . '%');
-    }
-
-    // Filter op datum
-    if ($request->has('date') && $request->input('date') != '') {
-        $query->whereDate('quote_date', '=', $request->input('date'));
-    }
-
-    $quotes = $query->get();
-    return view('quotes.index', compact('quotes', 'users'));
-}
 
 
     /**
@@ -117,7 +117,7 @@ class QuoteController extends Controller
             }
         }
 
-        return redirect()->route('quotes.index')->with('success', 'Quote created successfully!');
+        return redirect()->route('quotes.index')->with('success', 'Offerte succesvol aangemaakt!');
     }
 
     /**
@@ -196,7 +196,7 @@ class QuoteController extends Controller
         }
         $quote->beans()->sync($beans);
 
-        return redirect()->route('quotes.index')->with('success', 'Quote updated successfully!');
+        return redirect()->route('quotes.index')->with('success', 'Offerte succesvol bijgewerkt!');
     }
 
     /**
@@ -205,7 +205,7 @@ class QuoteController extends Controller
     public function destroy(Quote $quote)
     {
         $quote->delete();
-        return redirect()->route('quotes.index')->with('success', 'Quote deleted successfully!');
+        return redirect()->route('quotes.index')->with('success', 'Offerte succesvol verwijderd!');
     }
 
     /**

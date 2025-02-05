@@ -114,15 +114,19 @@ class LeasecontractController extends Controller
         $leasecontract = LeaseContract::findOrFail($id);
 
         // Update leasecontract details
-        $leasecontract->update($request->only([
-            'customer_id',
-            'user_id',
-            'start_date',
-            'end_date',
-            'payment_method',
-            'machine_amount',
-            'notice_period',
-        ]));
+        $validated = $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'user_id' => 'required|exists:users,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'payment_method' => 'required|string',
+            'machine_amount' => 'required|integer|min:1',
+            'notice_period' => 'required|string',
+        ], [
+            'end_date.after_or_equal' => 'De einddatum mag niet eerder zijn dan de startdatum!',
+        ]);
+
+        $leasecontract->update($validated);
 
         // Synchroniseer producten met hun pivot-data
         $products = $request->input('products', []);

@@ -84,6 +84,9 @@
                         <li class="p-2 rounded hover:bg-[#FFD700]">
                             <a href="{{ route('visits.index') }}">Bezoeken</a>
                         </li>
+                        <li class="p-2 rounded hover:bg-[#FFD700]">
+                            <a href="{{ route('employees.index') }}">Werknemers</a>
+                        </li>
 
                     @elseif($role === 'Finance' || $role === 'Head Finance')
                         <li

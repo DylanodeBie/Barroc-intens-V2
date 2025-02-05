@@ -99,12 +99,6 @@
                             title="Download PDF">
                             <i class="fas fa-download"></i>
                         </a>
-
-                        <button type="button"
-                            class="inline-block {{ $trashIconColor }} hover:underline"
-                            data-bs-toggle="modal" data-bs-target="#confirmationModal{{ $contract->id }}">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
                     </td>
                 </tr>
                 @endforeach

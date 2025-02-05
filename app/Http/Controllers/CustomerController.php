@@ -36,7 +36,7 @@ class CustomerController extends Controller
             'phonenumber' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'bkr_check' => 'required|boolean',
+            'bkr_check' => 'boolean',
         ]);
 
         Customer::create($request->all());

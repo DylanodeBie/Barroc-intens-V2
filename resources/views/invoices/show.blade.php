@@ -4,7 +4,6 @@
     <div class="container mx-auto px-4">
         <h1 class="text-3xl font-bold mb-4">Factuur Details</h1>
 
-        <!-- Invoice Details -->
         <div class="border p-4 rounded-md shadow-md">
             <p><strong>Factuurnummer:</strong> {{ $invoice->invoice_number }}</p>
             <p><strong>Klant:</strong> {{ $invoice->customer->company_name }}</p>
@@ -14,7 +13,6 @@
             <p><strong>Notities:</strong> {{ $invoice->notes ?? 'Geen' }}</p>
         </div>
 
-        <!-- Invoice Items -->
         <h2 class="text-2xl font-semibold mt-6">Items</h2>
         <table class="min-w-full mt-4 bg-white border rounded-md">
             <thead>
@@ -37,7 +35,6 @@
             </tbody>
         </table>
 
-        <!-- Back Button -->
         <div class="mt-6">
             <a href="{{ route('invoices.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded">
                 Terug naar overzicht

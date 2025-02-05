@@ -9,7 +9,6 @@
 
 <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; color: #000; line-height: 1.5;">
     <div style="margin: 40px;">
-        <!-- Header -->
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div style="font-size: 12px;">
                 <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 20px;">OFFERTE</h1>
@@ -26,10 +25,8 @@
             </div>
         </div>
 
-        <!-- Divider -->
         <div style="height: 2px; background-color: #FFD700; margin: 20px 0;"></div>
 
-        <!-- Items Table -->
         <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px;">
             <thead>
                 <tr>
@@ -70,7 +67,6 @@
             </tbody>
         </table>
 
-        <!-- Total -->
         <div style="margin-top: 20px; font-size: 12px; text-align: right; font-weight: bold;">
             <p>Totaal: €{{ number_format(
     $quote->machines->sum(fn($machine) => $machine->pivot->quantity * $machine->lease_price) +
@@ -81,7 +77,6 @@
 ) }}</p>
         </div>
 
-        <!-- Footer -->
         <div style="margin-top: 40px; font-style: italic; font-size: 12px;">
             <p>Indien akkoord graag tekenen en terug sturen.</p>
         </div>

@@ -4,7 +4,6 @@
 <div class="container mx-auto">
     <h1 class="text-3xl font-bold mb-4 text-center text-black">Winstverdeling</h1>
 
-    <!-- Filters -->
     <form method="GET" action="{{ route('profit_distribution.index') }}" class="mb-4">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
@@ -35,7 +34,6 @@
         </div>
     </form>
 
-    <!-- PDF Export Button -->
     <div class="flex justify-end mb-4">
         <a href="{{ route('profit_distribution.pdf', ['year' => $year, 'customer_id' => $customerId]) }}"
             class="font-semibold px-6 py-2 rounded-md hover:bg-yellow-500"
@@ -44,7 +42,6 @@
         </a>
     </div>
 
-    <!-- Tabel -->
     <div class="overflow-x-auto border border-gray-200 rounded-lg">
         <table class="min-w-full bg-white border-collapse">
             <thead style="background-color: #FFD700;">

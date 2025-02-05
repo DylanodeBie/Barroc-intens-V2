@@ -4,7 +4,6 @@
     <div class="container mx-auto p-6 bg-white shadow-md rounded-lg">
         <h1 class="text-3xl font-bold text-center mb-6 text-black">Offerte Details</h1>
 
-        <!-- Quote Information -->
         <div class="mb-6">
             <p class="text-lg">
                 <span class="font-semibold">Bedrijfsnaam:</span> {{ $quote->customer->company_name ?? 'Onbekend' }}
@@ -29,7 +28,6 @@
             </p>
         </div>
 
-        <!-- Machines Section -->
         <div class="mb-6">
             <h3 class="text-2xl font-semibold mb-3">Machines</h3>
             @if ($quote->machines && $quote->machines->isNotEmpty())
@@ -46,7 +44,6 @@
             @endif
         </div>
 
-        <!-- Beans Section -->
         <div class="mb-6">
             <h3 class="text-2xl font-semibold mb-3">Bonen</h3>
             @if ($quote->beans && $quote->beans->isNotEmpty())
@@ -63,7 +60,6 @@
             @endif
         </div>
 
-        <!-- Back Button -->
         <div class="text-center">
             <a href="{{ route('quotes.index') }}" class="px-6 py-2 font-semibold rounded-md hover:bg-yellow-500"
                 style="background-color: #FFD700; color: black;">Terug naar Offertes</a>

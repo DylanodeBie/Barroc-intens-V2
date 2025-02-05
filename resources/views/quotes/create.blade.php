@@ -23,7 +23,6 @@
     <form action="{{ route('quotes.store') }}" method="POST">
         @csrf
 
-        <!-- Customer Dropdown -->
         <div class="mb-4">
             <label for="customer_id" class="block font-semibold text-gray-700">Klant</label>
             <select name="customer_id" id="customer_id" class="form-control w-full border rounded-md p-2 text-black">
@@ -34,9 +33,6 @@
             </select>
         </div>
 
-
-
-        <!-- User Dropdown -->
         <div class="mb-4">
             <label for="user_id" class="block font-semibold text-gray-700">Gebruiker</label>
             <select name="user_id" id="user_id" class="form-control w-full border rounded-md p-2">
@@ -46,7 +42,6 @@
             </select>
         </div>
 
-        <!-- Machines with Quantity -->
         <div class="mb-6">
             <label class="block font-semibold text-gray-700 mb-2">Machines</label>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -71,7 +66,6 @@
             </div>
         </div>
 
-        <!-- Beans with Quantity -->
         <div class="mb-6">
             <label class="block font-semibold text-gray-700 mb-2">Bonen</label>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -93,7 +87,6 @@
             </div>
         </div>
 
-        <!-- Agreement Length -->
         <div class="mb-4">
             <label for="agreement_length" class="block font-semibold text-gray-700">Looptijd Overeenkomst
                 (maanden)</label>
@@ -101,7 +94,6 @@
                 class="form-control w-full border rounded-md p-2" placeholder="Bijvoorbeeld: 12">
         </div>
 
-        <!-- Maintenance Agreement -->
         <div class="mb-4">
             <label for="maintenance_agreement" class="block font-semibold text-gray-700">Onderhoudsovereenkomst</label>
             <select name="maintenance_agreement" id="maintenance_agreement"
@@ -111,7 +103,6 @@
             </select>
         </div>
 
-        <!-- Action Buttons -->
         <div class="flex justify-between mt-6">
             <a href="{{ route('quotes.index') }}"
                 class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">

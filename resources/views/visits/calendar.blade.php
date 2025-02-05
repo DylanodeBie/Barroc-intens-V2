@@ -37,7 +37,6 @@
             </div>
             <div class="flex justify-end">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Save</button>
-                <!-- Delete button -->
                 <button type="button" id="deleteEventButton" class="bg-red-500 text-white px-4 py-2 rounded mr-2">Delete</button>
                 <button type="button" id="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
             </div>

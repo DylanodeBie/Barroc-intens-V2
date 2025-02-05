@@ -7,7 +7,6 @@
 
 <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; color: #000; line-height: 1.5;">
     <div style="margin: 40px;">
-        <!-- Header -->
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div style="font-size: 12px;">
                 <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 20px;">FACTUUR</h1>
@@ -23,7 +22,6 @@
             </div>
         </div>
 
-        <!-- Invoice Information -->
         <table style="margin-top: 20px; font-size: 12px;">
             <tr>
                 <td style="padding: 2px 0;"><strong>Periode:</strong></td>
@@ -43,10 +41,8 @@
             </tr>
         </table>
 
-        <!-- Divider -->
         <div style="height: 2px; background-color: #FFD700; margin: 20px 0;"></div>
 
-        <!-- Items Table -->
         <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px;">
             <thead>
                 <tr>
@@ -76,12 +72,10 @@
             </tbody>
         </table>
 
-        <!-- Total -->
         <div style="margin-top: 20px; font-size: 12px; text-align: right; font-weight: bold;">
             <p>Totaal: €{{ number_format($invoice->total_amount, 2, ',', '.') }}</p>
         </div>
 
-        <!-- Footer -->
         <div style="margin-top: 40px; font-style: italic; font-size: 12px;">
             <p>Te betalen binnen 14 dagen na dagtekening.</p>
         </div>

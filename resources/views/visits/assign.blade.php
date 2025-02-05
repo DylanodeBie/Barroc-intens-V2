@@ -4,7 +4,6 @@
     <div class="container">
         <h1>Bezoek Toewijzen</h1>
 
-        <!-- Controleer of er onderhoudsmedewerkers zijn om toe te wijzen -->
         @if ($maintenanceUsers->isNotEmpty())
             <form action="{{ route('visits.store_assigned', ['id' => $visit->id]) }}" method="POST">
                 @csrf

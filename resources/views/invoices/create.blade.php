@@ -7,7 +7,6 @@
         <form action="{{ route('invoices.store') }}" method="POST">
             @csrf
 
-            <!-- Customer Dropdown -->
             <div class="mb-4">
                 <label for="customer_id" class="block font-semibold text-gray-700">Klant</label>
                 <select name="customer_id" id="customer_id" class="form-control w-full border rounded-md p-2" required>
@@ -20,7 +19,6 @@
                 </select>
             </div>
 
-            <!-- User Dropdown -->
             <div class="mb-4">
                 <label for="user_id" class="block font-semibold text-gray-700">Gebruiker</label>
                 <select name="user_id" id="user_id" class="form-control w-full border rounded-md p-2" required>
@@ -32,7 +30,6 @@
                 </select>
             </div>
 
-            <!-- Machines Section -->
             <div class="mb-6">
                 <label class="block font-semibold text-gray-700 mb-2">Machines</label>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -54,7 +51,6 @@
                 </div>
             </div>
 
-            <!-- Beans Section -->
             <div class="mb-6">
                 <label class="block font-semibold text-gray-700 mb-2">Bonen</label>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -75,7 +71,6 @@
                 </div>
             </div>
 
-            <!-- Agreement Length -->
             <div class="mb-4">
                 <label for="agreement_length" class="block font-semibold text-gray-700">Looptijd Overeenkomst (maanden)</label>
                 <input type="number" name="agreement_length" id="agreement_length"
@@ -83,7 +78,6 @@
                     value="{{ old('agreement_length') }}" required>
             </div>
 
-            <!-- Maintenance Agreement -->
             <div class="mb-4">
                 <label for="maintenance_agreement" class="block font-semibold text-gray-700">Onderhoudsovereenkomst</label>
                 <select name="maintenance_agreement" id="maintenance_agreement"
@@ -93,13 +87,11 @@
                 </select>
             </div>
 
-            <!-- Notes -->
             <div class="mb-4">
                 <label for="notes" class="block font-semibold text-gray-700">Notities</label>
                 <textarea name="notes" id="notes" rows="3" class="form-control w-full border rounded-md p-2">{{ old('notes') }}</textarea>
             </div>
 
-            <!-- Action Buttons -->
             <div class="flex justify-between mt-6">
                 <a href="{{ route('invoices.index') }}"
                     class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">

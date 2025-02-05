@@ -81,7 +81,7 @@
             </div>
             <div class="modal-body">
                 <p>Vul je naam in om de beëindigactie te bevestigen:</p>
-                <p><strong>Ingelogde gebruiker:</strong> {{ Auth::user()->name }}</p> <!-- Laat de naam van de ingelogde gebruiker zien -->
+                <p><strong>Ingelogde gebruiker:</strong> {{ Auth::user()->name }}</p>
                 <input type="text" id="username" class="form-control" placeholder="Vul je naam in om te bevestigen" value="">
             </div>
             <div class="modal-footer">

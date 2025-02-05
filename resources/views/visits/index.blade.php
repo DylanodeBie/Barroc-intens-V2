@@ -4,15 +4,12 @@
     <div class="container mx-auto px-4">
         <h1 class="text-3xl font-bold mb-6 text-center text-black">Bezoeken Lijst</h1>
 
-        <!-- Filter Form -->
         <form method="GET" action="{{ route('visits.index') }}" class="bg-gray-100 p-6 rounded-lg shadow-md mb-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <!-- Bedrijf -->
                 <div>
                     <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">Bedrijf</label>
                     <input type="text" name="company_name" id="company_name" value="{{ request('company_name') }}" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500" placeholder="Zoek op bedrijf">
                 </div>
-                <!-- Afdeling -->
                 <div>
                     <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Afdeling</label>
                     <select name="type" id="type" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
@@ -21,7 +18,6 @@
                         <option value="maintenance" {{ request('type') == 'maintenance' ? 'selected' : '' }}>Maintenance</option>
                     </select>
                 </div>
-                <!-- Medewerker -->
                 <div>
                     <label for="user_id" class="block text-sm font-medium text-gray-700 mb-1">Medewerker</label>
                     <select name="user_id" id="user_id" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
@@ -31,7 +27,6 @@
                         @endforeach
                     </select>
                 </div>
-                <!-- Status -->
                 <div>
                     <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select name="status" id="status" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
@@ -49,14 +44,12 @@
             </div>
         </form>
 
-        <!-- Success Message -->
         @if (session('success'))
             <div class="bg-green-500 text-white p-4 mb-4">
                 {{ session('success') }}
             </div>
         @endif
 
-        <!-- Add New Visit Button -->
         @if (in_array(auth()->user()->role_id, [3, 7, 10]))
             <div class="flex justify-end mb-4">
                 <a style="background-color: #FFD700;" href="{{ route('visits.create') }}" class="bg-yellow-500 text-black font-semibold px-6 py-2 rounded-md hover:bg-yellow-600 flex items-center">
@@ -65,7 +58,6 @@
             </div>
         @endif
 
-        <!-- Search Bar (Hidden for smaller screens) -->
         <div class="flex justify-end mb-4">
             <div class="relative w-1/4">
                 <input type="text" placeholder="Zoeken..." class="border border-gray-300 rounded-full px-4 py-2 pr-10 w-full">
@@ -75,7 +67,6 @@
             </div>
         </div>
 
-        <!-- Visits Table (Desktop) -->
         <div class="overflow-x-auto border border-gray-200 rounded-lg hidden sm:block">
             <table class="min-w-full bg-white border-collapse">
                 <thead style="background-color: #FFD700;">
@@ -114,7 +105,6 @@
             </table>
         </div>
 
-        <!-- Visits List (Mobile) -->
         <div class="sm:hidden">
             @foreach ($visits as $visit)
                 <div class="border border-gray-200 rounded-lg p-4 mb-4 bg-white">

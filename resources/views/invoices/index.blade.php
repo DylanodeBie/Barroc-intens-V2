@@ -4,7 +4,6 @@
 <div class="container mx-auto">
     <h1 class="text-3xl font-bold mb-4 text-center text-black">Facturen Lijst</h1>
 
-    <!-- "Nieuwe factuur maken" button -->
     <div class="flex justify-end mb-4">
         <a href="{{ route('invoices.create') }}" class="font-semibold px-6 py-2 rounded-md hover:bg-yellow-500"
             style="background-color: #FFD700; color: black;">
@@ -12,7 +11,6 @@
         </a>
     </div>
 
-    <!-- Search bar -->
     <div class="flex justify-end mb-4">
         <div class="relative">
             <input type="text" placeholder="Zoeken..." class="border border-gray-300 rounded-full px-4 py-2 pr-10">
@@ -22,7 +20,6 @@
         </div>
     </div>
 
-    <!-- Invoices table -->
     <div class="overflow-x-auto border border-gray-200 rounded-lg">
         <table class="min-w-full bg-white border-collapse">
             <thead style="background-color: #FFD700;">
@@ -50,13 +47,11 @@
                             € {{ number_format($invoice->price, 2) }}
                         </td>
                         <td class="px-6 py-4 text-center flex justify-center gap-4">
-                            <!-- View icon -->
                             <a href="{{ route('invoices.show', $invoice->id) }}" class="hover:text-gray-700"
                                 title="Bekijken" style="color: black;">
                                 <i class="fas fa-eye"></i>
                             </a>
 
-                            <!-- Edit action for specific roles -->
                             @if (in_array(auth()->user()->role->name, ['CEO', 'Sales', 'Head Sales']))
                                 <a href="{{ route('invoices.edit', $invoice->id) }}" class="hover:text-gray-700"
                                     title="Bewerken" style="color: black;">
@@ -64,7 +59,6 @@
                                 </a>
                             @endif
 
-                            <!-- Delete action -->
                             <form action="{{ route('invoices.destroy', $invoice->id) }}" method="POST"
                                 onsubmit="return confirm('Weet je zeker dat je deze factuur wilt verwijderen?');"
                                 style="display:inline;">

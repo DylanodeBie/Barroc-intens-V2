@@ -8,7 +8,6 @@
             @csrf
             @method('PUT')
 
-            <!-- Customer Dropdown -->
             <div class="mb-4">
                 <label for="customer_id" class="block font-semibold text-gray-700">Klant</label>
                 <select name="customer_id" id="customer_id" class="form-control w-full border rounded-md p-2 text-black">
@@ -20,20 +19,17 @@
                 </select>
             </div>
 
-            <!-- Invoice Date -->
             <div class="mb-4">
                 <label for="invoice_date" class="block font-semibold text-gray-700">Factuurdatum</label>
                 <input type="date" name="invoice_date" id="invoice_date"
                     value="{{ $invoice->invoice_date->format('Y-m-d') }}" class="form-control w-full border rounded-md p-2">
             </div>
 
-            <!-- Notes -->
             <div class="mb-6">
                 <label for="notes" class="block font-semibold text-gray-700">Notities</label>
                 <textarea name="notes" id="notes" rows="3" class="form-control w-full border rounded-md p-2">{{ $invoice->notes }}</textarea>
             </div>
 
-            <!-- Invoice Items Section -->
             <h2 class="text-2xl font-semibold mb-4">Factuuritems</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach ($products as $product)
@@ -60,7 +56,6 @@
                 @endforeach
             </div>
 
-            <!-- Submit Buttons -->
             <div class="flex justify-between mt-6">
                 <a href="{{ route('invoices.index') }}"
                     class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
@@ -73,7 +68,6 @@
         </form>
     </div>
 
-    <!-- JavaScript to Handle Item State -->
     <script>
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {

@@ -1,5 +1,3 @@
-<!-- resources/views/layouts/sales_dashboard_layout.blade.php -->
-
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -27,7 +25,6 @@
         @include('components.header')
 
         <div class="flex flex-grow">
-            <!-- Sidebar specific to Sales Dashboard -->
             <nav class="bg-gray-800 text-white w-20 md:w-64 p-4 space-y-6">
                 <ul class="space-y-4">
                     <li class="bg-blue-600 p-2 rounded text-center">
@@ -51,7 +48,6 @@
                 </ul>
             </nav>
 
-            <!-- Main Content Area -->
             <div class="flex-grow p-6 overflow-auto">
                 @yield('content')
             </div>

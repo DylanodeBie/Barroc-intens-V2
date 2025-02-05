@@ -2,9 +2,7 @@
     <div class="container">
         <div class="bg-gray-100 border-t border-gray-200 py-8 mt-8">
             <div class="container mx-auto max-w-screen-xl px-4">
-                <!-- Footer Grid -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-gray-700">
-                    <!-- Bedrijfsinformatie -->
                     <div>
                         <h2 class="text-lg font-semibold text-gray-800">Over Ons</h2>
                         <p class="mt-2 text-sm">
@@ -13,7 +11,6 @@
                         <img src="{{ asset('img/logo1_groot.png') }}" alt="Logo" class="h-12 mt-4">
                     </div>
 
-                    <!-- Snelle Links -->
                     <div>
                         <h2 class="text-lg font-semibold text-gray-800">Snelkoppelingen</h2>
                         <ul class="mt-2 space-y-2 text-sm">
@@ -24,7 +21,6 @@
                         </ul>
                     </div>
 
-                    <!-- Contactinformatie -->
                     <div>
                         <h2 class="text-lg font-semibold text-gray-800">Contact</h2>
                         <p class="mt-2 text-sm">1234 Koffiestraat, Tilburg</p>
@@ -32,7 +28,6 @@
                         <p class="mt-1 text-sm">Email: info@barrocintens.nl</p>
                     </div>
 
-                    <!-- Sociale Media -->
                     <div>
                         <h2 class="text-lg font-semibold text-gray-800">Volg Ons</h2>
                         <div class="flex space-x-4 mt-2">

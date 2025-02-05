@@ -75,7 +75,7 @@
                 <tr class="{{ $statusClass }}">
                     <td class="px-4 py-2 border-b flex items-center">
                         <span>{{ $contract->customers->company_name ?? 'Geen klant' }}</span>
-                        <span class="w-3 h-3 rounded-full ml-2 {{ $circleColor }}"></span> <!-- Cirkel naast de klantnaam -->
+                        <span class="w-3 h-3 rounded-full ml-2 {{ $circleColor }}"></span>
                     </td>
                     <td class="px-4 py-2 border-b">{{ \Carbon\Carbon::parse($contract->start_date)->format('d-m-Y') }}</td>
                     <td class="px-4 py-2 border-b">{{ \Carbon\Carbon::parse($contract->end_date)->format('d-m-Y') }}</td>

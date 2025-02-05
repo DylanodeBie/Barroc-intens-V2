@@ -119,14 +119,10 @@
     </table>
 </div>
 
-<!-- Paginering -->
 <div class="mt-4">
     {{ $orders->links() }}
 </div>
 
-
-
-<!-- Bestel Modal -->
 <div id="orderModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
     <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
         <h2 class="text-2xl font-bold mb-4">Bestelling plaatsen</h2>
@@ -153,7 +149,6 @@
     </div>
 </div>
 
-<!-- Handtekening Modal -->
 @if (session('totalPrice') > 500)
 <div id="signatureModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">

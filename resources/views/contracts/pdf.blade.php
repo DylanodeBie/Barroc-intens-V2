@@ -99,7 +99,6 @@
 
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <div class="customer-info">
                 <h1>Leasecontract #{{ $leasecontract->id }}</h1>
@@ -115,7 +114,6 @@
             </div>
         </div>
 
-        <!-- Contract Information -->
         <table class="info-table">
             <tr>
                 <td><strong>Startdatum:</strong></td>
@@ -131,10 +129,8 @@
             </tr>
         </table>
 
-        <!-- Divider -->
         <div class="line"></div>
 
-        <!-- Products Table -->
         <table class="items-table">
             <thead>
                 <tr>
@@ -166,7 +162,6 @@
             </tbody>
         </table>
 
-        <!-- Footer -->
         <div class="footer">
             <p>Dit contract is opgesteld: {{ \Carbon\Carbon::parse($leasecontract->created_at)->format('d-m-Y') }} en is dus geldig tot: {{ \Carbon\Carbon::parse($leasecontract->end_date)->format('d-m-Y') }}</p>
             <p>Contractvoorwaarden en meer informatie zijn beschikbaar bij Barroc Intens. Neem contact met ons op voor vragen of wijzigingen.</p>

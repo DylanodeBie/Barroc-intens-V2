@@ -69,7 +69,6 @@
     @if ($visits->isEmpty())
         <p class="text-center text-gray-500">Je hebt momenteel geen toegewezen bezoeken.</p>
     @else
-        <!-- Tabel voor grotere schermen -->
         <div class="hidden lg:block overflow-x-auto mb-6">
             <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow">
                 <thead class="bg-yellow-500 text-white">
@@ -101,7 +100,6 @@
                                 <td class="px-6 py-4 border-t">{{ $visit->user->name ?? "Geen medewerker"}}</td>
                             @endif
                             <td class="px-6 py-4 border-t flex space-x-4">
-                                <!-- Acties met icoontjes -->
                                 @if ($visit->maintenanceReport)
                                     <a href="{{ route('maintenance-reports.show', $visit->maintenanceReport->id) }}" class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600">
                                         Bekijk Storingsmelding
@@ -130,7 +128,6 @@
             </table>
         </div>
 
-        <!-- Kaarten voor kleinere schermen -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:hidden gap-6">
             @foreach ($visits as $visit)
                 <div class="bg-white border border-gray-300 rounded-lg shadow p-6">
@@ -145,7 +142,6 @@
                     @endif
 
                     <div class="mt-4 space-y-2">
-                        <!-- Acties met icoontjes -->
                         @if ($visit->maintenanceReport)
                             <a href="{{ route('maintenance-reports.show', $visit->maintenanceReport->id) }}" class="block bg-gray-700 text-white text-center px-4 py-2 rounded hover:bg-gray-600">
                                 Bekijk Storingsmelding

@@ -51,7 +51,6 @@ class LeasecontractController extends Controller
             'payment_method' => 'required|string',
             'machine_amount' => 'required|integer|min:1',
             'notice_period' => 'required|string',
-            'total_price' => 'required|numeric',
         ], [
             'end_date.after_or_equal' => 'De einddatum mag niet eerder zijn dan de startdatum!',
         ]);
@@ -73,18 +72,17 @@ class LeasecontractController extends Controller
         // **Maak het leasecontract aan**
         $leasecontract = Leasecontract::create($validated);
 
-        $totalPrice = 0;
-
-        if ($request->has('products')) {
-            foreach ($request->products as $product) {
-                $leasecontract->products()->attach($product['product_id'], [
-                    'amount' => $product['amount'],
-                    'price' => $product['price'],
-                ]);
-                $totalPrice += $product['amount'] * $product['price'];
+        // **Koppel de producten**
+        if ($products->isNotEmpty()) {
+            foreach ($products as $product) {
+                if (!empty($product['product_id'])) {
+                    $leasecontract->products()->attach($product['product_id'], [
+                        'amount' => $product['amount'],
+                        'price' => $product['price'],
+                    ]);
+                }
             }
         }
-        $leasecontract->update(['total_price' => $totalPrice]);
 
         return redirect()->route('leasecontracts.index')->with('success', 'Leasecontract succesvol aangemaakt.');
     }

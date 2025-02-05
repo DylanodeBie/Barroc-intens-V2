@@ -21,7 +21,7 @@
         "@fullcalendar/daygrid": "^6.1.15",
         "@fullcalendar/interaction": "^6.1.15",
         "@vitejs/plugin-vue": "^5.2.0",
-        "leaflet": "^1.9.4"
+        "leaflet": "^1.9.4",
         "signature_pad": "^5.0.4"
     }
 }

@@ -128,11 +128,13 @@ class VisitController extends Controller
         return redirect()->route('visits.index')->with('success', 'Bezoek succesvol toegewezen aan onderhoud.');
     }
 
-    public function maintenanceTickets()
-    public function myTickets(Request $request)
-    {
+    public function maintenanceTickets(){
         $tickets = Visit::whereNotNull('user_id')->get();
         return view('visits.maintenance_tickets', compact('tickets'));
+    }
+        
+    public function myTickets(Request $request)
+    {
         $user = auth()->user();
 
         if (!in_array($user->role_id, [5, 9, 10])) {

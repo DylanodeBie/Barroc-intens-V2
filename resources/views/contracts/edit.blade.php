@@ -37,6 +37,9 @@
         <div class="form-group">
             <label for="end_date">Einddatum</label>
             <input type="date" name="end_date" id="end_date" class="form-control" value="{{ $leasecontract->end_date }}">
+            @if($errors->has('end_date'))
+            <p class="text-red-500 text-sm mt-2">{{ $errors->first('end_date') }}</p>
+            @endif
         </div>
 
         <div class="form-group">

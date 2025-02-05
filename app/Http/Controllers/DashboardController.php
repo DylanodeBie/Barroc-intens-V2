@@ -15,18 +15,7 @@ class DashboardController extends Controller
             return view('dashboard');
         }
 
-        logger('User Role: ' . $user->role->name);
-
-        $hour = now()->format('H');
-        $greeting = '';
-
-        if ($hour >= 6 && $hour < 12) {
-            $greeting = "Goedemorgen, " . $user->name;
-        } elseif ($hour >= 12 && $hour < 18) {
-            $greeting = "Goedemiddag, " . $user->name;
-        } else {
-            $greeting = "Goedenacht, " . $user->name;
-        }
+        logger('User Role: ' . $user->role->name);    
 
         $roleRoutes = [
             'Finance' => 'dashboard.finance',
@@ -46,168 +35,42 @@ class DashboardController extends Controller
             return redirect()->route($roleRoutes[$userRole]);
         }
 
-        return view('dashboard', compact('greeting', 'user'));
+        return view('dashboard');
     }
 
     public function finance() {
-        $user = Auth::user();
-
-        $hour = now()->format('H');
-        $greeting = '';
-
-        if ($hour >= 6 && $hour < 12) {
-            $greeting = "Goedemorgen, " . $user->name;
-        } elseif ($hour >= 12 && $hour < 18) {
-            $greeting = "Goedemiddag, " . $user->name;
-        } elseif ($hour >= 18 && $hour < 24) {
-            $greeting = "Goedeavond, " . $user->name;
-        } else {
-            $greeting = "Goedenacht, " . $user->name;
-        }
-        return view('dashboard.finance.finance', compact('greeting', 'user'));
+        return view('dashboard.finance.finance');
     }
 
     public function sales() {
-        $user = Auth::user();
-
-        $hour = now()->format('H');
-        $greeting = '';
-
-        if ($hour >= 6 && $hour < 12) {
-            $greeting = "Goedemorgen, " . $user->name;
-        } elseif ($hour >= 12 && $hour < 18) {
-            $greeting = "Goedemiddag, " . $user->name;
-        } elseif ($hour >= 18 && $hour < 24) {
-            $greeting = "Goedeavond, " . $user->name;
-        } else {
-            $greeting = "Goedenacht, " . $user->name;
-        }
-        return view('dashboard.sales.sales', compact('greeting', 'user'));
+        return view('dashboard.sales.sales');
     }
 
     public function marketing() {
-        $user = Auth::user();
-
-        $hour = now()->format('H');
-        $greeting = '';
-
-        if ($hour >= 6 && $hour < 12) {
-            $greeting = "Goedemorgen, " . $user->name;
-        } elseif ($hour >= 12 && $hour < 18) {
-            $greeting = "Goedemiddag, " . $user->name;
-        } elseif ($hour >= 18 && $hour < 24) {
-            $greeting = "Goedeavond, " . $user->name;
-        } else {
-            $greeting = "Goedenacht, " . $user->name;
-        }
-        return view('dashboard.marketing.marketing', compact('greeting', 'user'));
+        return view('dashboard.marketing.marketing');
     }
 
     public function maintenance() {
-        $user = Auth::user();
-
-        $hour = now()->format('H');
-        $greeting = '';
-
-        if ($hour >= 6 && $hour < 12) {
-            $greeting = "Goedemorgen, " . $user->name;
-        } elseif ($hour >= 12 && $hour < 18) {
-            $greeting = "Goedemiddag, " . $user->name;
-        } elseif ($hour >= 18 && $hour < 24) {
-            $greeting = "Goedeavond, " . $user->name;
-        } else {
-            $greeting = "Goedenacht, " . $user->name;
-        }
-        return view('dashboard.maintenance.maintenance', compact('greeting', 'user'));
+        return view('dashboard.maintenance.maintenance');
     }
 
     public function headFinance() {
-        $user = Auth::user();
-
-        $hour = now()->format('H');
-        $greeting = '';
-
-        if ($hour >= 6 && $hour < 12) {
-            $greeting = "Goedemorgen, " . $user->name;
-        } elseif ($hour >= 12 && $hour < 18) {
-            $greeting = "Goedemiddag, " . $user->name;
-        } elseif ($hour >= 18 && $hour < 24) {
-            $greeting = "Goedeavond, " . $user->name;
-        } else {
-            $greeting = "Goedenacht, " . $user->name;
-        }
-        return view('dashboard.head-finance.head-finance', compact('greeting', 'user'));
+        return view('dashboard.head-finance.head-finance');
     }
 
     public function headSales() {
-        $user = Auth::user();
-
-        $hour = now()->format('H');
-        $greeting = '';
-
-        if ($hour >= 6 && $hour < 12) {
-            $greeting = "Goedemorgen, " . $user->name;
-        } elseif ($hour >= 12 && $hour < 18) {
-            $greeting = "Goedemiddag, " . $user->name;
-        } elseif ($hour >= 18 && $hour < 24) {
-            $greeting = "Goedeavond, " . $user->name;
-        } else {
-            $greeting = "Goedenacht, " . $user->name;
-        }
-        return view('dashboard.head-sales.head-sales', compact('greeting', 'user'));
+        return view('dashboard.head-sales.head-sales');
     }
 
     public function headMarketing() {
-        $user = Auth::user();
-
-        $hour = now()->format('H');
-        $greeting = '';
-
-        if ($hour >= 6 && $hour < 12) {
-            $greeting = "Goedemorgen, " . $user->name;
-        } elseif ($hour >= 12 && $hour < 18) {
-            $greeting = "Goedemiddag, " . $user->name;
-        } elseif ($hour >= 18 && $hour < 24) {
-            $greeting = "Goedeavond, " . $user->name;
-        } else {
-            $greeting = "Goedenacht, " . $user->name;
-        }
-        return view('dashboard.head-marketing.head-marketing', compact('greeting', 'user'));
+        return view('dashboard.head-marketing.head-marketing');
     }
 
     public function headMaintenance() {
-        $user = Auth::user();
-
-        $hour = now()->format('H');
-        $greeting = '';
-
-        if ($hour >= 6 && $hour < 12) {
-            $greeting = "Goedemorgen, " . $user->name;
-        } elseif ($hour >= 12 && $hour < 18) {
-            $greeting = "Goedemiddag, " . $user->name;
-        } elseif ($hour >= 18 && $hour < 24) {
-            $greeting = "Goedeavond, " . $user->name;
-        } else {
-            $greeting = "Goedenacht, " . $user->name;
-        }
-        return view('dashboard.head-maintenance.head-maintenance', compact('greeting', 'user'));
+        return view('dashboard.head-maintenance.head-maintenance');
     }
 
     public function ceo() {
-        $user = Auth::user();
-
-        $hour = now()->format('H');
-        $greeting = '';
-
-        if ($hour >= 6 && $hour < 12) {
-            $greeting = "Goedemorgen, " . $user->name;
-        } elseif ($hour >= 12 && $hour < 18) {
-            $greeting = "Goedemiddag, " . $user->name;
-        } elseif ($hour >= 18 && $hour < 24) {
-            $greeting = "Goedeavond, " . $user->name;
-        } else {
-            $greeting = "Goedenacht, " . $user->name;
-        }
-        return view('dashboard.ceo.ceo', compact('greeting', 'user'));
+        return view('dashboard.ceo.ceo');
     }
 }

@@ -4,8 +4,6 @@ namespace App\Http\Controllers\HeadMarketing;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use Illuminate\Container\Attributes\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -16,7 +14,7 @@ class ProductController extends Controller
 
         $products = Product::when($search, function ($query, $search) {
             return $query->where('brand', 'like', "%{$search}%")
-                ->orWhere('description', 'like', "%{$search}%");
+                         ->orWhere('description', 'like', "%{$search}%");
         })->get();
 
         $error = null;
@@ -25,23 +23,24 @@ class ProductController extends Controller
             $error = "Er is niets gevonden met de zoekopdracht: '{$search}'";
         }
 
-        return view('dashboard.head-marketing.products.index', compact('products', 'error'));
+        // Updated view path to "products.index"
+        return view('products.index', compact('products', 'error'));
     }
-
 
     public function create()
     {
-        return view('dashboard.head-marketing.products.create');
+        // Updated view path to "products.create"
+        return view('products.create');
     }
 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'brand' => 'required|string',
+            'name'        => 'required|string|max:255',
+            'brand'       => 'required|string',
             'description' => 'required|string',
-            'stock' => 'required|integer',
-            'price' => 'required|numeric|min:0',
+            'stock'       => 'required|integer',
+            'price'       => 'required|numeric|min:0',
         ]);
 
         Product::create($validatedData);
@@ -49,28 +48,29 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product aangemaakt');
     }
 
-
     public function show(Product $product)
     {
-        return view('dashboard.head-marketing.products.show', compact('product'));
+        // Updated view path to "products.show"
+        return view('products.show', compact('product'));
     }
 
     public function edit(Product $product)
     {
-        return view('dashboard.head-marketing.products.edit', compact('product'));
+        // Updated view path to "products.edit"
+        return view('products.edit', compact('product'));
     }
 
     public function update(Request $request, Product $product)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'brand' => 'required|string',
+        $validatedData = $request->validate([
+            'name'        => 'required|string|max:255',
+            'brand'       => 'required|string',
             'description' => 'required|string',
-            'stock' => 'required|integer',
-            'price' => 'required|numeric|min:0',
+            'stock'       => 'required|integer',
+            'price'       => 'required|numeric|min:0',
         ]);
 
-        $product->update($request->all());
+        $product->update($validatedData);
 
         return redirect()->route('products.index')->with('success', 'Product bijgewerkt');
     }
@@ -78,7 +78,6 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-
         return redirect()->route('products.index')->with('success', 'Product verwijderd');
     }
 }

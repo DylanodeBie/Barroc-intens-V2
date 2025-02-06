@@ -9,8 +9,9 @@ class Product extends Model
     protected $table = 'products';
 
     protected $fillable = [
-        'name', 'brand', 'description', 'stock', 'price'
+        'name', 'brand', 'description', 'stock', 'price', 'image'
     ];
+
 
     public function invoices()
     {

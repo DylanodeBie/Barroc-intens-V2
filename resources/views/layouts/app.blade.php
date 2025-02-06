@@ -34,8 +34,8 @@
 
         <div class="flex flex-grow">
             @php
-                $user = auth()->user();
-                $role = $user ? $user->role->name : 'Guest';
+$user = auth()->user();
+$role = $user ? $user->role->name : 'Guest';
             @endphp
 
             <nav class="bg-white text-black w-20 md:w-64 p-4 space-y-4 border-r">
@@ -139,7 +139,7 @@
                             <a href="{{ route('visits.index') }}">Meldingen</a>
                         </li>
 
-                    @elseif($role === 'Marketing' || $role === 'Inkoop')
+                    @elseif($role === 'Marketing' || $role === 'Head Marketing')
                         <li
                             class="p-2 rounded text-center {{ Request::is('dashboard/marketing*') ? 'bg-gray-200' : 'hover:bg-[#FFD700]' }}">
                             <a href="{{ route('dashboard.marketing') }}" class="flex items-center justify-center space-x-2">
@@ -157,7 +157,7 @@
                             <a href="{{ url('parts') }}">Bestellingen</a>
                         </li>
 
-                    @elseif($role === 'Maintenance' || $role === 'Head Maintenance')
+                    @elseif($role === 'Maintenance')
                         <li
                             class="p-2 rounded text-center {{ Request::is('dashboard/maintenance*') ? 'bg-gray-200' : 'hover:bg-[#FFD700]' }}">
                             <a href="{{ route('dashboard.maintenance') }}"
@@ -177,6 +177,31 @@
                         </li>
                         <li class="p-2 rounded hover:bg-[#FFD700]">
                             <a href="{{ route('agenda') }}">Agenda</a>
+                        </li>
+
+                    @elseif($role === 'Head Maintenance')
+                        <li
+                            class="p-2 rounded text-center {{ Request::is('dashboard/maintenance*') ? 'bg-gray-200' : 'hover:bg-[#FFD700]' }}">
+                            <a href="{{ route('dashboard.maintenance') }}"
+                                class="flex items-center justify-center space-x-2">
+                                <i class="fas fa-home"></i>
+                                <span class="hidden md:block">Home</span>
+                            </a>
+                        </li>
+                        <li class="p-2 rounded hover:bg-[#FFD700]">
+                            <a href="{{ route('products.index') }}">Producten</a>
+                        </li>
+                        <li class="p-2 rounded hover:bg-[#FFD700]">
+                            <a href="{{ route('visits.my_tickets') }}">Meldingen</a>
+                        </li>
+                        <li class="p-2 rounded hover:bg-[#FFD700]">
+                            <a href="{{ route('customers.index') }}">Klanten</a>
+                        </li>
+                        <li class="p-2 rounded hover:bg-[#FFD700]">
+                            <a href="{{ route('agenda') }}">Agenda</a>
+                        </li>
+                        <li class="p-2 rounded hover:bg-[#FFD700]">
+                            <a href="{{ route('visits.index') }}">Meldingen</a>
                         </li>
 
                     @else

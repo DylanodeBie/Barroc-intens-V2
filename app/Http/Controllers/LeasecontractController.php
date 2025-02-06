@@ -15,7 +15,7 @@ class LeasecontractController extends Controller
     {
         if ($request->user()->role_id == 10) {
             $leasecontracts = Leasecontract::with(['customers', 'products'])->get();
-        } elseif (in_array($request->user()->role_id, [2])) {
+        } elseif (in_array($request->user()->role_id, [2,6])) {
             $leasecontracts = Leasecontract::where('status', 'pending')
                 ->with(['customers', 'products'])
                 ->get();

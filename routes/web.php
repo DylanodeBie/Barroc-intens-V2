@@ -42,13 +42,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('customers', CustomerController::class);
 
-    Route::resource('employees', EmployeeController::class);	
+    Route::resource('employees', EmployeeController::class);
 
     Route::middleware('role:3,7,10')->group(function () {
         Route::resource('visits', VisitController::class);
     });
 
-    Route::middleware('role:9')->group(function () {
+    Route::middleware('role:3,7,9')->group(function () {
         Route::get('visits', [VisitController::class, 'index'])->name('visits.index');
         Route::get('visits/{visit}', [VisitController::class, 'show'])->name('visits.show');
     });
@@ -72,7 +72,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('parts/order', [MarketingController::class, 'order'])->name('parts.order');
     Route::post('/order/signature', [MarketingController::class, 'storeSignature'])->name('storeSignature');
 
-    Route::middleware('role:3,7,10')->group(function () {
+    Route::middleware('role:2,6,3,7,10')->group(function () {
         Route::resource('quotes', QuoteController::class);
         Route::get('/quotes/{quote}/download', [QuoteController::class, 'downloadPdf'])->name('quotes.download');
 
@@ -80,7 +80,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/quotes/{quote}/invoice', [InvoiceController::class, 'createFromQuote'])->name('quotes.invoice');
     });
 
-    Route::middleware('role:3,7,10')->group(function () {
+    Route::middleware('role:2,3,6,7,10')->group(function () {
         Route::resource('invoices', InvoiceController::class);
         Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
     });

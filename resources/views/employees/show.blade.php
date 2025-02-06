@@ -24,14 +24,6 @@
             <a href="{{ route('employees.edit', $employee->id) }}" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
                 <i class="fas fa-edit mr-2"></i>Bewerken
             </a>
-
-            <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" onsubmit="return confirm('Weet je zeker dat je deze werknemer wilt verwijderen?');">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
-                    <i class="fa-solid fa-trash-can mr-2"></i>Verwijderen
-                </button>
-            </form>
         </div>
 
         <div class="mt-6">

@@ -9,7 +9,7 @@ class QuoteMachine extends Model
 {
     use HasFactory;
 
-    protected $table = 'quote_machines'; // Specify the correct table name
+    protected $table = 'quote_machines';
 
     protected $fillable = [
         'quote_id',
@@ -17,7 +17,6 @@ class QuoteMachine extends Model
         'quantity',
     ];
 
-    // Relationships (if needed)
     public function quote()
     {
         return $this->belongsTo(Quote::class);

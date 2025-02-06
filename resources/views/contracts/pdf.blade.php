@@ -79,7 +79,6 @@
             text-align: center;
         }
 
-        /* Hier wordt de prijs- en subtotaal kolommen naar rechts uitgelijnd */
         .items-table .price,
         .items-table .subtotal {
             text-align: right;
@@ -169,7 +168,7 @@
             <div style="border: 1px solid #000; width: 300px; height: 100px; margin-top: 10px;"></div>
             <p>Datum: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</p>
         </div>
-    </div>x
+    </div>
 </body>
 
 </html>

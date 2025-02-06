@@ -13,13 +13,11 @@ class LeasecontractController extends Controller
 {
     public function index(Request $request)
     {
-        if ($request->user()->role_id == 10) { // role_id 1 = Admin
-            // Admin ziet ALLE contracten, ongeacht de status
+        if ($request->user()->role_id == 10) {
             $leasecontracts = Leasecontract::with(['customers', 'products'])->get();
-        } elseif (in_array($request->user()->role_id, [2])) { // role_id 2 = Finance, 10 = Manager
-            // Finance en Manager zien alleen de contracten met status 'pending' voor goedkeuring
+        } elseif (in_array($request->user()->role_id, [2])) {
             $leasecontracts = Leasecontract::where('status', 'pending')
-                ->with(['customers', 'products']) // Voeg producten toe via de relatie
+                ->with(['customers', 'products'])
                 ->get();
         }
 
@@ -57,7 +55,6 @@ class LeasecontractController extends Controller
 
         $validated['status'] = 'pending';
 
-        // **Berekening van totaalprijs**
         $totalPrice = 0;
         $products = collect($request->input('products', []));
 
@@ -69,10 +66,8 @@ class LeasecontractController extends Controller
 
         $validated['total_price'] = $totalPrice;
 
-        // **Maak het leasecontract aan**
         $leasecontract = Leasecontract::create($validated);
 
-        // **Koppel de producten**
         if ($products->isNotEmpty()) {
             foreach ($products as $product) {
                 if (!empty($product['product_id'])) {
@@ -93,10 +88,7 @@ class LeasecontractController extends Controller
         $customers = Customer::all();
         $users = User::all();
 
-        // Haal de producten op die al gekoppeld zijn aan het contract
         $linkedProducts = $leasecontract->products;
-
-        // Haal de producten op die niet gekoppeld zijn aan het contract
         $unlinkedProducts = Product::whereNotIn('id', $linkedProducts->pluck('id'))->get();
 
         return view('contracts.edit', compact(
@@ -108,12 +100,10 @@ class LeasecontractController extends Controller
         ));
     }
 
-
     public function update(Request $request, $id)
     {
         $leasecontract = LeaseContract::findOrFail($id);
 
-        // Update leasecontract details
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'user_id' => 'required|exists:users,id',
@@ -128,7 +118,6 @@ class LeasecontractController extends Controller
 
         $leasecontract->update($validated);
 
-        // Synchroniseer producten met hun pivot-data
         $products = $request->input('products', []);
         $syncData = [];
         $totalPrice = 0;
@@ -150,7 +139,6 @@ class LeasecontractController extends Controller
         return redirect()->route('leasecontracts.index')->with('success', 'Leasecontract bijgewerkt.');
     }
 
-
     public function destroy(Leasecontract $leasecontract)
     {
         $leasecontract->delete();
@@ -160,22 +148,18 @@ class LeasecontractController extends Controller
 
     public function exportPdf(Leasecontract $leasecontract)
     {
-        // Haal het leasecontract op met gerelateerde gegevens
         $leasecontract = Leasecontract::with(['customers', 'users', 'products'])->findOrFail($leasecontract->id);
 
-        // Maak een PDF-weergave met de gegevens
         $pdf = \PDF::loadView('contracts.pdf', compact('leasecontract'));
 
-        // Geef het PDF-bestand terug als download
         return $pdf->download('leasecontract-' . $leasecontract->id . '.pdf');
     }
 
     public function pendingContracts()
     {
-        // Haal de laatste 5 goedgekeurde of afgekeurde contracten op
         $recentContracts = Leasecontract::whereIn('status', ['completed', 'rejected'])
-            ->latest()  // Zorg ervoor dat je de meest recente contracten haalt
-            ->take(5)   // Beperk het aantal contracten tot 5
+            ->latest()
+            ->take(5)
             ->get();
 
         $leasecontracts = Leasecontract::with('products')->where('status', 'pending')->get();
@@ -185,7 +169,6 @@ class LeasecontractController extends Controller
 
     public function approve(Request $request, $id)
     {
-
         $request->validate([
             'approval_reason' => 'required|string|min:3',
         ], [
@@ -196,17 +179,15 @@ class LeasecontractController extends Controller
         $leasecontract = LeaseContract::findOrFail($id);
 
         $leasecontract->status = 'approved';
-        $leasecontract->approval_reason = $request->input('approval_reason'); // Reden van goedkeuring
-        $leasecontract->approved_by = auth()->id(); // User ID van de goedkeurder
+        $leasecontract->approval_reason = $request->input('approval_reason');
+        $leasecontract->approved_by = auth()->id();
         $leasecontract->save();
 
         return redirect()->back()->with('success', 'Contract succesvol goedgekeurd met reden: ' . $request->input('approval_reason'));
     }
 
-
     public function reject(Request $request, $id)
     {
-
         $request->validate([
             'rejection_reason' => 'required|string|min:3',
         ], [
@@ -217,8 +198,8 @@ class LeasecontractController extends Controller
         $leasecontract = LeaseContract::findOrFail($id);
 
         $leasecontract->status = 'rejected';
-        $leasecontract->rejection_reason = $request->input('rejection_reason'); // Reden van afkeuring
-        $leasecontract->rejected_by = auth()->id(); // User ID van de afkeurder
+        $leasecontract->rejection_reason = $request->input('rejection_reason');
+        $leasecontract->rejected_by = auth()->id();
         $leasecontract->save();
 
         return redirect()->back()->with('success', 'Contract succesvol afgekeurd met reden: ' . $request->input('rejection_reason'));

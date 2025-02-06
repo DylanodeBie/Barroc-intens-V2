@@ -39,9 +39,15 @@ class ProductController extends Controller
             'description' => 'required|string',
             'stock'       => 'required|integer',
             'price'       => 'required|numeric|min:0',
+            'image'       => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        $imagePath = $request->file('image')->store('productphotos', 'public');
+
+        $validatedData['image'] = $imagePath;
+
         Product::create($validatedData);
+
 
         return redirect()->route('products.index')->with('success', 'Product aangemaakt');
     }
@@ -65,9 +71,16 @@ class ProductController extends Controller
             'description' => 'required|string',
             'stock'       => 'required|integer',
             'price'       => 'required|numeric|min:0',
+            'image'       => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('productphotos', 'public');
+            $validatedData['image'] = $imagePath;
+        }
+
         $product->update($validatedData);
+
 
         return redirect()->route('products.index')->with('success', 'Product bijgewerkt');
     }

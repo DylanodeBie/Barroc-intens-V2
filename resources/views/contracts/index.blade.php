@@ -32,44 +32,41 @@
             </thead>
             <tbody>
                 @foreach($leasecontracts->sortBy(function($contract) {
-                    // Sorteer op basis van status: 'completed' > 'pending' > 'overdue'
                     $order = ['completed' => 1, 'pending' => 2, 'overdue' => 3];
-                    return $order[$contract->status] ?? 4; // Default is onbekend
+                    return $order[$contract->status] ?? 4;
                 }) as $contract)
                 @php
-                    // Bepaal de status op basis van de contractstatus
                     $status = $contract->status;
                     $statusClass = '';
                     $statusText = '';
                     $circleColor = '';
-                    $iconColor = ''; // Dit wordt gebruikt om de kleur van de icoontjes te bepalen
-                    $trashIconColor = ''; // Dit wordt gebruikt om de kleur van de prullenbak te bepalen
+                    $iconColor = '';
+                    $trashIconColor = '';
 
-                    // Kijk naar de status van het contract
                     if ($status === 'overdue') {
-                        $statusClass = 'bg-red-500 text-white'; // Rood voor verlopen
+                        $statusClass = 'bg-red-500 text-white';
                         $statusText = 'Verlopen';
-                        $circleColor = 'bg-red-500'; // Rode cirkel
-                        $iconColor = 'text-white'; // Witte icoontjes voor verlopen
-                        $trashIconColor = 'text-white'; // Witte prullenbak voor verlopen
+                        $circleColor = 'bg-red-500';
+                        $iconColor = 'text-white';
+                        $trashIconColor = 'text-white';
                     } elseif ($status === 'pending') {
-                        $statusClass = ''; // Geen extra kleur voor de rij
+                        $statusClass = '';
                         $statusText = 'In afwachting';
-                        $circleColor = 'bg-yellow-500'; // Gele cirkel
-                        $iconColor = 'text-black'; // Zwarte icoontjes voor in afwachting
-                        $trashIconColor = 'text-black'; // Zwarte prullenbak voor in afwachting
+                        $circleColor = 'bg-yellow-500';
+                        $iconColor = 'text-black';
+                        $trashIconColor = 'text-black';
                     } elseif ($status === 'completed') {
-                        $statusClass = ''; // Geen extra kleur voor de rij
+                        $statusClass = '';
                         $statusText = 'Actief';
-                        $circleColor = 'bg-green-500'; // Groene cirkel
-                        $iconColor = 'text-black'; // Zwarte icoontjes voor actief
-                        $trashIconColor = 'text-black'; // Zwarte prullenbak voor actief
+                        $circleColor = 'bg-green-500';
+                        $iconColor = 'text-black';
+                        $trashIconColor = 'text-black';
                     } else {
-                        $statusClass = 'bg-gray-300 text-black'; // Grijs als de status onbekend is
+                        $statusClass = 'bg-gray-300 text-black';
                         $statusText = 'Afgekeurd';
-                        $circleColor = 'bg-gray-300'; // Grijze cirkel
-                        $iconColor = 'text-black'; // Zwarte icoontjes voor onbekend
-                        $trashIconColor = 'text-black'; // Zwarte prullenbak voor onbekend
+                        $circleColor = 'bg-gray-300';
+                        $iconColor = 'text-black';
+                        $trashIconColor = 'text-black';
                     }
                 @endphp
                 <tr class="{{ $statusClass }}">
@@ -134,7 +131,6 @@
 @endforeach
 
 <script>
-    // Validatie om ervoor te zorgen dat de naam van de ingelogde gebruiker overeenkomt
     @foreach($leasecontracts as $contract)
     document.getElementById('username{{ $contract->id }}').addEventListener('input', function(event) {
         const username = event.target.value;

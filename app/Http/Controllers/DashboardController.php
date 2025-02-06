@@ -15,7 +15,7 @@ class DashboardController extends Controller
             return view('dashboard');
         }
 
-        logger('User Role: ' . $user->role->name);
+        logger('User Role: ' . $user->role->name);    
 
         $roleRoutes = [
             'Finance' => 'dashboard.finance',

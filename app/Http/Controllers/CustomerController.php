@@ -9,7 +9,7 @@ class CustomerController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search'); // Haal de zoekterm op
+        $search = $request->input('search');
 
         $customers = Customer::query()
             ->when($search, function ($query, $search) {
@@ -21,7 +21,6 @@ class CustomerController extends Controller
 
         return view('customers.index', compact('customers'));
     }
-
 
     public function create()
     {
@@ -36,7 +35,7 @@ class CustomerController extends Controller
             'phonenumber' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'bkr_check' => 'required|boolean',
+            'bkr_check' => 'boolean',
         ]);
 
         Customer::create($request->all());

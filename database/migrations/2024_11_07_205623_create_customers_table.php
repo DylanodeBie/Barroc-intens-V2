@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('phonenumber');
             $table->string('address');
             $table->string('email');
-            $table->boolean('bkr_check');
+            $table->boolean('bkr_check')->default(false);
             $table->timestamps();
         });
     }

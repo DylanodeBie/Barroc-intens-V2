@@ -10,9 +10,9 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::where('user_id', auth()->id()) // Alleen events van de ingelogde gebruiker
+        $events = Event::where('user_id', auth()->id())
             ->orWhereHas('customer', function ($query) {
-                $query->where('user_id', auth()->id()); // Events van gekoppelde klanten tonen
+                $query->where('user_id', auth()->id());
             })
             ->with('customer:id,company_name')
             ->get(['id', 'customer_id', 'title', 'start', 'end', 'description']);
@@ -34,7 +34,6 @@ class EventController extends Controller
 
         return response()->json($event->load('customer'), 201);
     }
-
 
     public function update(Request $request, $id)
     {

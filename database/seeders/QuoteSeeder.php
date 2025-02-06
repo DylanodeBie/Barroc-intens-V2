@@ -16,19 +16,16 @@ class QuoteSeeder extends Seeder
      */
     public function run(): void
     {
-        // Haal data op
-        $machines = Machine::all(); // Machines uit de aparte machines-tabel
-        $beans = Product::where('type', 'coffee_bean')->get(); // Bonen uit de products-tabel
-        $authorizedUsers = User::whereIn('role_id', [7, 10])->get(); // Sales, Head Sales, CEO
+        $machines = Machine::all();
+        $beans = Product::where('type', 'coffee_bean')->get();
+        $authorizedUsers = User::whereIn('role_id', [7, 10])->get();
         $customers = Customer::all();
 
-        // Controleer of er voldoende data beschikbaar is
         if ($machines->isEmpty() || $beans->isEmpty() || $authorizedUsers->isEmpty() || $customers->isEmpty()) {
             logger()->error('Vereiste data ontbreekt. Zorg ervoor dat klanten, gebruikers, machines en bonen correct zijn geïmporteerd.');
             return;
         }
 
-        // Genereer 100+ offertes
         for ($i = 0; $i < 120; $i++) {
             $customer = $customers->random();
             $user = $authorizedUsers->random();
@@ -47,7 +44,6 @@ class QuoteSeeder extends Seeder
                 ];
             })->toArray();
 
-            // Maak een nieuwe offerte
             $quote = Quote::create([
                 'customer_id' => $customer->id,
                 'user_id' => $user->id,
@@ -55,12 +51,11 @@ class QuoteSeeder extends Seeder
                 'quote_date' => now()->subDays(rand(1, 900)),
                 'agreement_length' => rand(6, 24) . ' maanden',
                 'maintenance_agreement' => collect(['basic', 'standard', 'premium'])->random(),
-                'total_price' => 0, // Wordt hieronder berekend
+                'total_price' => 0,
             ]);
 
             $totalPrice = 0;
 
-            // Koppel machines
             foreach ($selectedMachines as $machineData) {
                 $machine = $machines->firstWhere('id', $machineData['id']);
                 if ($machine) {
@@ -71,7 +66,6 @@ class QuoteSeeder extends Seeder
                 }
             }
 
-            // Koppel bonen
             foreach ($selectedBeans as $beanData) {
                 $bean = $beans->firstWhere('id', $beanData['id']);
                 if ($bean) {
@@ -82,7 +76,6 @@ class QuoteSeeder extends Seeder
                 }
             }
 
-            // Update de totaalprijs
             $quote->update(['total_price' => $totalPrice]);
         }
     }

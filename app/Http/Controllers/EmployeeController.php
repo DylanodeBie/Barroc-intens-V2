@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Role; // Voeg dit toe om de rollen op te halen
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -16,30 +16,26 @@ class EmployeeController extends Controller
 
     public function create()
     {
-        $roles = Role::all(); // Verkrijg alle rollen
+        $roles = Role::all();
         return view('employees.create', compact('roles'));
     }
 
     public function store(Request $request)
     {
-
-        // Validatie voor de invoer
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role_id' => 'required|exists:roles,id', // Rol validatie
+            'role_id' => 'required|exists:roles,id',
         ]);
 
-        // Maak een nieuwe gebruiker aan
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password), // Versleuteling van het wachtwoord
-            'role_id' => $request->role_id, // De rol wordt hier opgeslagen
+            'password' => bcrypt($request->password),
+            'role_id' => $request->role_id,
         ]);
 
-        // Redirect naar de index met succesbericht
         return redirect()->route('employees.index')->with('success', 'Medewerker toegevoegd!');
     }
 
@@ -48,31 +44,26 @@ class EmployeeController extends Controller
         return view('employees.show', compact('employee'));
     }
 
-    // Nieuwe edit methode om de gebruiker te bewerken
     public function edit(User $employee)
     {
-        $roles = Role::all(); // Verkrijg alle rollen
-        $userRoleId = $employee->role_id; // Verkrijg de role_id van de werknemer
+        $roles = Role::all();
+        $userRoleId = $employee->role_id;
 
         return view('employees.edit', compact('employee', 'roles', 'userRoleId'));
     }
 
-    // Nieuwe update methode om de gegevens van de gebruiker op te slaan
     public function update(Request $request, User $employee)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'roles' => 'required|array|min:1|max:1', // Minimaal één en maximaal één rol vereist
-            'roles.*' => 'exists:roles,id', // Controleer of de rol bestaat
+            'roles' => 'required|array|min:1|max:1',
+            'roles.*' => 'exists:roles,id',
         ]);
 
-        // Werk de basisgegevens van de werknemer bij
         $employee->name = $request->name;
         $employee->email = $request->email;
-
-        // Werk de rol bij
-        $employee->role_id = $request->roles[0]; // Aangezien we slechts één rol verwachten
+        $employee->role_id = $request->roles[0];
         $employee->save();
 
         return redirect()->route('employees.index')

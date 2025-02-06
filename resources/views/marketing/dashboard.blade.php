@@ -181,26 +181,22 @@
     const submitButton = document.getElementById('submitButton');
     const form = document.getElementById('signatureForm');
 
-    // Initialiseer SignaturePad
     const signaturePad = new SignaturePad(canvas);
 
-    // Canvas dynamisch schalen
     function resizeCanvas() {
         const ratio = Math.max(window.devicePixelRatio || 1, 1);
         canvas.width = canvas.offsetWidth * ratio;
-        canvas.height = 200 * ratio; // Zelfde als CSS hoogte
+        canvas.height = 200 * ratio;
         canvas.getContext('2d').scale(ratio, ratio);
-        signaturePad.clear(); // Canvas leegmaken
+        signaturePad.clear();
     }
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Handtekening wissen
     clearButton.addEventListener('click', function () {
         signaturePad.clear();
     });
 
-    // Formulier verzenden
     submitButton.addEventListener('click', function (e) {
         e.preventDefault();
 
@@ -209,7 +205,6 @@
             return;
         }
 
-        // Voeg de Base64-handtekening toe aan het formulier
         const signatureInput = document.createElement('input');
         signatureInput.type = 'hidden';
         signatureInput.name = 'signature';
@@ -219,6 +214,5 @@
         form.submit();
     });
 });
-
 </script>
 @endsection

@@ -37,6 +37,8 @@ Producten
             <li
                 class="flex justify-between items-center bg-gray-100 border border-gray-300 rounded-lg p-4 shadow-lg hover:bg-gray-200 transition-all duration-300">
                 <div class="flex items-center space-x-4">
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="Product afbeelding" class="w-16 h-16 object-cover rounded">
+
                     <div class="flex flex-col justify-between items-start space-y-2">
                         <a href="{{ route('products.show', $product) }}"
                             class="text-xl font-semibold text-gray-900 hover:text-[#FFD700]">

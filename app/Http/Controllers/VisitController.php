@@ -13,45 +13,42 @@ use Illuminate\Support\Facades\Storage;
 class VisitController extends Controller
 {
     public function index(Request $request)
-{
-    $search = $request->input('search');
-    $companyName = $request->input('company_name');
-    $type = $request->input('type');
-    $userId = $request->input('user_id');
-    $status = $request->input('status');
+    {
+        $search = $request->input('search');
+        $companyName = $request->input('company_name');
+        $type = $request->input('type');
+        $userId = $request->input('user_id');
+        $status = $request->input('status');
 
-    // Query voor bezoeken met filters
-    $visits = Visit::with('customer', 'user')
-        ->when($search, function ($query, $search) {
-            return $query->whereHas('customer', function ($q) use ($search) {
-                $q->where('company_name', 'like', "%{$search}%");
+        $visits = Visit::with('customer', 'user')
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('customer', function ($q) use ($search) {
+                    $q->where('company_name', 'like', "%{$search}%");
+                })
+                ->orWhere('address', 'like', "%{$search}%")
+                ->orWhere('visit_date', 'like', "%{$search}%");
             })
-            ->orWhere('address', 'like', "%{$search}%")
-            ->orWhere('visit_date', 'like', "%{$search}%");
-        })
-        ->when($companyName, function ($query, $companyName) {
-            return $query->whereHas('customer', function ($q) use ($companyName) {
-                $q->where('company_name', 'like', "%{$companyName}%");
-            });
-        })
-        ->when($type, function ($query, $type) {
-            return $query->where('type', $type);
-        })
-        ->when($userId, function ($query, $userId) {
-            return $query->where('user_id', $userId);
-        })
-        ->when($status, function ($query, $status) {
-            return $query->where('status', $status);
-        })
-        ->get();
+            ->when($companyName, function ($query, $companyName) {
+                return $query->whereHas('customer', function ($q) use ($companyName) {
+                    $q->where('company_name', 'like', "%{$companyName}%");
+                });
+            })
+            ->when($type, function ($query, $type) {
+                return $query->where('type', $type);
+            })
+            ->when($userId, function ($query, $userId) {
+                return $query->where('user_id', $userId);
+            })
+            ->when($status, function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->get();
 
-    // Data voor filters ophalen
-    $users = User::whereIn('role_id', [5, 9, 10])->get();
-    $statuses = Visit::select('status')->distinct()->pluck('status');
+        $users = User::whereIn('role_id', [5, 9, 10])->get();
+        $statuses = Visit::select('status')->distinct()->pluck('status');
 
-    return view('visits.index', compact('visits', 'users', 'statuses'));
-}
-
+        return view('visits.index', compact('visits', 'users', 'statuses'));
+    }
 
     public function create()
     {
@@ -81,12 +78,10 @@ class VisitController extends Controller
             'type' => 'required|in:maintenance,sales',
         ]);
 
-        // Bezoek opslaan
         $visit = Visit::create($request->all());
 
-        // Event voor de verkoper aanmaken
         Event::create([
-            'user_id' => $request->user_id, // Toegewezen verkoper
+            'user_id' => $request->user_id,
             'customer_id' => $request->customer_id,
             'title' => "Bezoek aan " . $visit->customer->company_name,
             'start' => $visit->visit_date . " " . $visit->start_time,
@@ -128,11 +123,12 @@ class VisitController extends Controller
         return redirect()->route('visits.index')->with('success', 'Bezoek succesvol toegewezen aan onderhoud.');
     }
 
-    public function maintenanceTickets(){
+    public function maintenanceTickets()
+    {
         $tickets = Visit::whereNotNull('user_id')->get();
         return view('visits.maintenance_tickets', compact('tickets'));
     }
-        
+
     public function myTickets(Request $request)
     {
         $user = auth()->user();
@@ -184,7 +180,6 @@ class VisitController extends Controller
     {
         $visit = Visit::findOrFail($id);
 
-        // Verwijder het gekoppelde event
         Event::where('customer_id', $visit->customer_id)
             ->where('start', $visit->visit_date . " " . $visit->start_time)
             ->where('end', $visit->visit_date . " " . $visit->end_time)

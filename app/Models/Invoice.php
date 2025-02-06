@@ -18,7 +18,6 @@ class Invoice extends Model
         'total_amount',
     ];
 
-    // Ensure invoice_date is treated as a Carbon instance
     protected $casts = [
         'invoice_date' => 'date',
     ];

@@ -12,34 +12,25 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class QuoteController extends Controller
 {
-    /**
-     * Display a listing of the quotes.
-     */
     public function index(Request $request)
     {
         $query = Quote::with(['customer', 'user', 'machines', 'beans']);
-
-        // Haal de gebruikers met de rol 2, 3, 6, 7, 10
         $users = User::whereIn('role_id', [2, 3, 6, 7, 10])->get();
 
-        // Filter op klant
         if ($request->has('customer') && $request->input('customer') != '') {
             $query->whereHas('customer', function ($q) use ($request) {
                 $q->where('company_name', 'like', '%' . $request->input('customer') . '%');
             });
         }
 
-        // Filter op gebruiker
         if ($request->has('user') && $request->input('user') != '') {
             $query->where('user_id', $request->input('user'));
         }
 
-        // Filter op status
         if ($request->has('status') && $request->input('status') != '') {
             $query->where('status', 'like', '%' . $request->input('status') . '%');
         }
 
-        // Filter op datum
         if ($request->has('date') && $request->input('date') != '') {
             $query->whereDate('quote_date', '=', $request->input('date'));
         }
@@ -48,23 +39,16 @@ class QuoteController extends Controller
         return view('quotes.index', compact('quotes', 'users'));
     }
 
-
-    /**
-     * Show the form for creating a new quote.
-     */
     public function create()
     {
         $customers = Customer::all();
         $users = User::whereIn('role_id', [3, 7, 10])->get();
         $machines = Machine::all();
-        $products = Product::where('type', 'coffee_bean')->get(); // Only coffee beans
+        $products = Product::where('type', 'coffee_bean')->get();
 
         return view('quotes.create', compact('customers', 'users', 'machines', 'products'));
     }
 
-    /**
-     * Store a newly created quote in the database.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -97,7 +81,6 @@ class QuoteController extends Controller
             'maintenance_agreement' => $validated['maintenance_agreement'] ?? null,
         ]);
 
-        // Attach machines to the quote
         foreach ($validated['machines'] as $machineId => $machineData) {
             if (!empty($machineData['selected'])) {
                 $quote->machines()->attach($machineId, [
@@ -106,7 +89,6 @@ class QuoteController extends Controller
             }
         }
 
-        // Attach beans to the quote
         if (!empty($validated['beans'])) {
             foreach ($validated['beans'] as $beanId => $beanData) {
                 if (!empty($beanData['selected'])) {
@@ -120,18 +102,12 @@ class QuoteController extends Controller
         return redirect()->route('quotes.index')->with('success', 'Offerte succesvol aangemaakt!');
     }
 
-    /**
-     * Display the specified quote.
-     */
     public function show(Quote $quote)
     {
         $quote->load(['customer', 'user', 'machines', 'beans']);
         return view('quotes.show', compact('quote'));
     }
 
-    /**
-     * Show the form for editing the specified quote.
-     */
     public function edit(Quote $quote)
     {
         $customers = Customer::all();
@@ -143,9 +119,6 @@ class QuoteController extends Controller
         return view('quotes.edit', compact('quote', 'customers', 'users', 'machines', 'products'));
     }
 
-    /**
-     * Update the specified quote in the database.
-     */
     public function update(Request $request, Quote $quote)
     {
         $validated = $request->validate([
@@ -176,7 +149,6 @@ class QuoteController extends Controller
             'maintenance_agreement' => $validated['maintenance_agreement'] ?? null,
         ]);
 
-        // Sync machines
         $machines = [];
         foreach ($validated['machines'] as $machineId => $machineData) {
             if (!empty($machineData['selected'])) {
@@ -185,7 +157,6 @@ class QuoteController extends Controller
         }
         $quote->machines()->sync($machines);
 
-        // Sync beans
         $beans = [];
         if (!empty($validated['beans'])) {
             foreach ($validated['beans'] as $beanId => $beanData) {
@@ -199,18 +170,12 @@ class QuoteController extends Controller
         return redirect()->route('quotes.index')->with('success', 'Offerte succesvol bijgewerkt!');
     }
 
-    /**
-     * Remove the specified quote from the database.
-     */
     public function destroy(Quote $quote)
     {
         $quote->delete();
         return redirect()->route('quotes.index')->with('success', 'Offerte succesvol verwijderd!');
     }
 
-    /**
-     * Generate and download a PDF for the specified quote.
-     */
     public function downloadPdf(Quote $quote)
     {
         $quote->load(['customer', 'user', 'machines', 'beans']);

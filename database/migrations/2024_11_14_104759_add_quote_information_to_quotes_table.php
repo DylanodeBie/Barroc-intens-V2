@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('quote_machines', function (Blueprint $table) {
-            $table->id(); // Primary key
-            $table->foreignId('quote_id')->constrained('quotes')->onDelete('cascade'); // Foreign key to quotes table
-            $table->foreignId('machine_id')->constrained('machines')->onDelete('cascade'); // Foreign key to machines table
-            $table->integer('quantity')->default(1); // Quantity of machines
+            $table->id();
+            $table->foreignId('quote_id')->constrained('quotes')->onDelete('cascade');
+            $table->foreignId('machine_id')->constrained('machines')->onDelete('cascade');
+            $table->integer('quantity')->default(1);
             $table->timestamps();
         });
     }

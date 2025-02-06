@@ -12,21 +12,18 @@ class ProfitDistributionController extends Controller
 {
     public function index(Request $request)
     {
-        $year = $request->input('year', date('Y')); // Huidig jaar als standaard
-        $customerId = $request->input('customer_id'); // Filter voor specifieke klant
+        $year = $request->input('year', date('Y'));
+        $customerId = $request->input('customer_id');
 
-        // Lijst met maandnamen
         $months = [
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ];
 
-        // Maandelijkse inkomsten en uitgaven berekenen
         $monthlyData = [];
         foreach ($months as $index => $month) {
             $monthNumber = $index + 1;
 
-            // Bereken inkomsten uit facturen (paid invoices)
             $income = Invoice::where('status', 'paid')
                 ->whereYear('invoice_date', $year)
                 ->whereMonth('invoice_date', $monthNumber)
@@ -35,10 +32,9 @@ class ProfitDistributionController extends Controller
                 })
                 ->sum('total_amount') ?? 0;
 
-            // Bereken uitgaven uit bestellingen (orders)
             $expenses = Order::whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNumber)
-                ->sum('quantity') ?? 0; // Hier gaan we uit van de hoeveelheid als kosten, pas dit aan indien nodig
+                ->sum('quantity') ?? 0;
 
             $monthlyData[] = [
                 'month' => $month,
@@ -50,7 +46,6 @@ class ProfitDistributionController extends Controller
         $totalIncome = array_sum(array_column($monthlyData, 'income'));
         $totalExpenses = array_sum(array_column($monthlyData, 'expenses'));
 
-        // Alle klanten ophalen
         $customers = Customer::all();
 
         return view('profit_distribution.index', compact(
@@ -68,13 +63,11 @@ class ProfitDistributionController extends Controller
         $year = $request->input('year', date('Y'));
         $customerId = $request->input('customer_id');
 
-        // Lijst met maandnamen
         $months = [
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ];
 
-        // Maandelijkse inkomsten en uitgaven berekenen
         $monthlyData = [];
         foreach ($months as $index => $month) {
             $monthNumber = $index + 1;
@@ -89,7 +82,7 @@ class ProfitDistributionController extends Controller
 
             $expenses = Order::whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNumber)
-                ->sum('quantity') ?? 0; // Hier gaan we uit van de hoeveelheid als kosten, pas dit aan indien nodig
+                ->sum('quantity') ?? 0;
 
             $monthlyData[] = [
                 'month' => $month,
@@ -101,12 +94,10 @@ class ProfitDistributionController extends Controller
         $totalIncome = array_sum(array_column($monthlyData, 'income'));
         $totalExpenses = array_sum(array_column($monthlyData, 'expenses'));
 
-        // Haal de bedrijfsnaam op
         $companyName = $customerId
             ? Customer::find($customerId)?->company_name ?? 'Onbekend Bedrijf'
             : 'Alle Klanten';
 
-        // Maak een PDF van de gegevens
         $pdf = Pdf::loadView('profit_distribution.pdf', compact('monthlyData', 'totalIncome', 'totalExpenses', 'year', 'companyName'));
 
         return $pdf->download('winstverdeling.pdf');

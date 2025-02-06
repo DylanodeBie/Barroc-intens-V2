@@ -73,7 +73,7 @@
             checkbox.addEventListener('change', function() {
                 const quantityInput = this.closest('div').querySelector('input[type="number"]');
                 quantityInput.disabled = !this.checked;
-                if (!this.checked) quantityInput.value = 1; // Reset quantity if unchecked
+                if (!this.checked) quantityInput.value = 1;
             });
         });
     </script>

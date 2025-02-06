@@ -47,35 +47,29 @@
         const checkboxes = document.querySelectorAll('.role-checkbox');
         let selectedRole = null;
 
-        // Zet de eerste rol met de actieve rol alvast geselecteerd
         checkboxes.forEach(checkbox => {
             if (checkbox.checked) {
-                selectedRole = checkbox; // Bewaar de geselecteerde rol
+                selectedRole = checkbox;
             }
         });
 
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', function() {
-                // Als de checkbox is aangevinkt
                 if (this.checked) {
-                    // Als er al een rol geselecteerd is, deselecteer deze
                     if (selectedRole && selectedRole !== this) {
-                        selectedRole.checked = false; // Deselectioneer de vorige geselecteerde rol
+                        selectedRole.checked = false;
                     }
-                    selectedRole = this; // Bewaar de huidige geselecteerde rol
-                    // Zet alle andere checkboxes uit
+                    selectedRole = this;
                     checkboxes.forEach(c => {
                         if (c !== selectedRole) {
-                            c.disabled = true; // Deactiveer de andere checkboxes
+                            c.disabled = true;
                         }
                     });
                 } else {
-                    // Als de huidige rol wordt gedeselecteerd
-                    selectedRole = null; // Reset de geselecteerde rol
-                    // Maak alle checkboxes weer aanklikbaar
+                    selectedRole = null;
                     checkboxes.forEach(c => {
-                        c.disabled = false; // Maak alle checkboxes weer aanklikbaar
-                        c.checked = false; // Deselecteer alle andere checkboxes
+                        c.disabled = false;
+                        c.checked = false;
                     });
                 }
             });

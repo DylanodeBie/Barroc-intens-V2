@@ -7,7 +7,6 @@
 </div>
 <div id="calendar"></div>
 
-<!-- Modal -->
 <div id="eventModal" class="modal hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
     <div class="modal-content bg-white p-6 rounded-lg w-1/3">
         <h2 id="modalTitle" class="text-xl font-semibold mb-4">Add Event</h2>
@@ -20,7 +19,7 @@
                 <label for="eventCustomer" class="block font-semibold">Klant (optioneel)</label>
                 <select id="eventCustomer" class="w-full border border-gray-300 rounded p-2">
                     <option value="">Geen klant</option>
-                  
+
                 </select>
             </div>
             <div class="mb-4">

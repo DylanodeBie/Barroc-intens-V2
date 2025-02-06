@@ -15,7 +15,7 @@ class MachineSeeder extends Seeder
                 'code' => 'S234FREKT',
                 'lease_price' => 499.00,
                 'installation_cost' => 289.00,
-                'image' => 'img/machine-bit-light.png', // Use the light image for this machine
+                'image' => 'img/machine-bit-light.png',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -24,7 +24,7 @@ class MachineSeeder extends Seeder
                 'code' => 'S234KNDPF',
                 'lease_price' => 599.00,
                 'installation_cost' => 289.00,
-                'image' => 'img/machine-bit-light.png', // Use the same light image
+                'image' => 'img/machine-bit-light.png',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -33,7 +33,7 @@ class MachineSeeder extends Seeder
                 'code' => 'S234NNBMV',
                 'lease_price' => 799.00,
                 'installation_cost' => 375.00,
-                'image' => 'img/machine-bit-deluxe.png', // Use the deluxe image
+                'image' => 'img/machine-bit-deluxe.png',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -42,7 +42,7 @@ class MachineSeeder extends Seeder
                 'code' => 'S234MMPLA',
                 'lease_price' => 999.00,
                 'installation_cost' => 375.00,
-                'image' => 'img/machine-bit-deluxe.png', // Use the deluxe image
+                'image' => 'img/machine-bit-deluxe.png',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

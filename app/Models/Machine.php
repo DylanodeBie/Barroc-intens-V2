@@ -9,5 +9,5 @@ class Machine extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'price']; // Update fields as needed
+    protected $fillable = ['name', 'description', 'price'];
 }

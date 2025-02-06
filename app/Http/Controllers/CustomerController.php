@@ -9,7 +9,7 @@ class CustomerController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search'); // Haal de zoekterm op
+        $search = $request->input('search');
 
         $customers = Customer::query()
             ->when($search, function ($query, $search) {
@@ -21,7 +21,6 @@ class CustomerController extends Controller
 
         return view('customers.index', compact('customers'));
     }
-
 
     public function create()
     {

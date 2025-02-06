@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('leasecontract_products', function (Blueprint $table) {
-            $table->integer('amount')->nullable(); // Voeg de kolom 'amount' toe
-            $table->decimal('price', 8, 2)->nullable(); // Voeg de kolom 'price' toe
+            $table->integer('amount')->nullable();
+            $table->decimal('price', 8, 2)->nullable();
         });
     }
 
@@ -23,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('leasecontract_products', function (Blueprint $table) {
-            $table->dropColumn(['amount', 'price']); // Verwijder de kolommen
+            $table->dropColumn(['amount', 'price']);
         });
     }
 };
